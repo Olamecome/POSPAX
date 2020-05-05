@@ -3296,10 +3296,10 @@ void UpdateEMVTranType(void)
 		EMVSetTLVData(0x9C, (uchar *)"\x00", 1);
 		break;
 
-	/*case PREAUTH:
-		EMVSetTLVData(0x9C, (uchar *)"\x30", 1);
+	case POS_PRE_AUTHORIZATION:
+		EMVSetTLVData(0x9C, (uchar *)"\x03", 1); //(uchar *)"\x30", 1);
 		glEmvParam.TransType = EMV_GOODS;
-		break;*/
+		break;
 
 	case BALANCE:
 		EMVSetTLVData(0x9C, (uchar *)"\x31", 1);
