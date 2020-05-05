@@ -1,0 +1,241 @@
+#created by pos template
+path=C:\PAXPAY~2\build\gcc410\bin
+
+NAME      = XpressPOSv2
+VERSION   = "v1.0"
+GCCDIR    = C:\PAXPAY~2\build\gcc410
+GCCBIN    = $(GCCDIR)\bin
+GCCLIB    = -L. -L$(GCCDIR)\lib
+LOCSRC    = 
+LOCOBJ    = C:\PAXPAY~2\myapp\XPRESS~1\obj_Sxx_so
+LOCINC    = -I. -IC:\PAXPAY~2\include
+POSLIBDIR = C:\PAXPAY~2\postype\Sxx-SO
+POSLIB    = sxxapi
+
+GCC       = $(GCCBIN)\arm-elf-gcc -O2 -msoft-float -mlittle-endian -ffunction-sections -D_SXXSO_POS $(LOCINC) -D_SXX_POS -c
+STRIP     = $(GCCBIN)\arm-elf-strip --strip-unneeded
+LINK      = $(GCCBIN)\arm-elf-ld -T$(POSLIBDIR)\sldscript_slim $(GCCLIB) -L$(POSLIBDIR) -shared -Bsymbolic -Map $(LOCOBJ)\$(NAME).map -no-undefined -no-allow-shlib-undefined 
+OBJ       = $(LOCOBJ)\CppInit.o \
+            $(LOCOBJ)\appLib.o \
+            $(LOCOBJ)\Bin2Hex.o \
+            $(LOCOBJ)\BmpToPrnLogo.o \
+            $(LOCOBJ)\checkopt.o \
+            $(LOCOBJ)\ClssProc.o \
+            $(LOCOBJ)\commlib.o \
+            $(LOCOBJ)\commproc.o \
+            $(LOCOBJ)\converters.o \
+            $(LOCOBJ)\cpinpad.o \
+            $(LOCOBJ)\debug.o \
+            $(LOCOBJ)\Des.o \
+            $(LOCOBJ)\dl_iso8583.o \
+            $(LOCOBJ)\dl_iso8583_common.o \
+            $(LOCOBJ)\dl_iso8583_defs_1987.o \
+            $(LOCOBJ)\dl_iso8583_defs_1993.o \
+            $(LOCOBJ)\dl_iso8583_fields.o \
+            $(LOCOBJ)\dl_mem.o \
+            $(LOCOBJ)\dl_output.o \
+            $(LOCOBJ)\dl_str.o \
+            $(LOCOBJ)\dl_time.o \
+            $(LOCOBJ)\dl_timer.o \
+            $(LOCOBJ)\emvproc.o \
+            $(LOCOBJ)\emvtest.o \
+            $(LOCOBJ)\emv_handler.o \
+            $(LOCOBJ)\fileoper.o \
+            $(LOCOBJ)\file_handler.o \
+            $(LOCOBJ)\global.o \
+            $(LOCOBJ)\GUI.o \
+            $(LOCOBJ)\Hex2Bin.o \
+            $(LOCOBJ)\http_handler.o \
+            $(LOCOBJ)\initpos.o \
+            $(LOCOBJ)\lng.o \
+            $(LOCOBJ)\Logger.o \
+            $(LOCOBJ)\main.o \
+            $(LOCOBJ)\manage.o \
+            $(LOCOBJ)\mlogo.o \
+            $(LOCOBJ)\MultiApp.o \
+            $(LOCOBJ)\nibssConfiguration.o \
+            $(LOCOBJ)\nibssTransaction.o \
+            $(LOCOBJ)\notification.o \
+            $(LOCOBJ)\pack8583.o \
+            $(LOCOBJ)\parson.o \
+            $(LOCOBJ)\parsonHelper.o \
+            $(LOCOBJ)\password.o \
+            $(LOCOBJ)\print.o \
+            $(LOCOBJ)\printHelper.o \
+            $(LOCOBJ)\ProcTrans.o \
+            $(LOCOBJ)\transaction.o \
+            $(LOCOBJ)\records.o \
+            $(LOCOBJ)\router.o \
+            $(LOCOBJ)\services.o \
+            $(LOCOBJ)\setup.o \
+            $(LOCOBJ)\sha256.o \
+            $(LOCOBJ)\Simulate.o \
+            $(LOCOBJ)\st8583.o \
+            $(LOCOBJ)\SxxCom.o \
+            $(LOCOBJ)\SxxComSSL.o \
+            $(LOCOBJ)\terminalMgt.o \
+            $(LOCOBJ)\termSetup.o \
+            $(LOCOBJ)\tranproc.o \
+            $(LOCOBJ)\xCrypto.o \
+            $(LOCOBJ)\xIsoUtils.o \
+            $(LOCOBJ)\xTime.o \
+            $(LOCOBJ)\xui.o \
+            $(LOCOBJ)\util.o \
+            $(LOCOBJ)\utils.o \
+            $(LOCOBJ)\xCommon.o
+
+#  ADS-ROM version
+$(NAME).elf: $(OBJ) C:\PAXPAY~2\myapp\XPRESS~1\BIN_MA~2
+    $(LINK) -o $(LOCOBJ)\$(NAME).elf $(OBJ) --start-group "C:\PaxPayPro2017\myapp\XpressPOS\lib\B_DPAS_LIB_v100.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\B_ENTRY_LIB_v505.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\B_JCB_LIB_v101.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\B_WAVE_LIB_v305.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\C_ENTRY_LIB_v505.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\C_JCB_LIB_v101.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\C_WAVE_LIB_v305.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\Device_PaxMe_B_v503.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\libClAERSFMSF_v202.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\libClAESMFMNF_v202.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\libClQPBOCRSFMSF_v300.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\libCrypto_V3.0.7-190129-Sxx.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\LibemvSFMSF_v505.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\libhttpSxx_V1.0.3_Release.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\libPaxSSL_V3.0.7-190129-Sxx.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\MC_PaxMe_B_v502.a" "C:\PaxPayPro2017\build\gcc410\lib\libc.a" "C:\PaxPayPro2017\build\gcc410\lib\libgcc.a" "C:\PaxPayPro2017\build\gcc410\lib\libstdc++.a"  -l$(POSLIB) -whole-archive $(POSLIBDIR)\InitSo_Sxx.a -no-whole-archive -lgcc --end-group
+	arm-elf-readelf -a $(LOCOBJ)\$(NAME).elf > $(LOCOBJ)\$(NAME).sys
+	arm-elf-objdump -D -S $(LOCOBJ)\$(NAME).elf > $(LOCOBJ)\$(NAME).dasm
+	$(STRIP) $(LOCOBJ)\$(NAME).elf
+    app_adjust $(LOCOBJ)\$(NAME).elf $(LOCOBJ)\$(NAME)($(VERSION)).bin PAX-S80-SAPP
+
+# init file
+$(LOCOBJ)\CppInit.o: "$(GCCDIR)\lib\CppInit.c"
+        $(GCC) "$(GCCDIR)\lib\CppInit.c" -o "$(LOCOBJ)\CppInit.o"
+		
+#  C files
+$(LOCOBJ)\appLib.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\appLib.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\appLib.c" -o "$(LOCOBJ)\appLib.o"
+$(LOCOBJ)\Bin2Hex.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\Bin2Hex.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\Bin2Hex.c" -o "$(LOCOBJ)\Bin2Hex.o"
+$(LOCOBJ)\BmpToPrnLogo.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\BmpToPrnLogo.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\BmpToPrnLogo.c" -o "$(LOCOBJ)\BmpToPrnLogo.o"
+$(LOCOBJ)\checkopt.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\checkopt.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\checkopt.c" -o "$(LOCOBJ)\checkopt.o"
+$(LOCOBJ)\ClssProc.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\ClssProc.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\ClssProc.c" -o "$(LOCOBJ)\ClssProc.o"
+$(LOCOBJ)\commlib.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\commlib.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\commlib.c" -o "$(LOCOBJ)\commlib.o"
+$(LOCOBJ)\commproc.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\commproc.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\commproc.c" -o "$(LOCOBJ)\commproc.o"
+$(LOCOBJ)\converters.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\converters.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\converters.c" -o "$(LOCOBJ)\converters.o"
+$(LOCOBJ)\cpinpad.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\cpinpad.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\cpinpad.c" -o "$(LOCOBJ)\cpinpad.o"
+$(LOCOBJ)\debug.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\debug.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\debug.c" -o "$(LOCOBJ)\debug.o"
+$(LOCOBJ)\Des.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\Des.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\Des.c" -o "$(LOCOBJ)\Des.o"
+$(LOCOBJ)\dl_iso8583.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\dl_iso8583.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\dl_iso8583.c" -o "$(LOCOBJ)\dl_iso8583.o"
+$(LOCOBJ)\dl_iso8583_common.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\dl_iso8583_common.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\dl_iso8583_common.c" -o "$(LOCOBJ)\dl_iso8583_common.o"
+$(LOCOBJ)\dl_iso8583_defs_1987.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\dl_iso8583_defs_1987.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\dl_iso8583_defs_1987.c" -o "$(LOCOBJ)\dl_iso8583_defs_1987.o"
+$(LOCOBJ)\dl_iso8583_defs_1993.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\dl_iso8583_defs_1993.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\dl_iso8583_defs_1993.c" -o "$(LOCOBJ)\dl_iso8583_defs_1993.o"
+$(LOCOBJ)\dl_iso8583_fields.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\dl_iso8583_fields.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\dl_iso8583_fields.c" -o "$(LOCOBJ)\dl_iso8583_fields.o"
+$(LOCOBJ)\dl_mem.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\dl_mem.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\dl_mem.c" -o "$(LOCOBJ)\dl_mem.o"
+$(LOCOBJ)\dl_output.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\dl_output.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\dl_output.c" -o "$(LOCOBJ)\dl_output.o"
+$(LOCOBJ)\dl_str.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\dl_str.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\dl_str.c" -o "$(LOCOBJ)\dl_str.o"
+$(LOCOBJ)\dl_time.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\dl_time.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\dl_time.c" -o "$(LOCOBJ)\dl_time.o"
+$(LOCOBJ)\dl_timer.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\dl_timer.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\dl_timer.c" -o "$(LOCOBJ)\dl_timer.o"
+$(LOCOBJ)\emvproc.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\emvproc.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\emvproc.c" -o "$(LOCOBJ)\emvproc.o"
+$(LOCOBJ)\emvtest.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\emvtest.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\emvtest.c" -o "$(LOCOBJ)\emvtest.o"
+$(LOCOBJ)\emv_handler.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\emv_handler.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\emv_handler.c" -o "$(LOCOBJ)\emv_handler.o"
+$(LOCOBJ)\fileoper.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\fileoper.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\fileoper.c" -o "$(LOCOBJ)\fileoper.o"
+$(LOCOBJ)\file_handler.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\file_handler.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\file_handler.c" -o "$(LOCOBJ)\file_handler.o"
+$(LOCOBJ)\global.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\global.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\global.c" -o "$(LOCOBJ)\global.o"
+$(LOCOBJ)\GUI.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\GUI.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\GUI.c" -o "$(LOCOBJ)\GUI.o"
+$(LOCOBJ)\Hex2Bin.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\Hex2Bin.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\Hex2Bin.c" -o "$(LOCOBJ)\Hex2Bin.o"
+$(LOCOBJ)\http_handler.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\http_handler.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\http_handler.c" -o "$(LOCOBJ)\http_handler.o"
+$(LOCOBJ)\initpos.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\initpos.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\initpos.c" -o "$(LOCOBJ)\initpos.o"
+$(LOCOBJ)\lng.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\lng.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\lng.c" -o "$(LOCOBJ)\lng.o"
+$(LOCOBJ)\Logger.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\Logger.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\Logger.c" -o "$(LOCOBJ)\Logger.o"
+$(LOCOBJ)\main.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\main.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\main.c" -o "$(LOCOBJ)\main.o"
+$(LOCOBJ)\manage.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\manage.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\manage.c" -o "$(LOCOBJ)\manage.o"
+$(LOCOBJ)\mlogo.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\mlogo.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\mlogo.c" -o "$(LOCOBJ)\mlogo.o"
+$(LOCOBJ)\MultiApp.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\MultiApp.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\MultiApp.c" -o "$(LOCOBJ)\MultiApp.o"
+$(LOCOBJ)\nibssConfiguration.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\nibssConfiguration.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\nibssConfiguration.c" -o "$(LOCOBJ)\nibssConfiguration.o"
+$(LOCOBJ)\nibssTransaction.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\nibssTransaction.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\nibssTransaction.c" -o "$(LOCOBJ)\nibssTransaction.o"
+$(LOCOBJ)\notification.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\notification.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\notification.c" -o "$(LOCOBJ)\notification.o"
+$(LOCOBJ)\pack8583.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\pack8583.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\pack8583.c" -o "$(LOCOBJ)\pack8583.o"
+$(LOCOBJ)\parson.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\parson.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\parson.c" -o "$(LOCOBJ)\parson.o"
+$(LOCOBJ)\parsonHelper.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\parsonHelper.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\parsonHelper.c" -o "$(LOCOBJ)\parsonHelper.o"
+$(LOCOBJ)\password.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\password.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\password.c" -o "$(LOCOBJ)\password.o"
+$(LOCOBJ)\print.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\print.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\print.c" -o "$(LOCOBJ)\print.o"
+$(LOCOBJ)\printHelper.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\printHelper.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\printHelper.c" -o "$(LOCOBJ)\printHelper.o"
+$(LOCOBJ)\ProcTrans.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\ProcTrans.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\ProcTrans.c" -o "$(LOCOBJ)\ProcTrans.o"
+$(LOCOBJ)\transaction.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\transaction.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\transaction.c" -o "$(LOCOBJ)\transaction.o"
+$(LOCOBJ)\records.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\records.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\records.c" -o "$(LOCOBJ)\records.o"
+$(LOCOBJ)\router.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\router.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\router.c" -o "$(LOCOBJ)\router.o"
+$(LOCOBJ)\services.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\services.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\services.c" -o "$(LOCOBJ)\services.o"
+$(LOCOBJ)\setup.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\setup.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\setup.c" -o "$(LOCOBJ)\setup.o"
+$(LOCOBJ)\sha256.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\sha256.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\sha256.c" -o "$(LOCOBJ)\sha256.o"
+$(LOCOBJ)\Simulate.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\Simulate.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\Simulate.c" -o "$(LOCOBJ)\Simulate.o"
+$(LOCOBJ)\st8583.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\st8583.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\st8583.c" -o "$(LOCOBJ)\st8583.o"
+$(LOCOBJ)\SxxCom.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\SxxCom.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\SxxCom.c" -o "$(LOCOBJ)\SxxCom.o"
+$(LOCOBJ)\SxxComSSL.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\SxxComSSL.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\SxxComSSL.c" -o "$(LOCOBJ)\SxxComSSL.o"
+$(LOCOBJ)\terminalMgt.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\terminalMgt.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\terminalMgt.c" -o "$(LOCOBJ)\terminalMgt.o"
+$(LOCOBJ)\termSetup.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\termSetup.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\termSetup.c" -o "$(LOCOBJ)\termSetup.o"
+$(LOCOBJ)\tranproc.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\tranproc.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\tranproc.c" -o "$(LOCOBJ)\tranproc.o"
+$(LOCOBJ)\xCrypto.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\xCrypto.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\xCrypto.c" -o "$(LOCOBJ)\xCrypto.o"
+$(LOCOBJ)\xIsoUtils.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\xIsoUtils.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\xIsoUtils.c" -o "$(LOCOBJ)\xIsoUtils.o"
+$(LOCOBJ)\xTime.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\xTime.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\xTime.c" -o "$(LOCOBJ)\xTime.o"
+$(LOCOBJ)\xui.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\xui.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\xui.c" -o "$(LOCOBJ)\xui.o"
+$(LOCOBJ)\util.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\util.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\util.c" -o "$(LOCOBJ)\util.o"
+$(LOCOBJ)\utils.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\utils.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\utils.c" -o "$(LOCOBJ)\utils.o"
+$(LOCOBJ)\xCommon.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\xCommon.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\xCommon.c" -o "$(LOCOBJ)\xCommon.o"
+
+		
+clean:
+	del /q $(LOCOBJ)\*.o
+	del /q $(LOCOBJ)\$(NAME).elf
+	del /q $(LOCOBJ)\$(NAME).dasm
+	del /q $(LOCOBJ)\$(NAME).map
+	del /q $(LOCOBJ)\$(NAME)($(VERSION)).bin

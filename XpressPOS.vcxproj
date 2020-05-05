@@ -1,0 +1,352 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\appLib.c" />
+    <ClCompile Include="src\Bin2Hex.c" />
+    <ClCompile Include="src\BmpToPrnLogo.c" />
+    <ClCompile Include="src\checkopt.c" />
+    <ClCompile Include="src\ClssProc.c" />
+    <ClCompile Include="src\commlib.c" />
+    <ClCompile Include="src\commproc.c" />
+    <ClCompile Include="src\converters.c" />
+    <ClCompile Include="src\cpinpad.c" />
+    <ClCompile Include="src\debug.c" />
+    <ClCompile Include="src\Des.c" />
+    <ClCompile Include="src\dl_iso8583.c" />
+    <ClCompile Include="src\dl_iso8583_common.c" />
+    <ClCompile Include="src\dl_iso8583_defs_1987.c" />
+    <ClCompile Include="src\dl_iso8583_defs_1993.c" />
+    <ClCompile Include="src\dl_iso8583_fields.c" />
+    <ClCompile Include="src\dl_mem.c" />
+    <ClCompile Include="src\dl_output.c" />
+    <ClCompile Include="src\dl_str.c" />
+    <ClCompile Include="src\dl_time.c" />
+    <ClCompile Include="src\dl_timer.c" />
+    <ClCompile Include="src\emvlib.c" />
+    <ClCompile Include="src\emvproc.c" />
+    <ClCompile Include="src\emvtest.c" />
+    <ClCompile Include="src\emv_handler.c" />
+    <ClCompile Include="src\fileoper.c" />
+    <ClCompile Include="src\file_handler.c" />
+    <ClCompile Include="src\global.c" />
+    <ClCompile Include="src\GUI.c" />
+    <ClCompile Include="src\Hex2Bin.c" />
+    <ClCompile Include="src\http_handler.c" />
+    <ClCompile Include="src\initpos.c" />
+    <ClCompile Include="src\lng.c" />
+    <ClCompile Include="src\Logger.c" />
+    <ClCompile Include="src\main.c" />
+    <ClCompile Include="src\manage.c" />
+    <ClCompile Include="src\mlogo.c" />
+    <ClCompile Include="src\MultiApp.c" />
+    <ClCompile Include="src\nibssConfiguration.c" />
+    <ClCompile Include="src\nibssTransaction.c" />
+    <ClCompile Include="src\notification.c" />
+    <ClCompile Include="src\pack8583.c" />
+    <ClCompile Include="src\parson.c" />
+    <ClCompile Include="src\parsonHelper.c" />
+    <ClCompile Include="src\password.c" />
+    <ClCompile Include="src\print.c" />
+    <ClCompile Include="src\printHelper.c" />
+    <ClCompile Include="src\ProcTrans.c" />
+    <ClCompile Include="src\transaction.c" />
+    <ClCompile Include="src\records.c" />
+    <ClCompile Include="src\router.c" />
+    <ClCompile Include="src\services.c" />
+    <ClCompile Include="src\setup.c" />
+    <ClCompile Include="src\sha256.c" />
+    <ClCompile Include="src\st8583.c" />
+    <ClCompile Include="src\SxxCom.c" />
+    <ClCompile Include="src\SxxComSSL.c" />
+    <ClCompile Include="src\terminalMgt.c" />
+    <ClCompile Include="src\termSetup.c" />
+    <ClCompile Include="src\xCrypto.c" />
+    <ClCompile Include="src\xIsoUtils.c" />
+    <ClCompile Include="src\xTime.c" />
+    <ClCompile Include="src\xui.c" />
+    <ClCompile Include="src\util.c" />
+    <ClCompile Include="src\utils.c" />
+    <ClCompile Include="src\xCommon.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="src\appLib.h" />
+    <ClInclude Include="src\arabic_farsi_api.h" />
+    <ClInclude Include="src\Bin2Hex.h" />
+    <ClInclude Include="src\bluetooth_MIPS.h" />
+    <ClInclude Include="src\checkopt.h" />
+    <ClInclude Include="src\CLEntryApi.h" />
+    <ClInclude Include="src\ClssApi_AE.h" />
+    <ClInclude Include="src\ClssApi_DPAS.h" />
+    <ClInclude Include="src\ClssApi_JCB.h" />
+    <ClInclude Include="src\ClssApi_MC.h" />
+    <ClInclude Include="src\ClssApi_PBOC.h" />
+    <ClInclude Include="src\ClssApi_PURE.h" />
+    <ClInclude Include="src\ClssApi_Wave.h" />
+    <ClInclude Include="src\ClssProc.h" />
+    <ClInclude Include="src\CL_common.h" />
+    <ClInclude Include="src\commlib.h" />
+    <ClInclude Include="src\commproc.h" />
+    <ClInclude Include="src\converters.h" />
+    <ClInclude Include="src\cpinpad.h" />
+    <ClInclude Include="src\cryptlib.h" />
+    <ClInclude Include="src\debug.h" />
+    <ClInclude Include="src\Des.h" />
+    <ClInclude Include="src\Device.h" />
+    <ClInclude Include="src\dl_base.h" />
+    <ClInclude Include="src\dl_err.h" />
+    <ClInclude Include="src\dl_iso8583.h" />
+    <ClInclude Include="src\dl_iso8583_common.h" />
+    <ClInclude Include="src\dl_iso8583_defs_1987.h" />
+    <ClInclude Include="src\dl_iso8583_defs_1993.h" />
+    <ClInclude Include="src\dl_iso8583_fields.h" />
+    <ClInclude Include="src\dl_mem.h" />
+    <ClInclude Include="src\dl_output.h" />
+    <ClInclude Include="src\dl_str.h" />
+    <ClInclude Include="src\dl_time.h" />
+    <ClInclude Include="src\dl_timer.h" />
+    <ClInclude Include="src\EmvIIApi.h" />
+    <ClInclude Include="src\emvlib.h" />
+    <ClInclude Include="src\emvproc.h" />
+    <ClInclude Include="src\emvtest.h" />
+    <ClInclude Include="src\emv_handler.h" />
+    <ClInclude Include="src\fileoper.h" />
+    <ClInclude Include="src\file_handler.h" />
+    <ClInclude Include="src\global.h" />
+    <ClInclude Include="src\GUI.h" />
+    <ClInclude Include="src\Hex2Bin.h" />
+    <ClInclude Include="src\HttpApi.h" />
+    <ClInclude Include="src\http_handler.h" />
+    <ClInclude Include="src\initpos.h" />
+    <ClInclude Include="src\L2Api_PUB.h" />
+    <ClInclude Include="src\L2_Device.h" />
+    <ClInclude Include="src\lng.h" />
+    <ClInclude Include="src\Logger.h" />
+    <ClInclude Include="src\manage.h" />
+    <ClInclude Include="src\mlogo.h" />
+    <ClInclude Include="src\MultiApp.h" />
+    <ClInclude Include="src\openssl\aes.h" />
+    <ClInclude Include="src\openssl\asn1.h" />
+    <ClInclude Include="src\openssl\asn1t.h" />
+    <ClInclude Include="src\openssl\asn1_mac.h" />
+    <ClInclude Include="src\openssl\bio.h" />
+    <ClInclude Include="src\openssl\blowfish.h" />
+    <ClInclude Include="src\openssl\bn.h" />
+    <ClInclude Include="src\openssl\buffer.h" />
+    <ClInclude Include="src\openssl\camellia.h" />
+    <ClInclude Include="src\openssl\cast.h" />
+    <ClInclude Include="src\openssl\cmac.h" />
+    <ClInclude Include="src\openssl\cms.h" />
+    <ClInclude Include="src\openssl\comp.h" />
+    <ClInclude Include="src\openssl\conf.h" />
+    <ClInclude Include="src\openssl\conf_api.h" />
+    <ClInclude Include="src\openssl\crypto.h" />
+    <ClInclude Include="src\openssl\des.h" />
+    <ClInclude Include="src\openssl\des_old.h" />
+    <ClInclude Include="src\openssl\dh.h" />
+    <ClInclude Include="src\openssl\dsa.h" />
+    <ClInclude Include="src\openssl\dso.h" />
+    <ClInclude Include="src\openssl\dtls1.h" />
+    <ClInclude Include="src\openssl\ebcdic.h" />
+    <ClInclude Include="src\openssl\ec.h" />
+    <ClInclude Include="src\openssl\ecdh.h" />
+    <ClInclude Include="src\openssl\ecdsa.h" />
+    <ClInclude Include="src\openssl\engine.h" />
+    <ClInclude Include="src\openssl\err.h" />
+    <ClInclude Include="src\openssl\evp.h" />
+    <ClInclude Include="src\openssl\e_os.h" />
+    <ClInclude Include="src\openssl\e_os2.h" />
+    <ClInclude Include="src\openssl\hmac.h" />
+    <ClInclude Include="src\openssl\idea.h" />
+    <ClInclude Include="src\openssl\krb5_asn.h" />
+    <ClInclude Include="src\openssl\kssl.h" />
+    <ClInclude Include="src\openssl\lhash.h" />
+    <ClInclude Include="src\openssl\md2.h" />
+    <ClInclude Include="src\openssl\md32_common.h" />
+    <ClInclude Include="src\openssl\md4.h" />
+    <ClInclude Include="src\openssl\md5.h" />
+    <ClInclude Include="src\openssl\mdc2.h" />
+    <ClInclude Include="src\openssl\modes.h" />
+    <ClInclude Include="src\openssl\objects.h" />
+    <ClInclude Include="src\openssl\obj_mac.h" />
+    <ClInclude Include="src\openssl\ocsp.h" />
+    <ClInclude Include="src\openssl\opensslconf.h" />
+    <ClInclude Include="src\openssl\opensslv.h" />
+    <ClInclude Include="src\openssl\ossl_typ.h" />
+    <ClInclude Include="src\openssl\pem.h" />
+    <ClInclude Include="src\openssl\pem2.h" />
+    <ClInclude Include="src\openssl\pkcs12.h" />
+    <ClInclude Include="src\openssl\pkcs7.h" />
+    <ClInclude Include="src\openssl\pqueue.h" />
+    <ClInclude Include="src\openssl\rand.h" />
+    <ClInclude Include="src\openssl\rc2.h" />
+    <ClInclude Include="src\openssl\rc4.h" />
+    <ClInclude Include="src\openssl\rc5.h" />
+    <ClInclude Include="src\openssl\ripemd.h" />
+    <ClInclude Include="src\openssl\rsa.h" />
+    <ClInclude Include="src\openssl\safestack.h" />
+    <ClInclude Include="src\openssl\seed.h" />
+    <ClInclude Include="src\openssl\sha.h" />
+    <ClInclude Include="src\openssl\sm.h" />
+    <ClInclude Include="src\openssl\sm2.h" />
+    <ClInclude Include="src\openssl\sm3.h" />
+    <ClInclude Include="src\openssl\sm4.h" />
+    <ClInclude Include="src\openssl\srp.h" />
+    <ClInclude Include="src\openssl\srtp.h" />
+    <ClInclude Include="src\openssl\ssl.h" />
+    <ClInclude Include="src\openssl\ssl2.h" />
+    <ClInclude Include="src\openssl\ssl23.h" />
+    <ClInclude Include="src\openssl\ssl3.h" />
+    <ClInclude Include="src\openssl\stack.h" />
+    <ClInclude Include="src\openssl\symhacks.h" />
+    <ClInclude Include="src\openssl\tls1.h" />
+    <ClInclude Include="src\openssl\ts.h" />
+    <ClInclude Include="src\openssl\txt_db.h" />
+    <ClInclude Include="src\openssl\ui.h" />
+    <ClInclude Include="src\openssl\ui_compat.h" />
+    <ClInclude Include="src\openssl\whrlpool.h" />
+    <ClInclude Include="src\openssl\x509.h" />
+    <ClInclude Include="src\openssl\x509v3.h" />
+    <ClInclude Include="src\openssl\x509_vfy.h" />
+    <ClInclude Include="src\pack8583.h" />
+    <ClInclude Include="src\parson.h" />
+    <ClInclude Include="src\parsonHelper.h" />
+    <ClInclude Include="src\password.h" />
+    <ClInclude Include="src\PEDPINPAD.h" />
+    <ClInclude Include="src\print.h" />
+    <ClInclude Include="src\printHelper.h" />
+    <ClInclude Include="src\ProcTrans.h" />
+    <ClInclude Include="src\records.h" />
+    <ClInclude Include="src\router.h" />
+    <ClInclude Include="src\setup.h" />
+    <ClInclude Include="src\sha256.h" />
+    <ClInclude Include="src\sslapi.h" />
+    <ClInclude Include="src\st8583.h" />
+    <ClInclude Include="src\stdbool.h" />
+    <ClInclude Include="src\stdint.h" />
+    <ClInclude Include="src\SxxCom.h" />
+    <ClInclude Include="src\SxxComSSL.h" />
+    <ClInclude Include="src\terminalMgt.h" />
+    <ClInclude Include="src\tranproc.h" />
+    <ClInclude Include="src\WlExt.h" />
+    <ClInclude Include="src\xTime.h" />
+    <ClInclude Include="src\xui.h" />
+    <ClInclude Include="src\util.h" />
+    <ClInclude Include="src\utils.h" />
+    <ClInclude Include="src\xCommon.h" />
+    <ClInclude Include="src\xDefs.h" />
+    <ClInclude Include="src\xIsoDef.h" />
+    <ClInclude Include="src\xMenu.h" />
+    <ClInclude Include="src\xPrompt.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="lib\libClAE_v203.lib" />
+    <Library Include="lib\PaxCrypto.lib" />
+    <Library Include="lib\PaxSSL.lib">
+      <FileType>Document</FileType>
+    </Library>
+    <Library Include="lib\VC_DEVICE_LIB_v608_01.lib" />
+    <Library Include="lib\VC_DPAS_LIB_v151_01.lib" />
+    <Library Include="lib\VC_EMV_LIB_v653.lib" />
+    <Library Include="lib\VC_ENTRY_LIB_v553_02.lib" />
+    <Library Include="lib\VC_JCB_LIB_v150.lib" />
+    <Library Include="lib\VC_MC_LIB_v553.lib" />
+    <Library Include="lib\VC_PUBLIC_LIB_v108.lib" />
+    <Library Include="lib\VC_PURE_LIB_v102.lib" />
+    <Library Include="lib\VC_QPBOC_LIB_v351.lib" />
+    <Library Include="lib\VC_WAVE_LIB_v353_01.lib" />
+    <Library Include="lib\win_http.lib" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{817bc2bc-faed-4238-a0a9-63bda08740db}</ProjectGuid>
+    <Keyword>MFCProj</Keyword>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\Debug\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <EmbedManifest Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</EmbedManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(FrameworkSDKDir)\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(FrameworkSDKDir)\include;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <TypeLibraryName>.\Debug/XpressPOS.tlb</TypeLibraryName>
+      <HeaderFileName>
+      </HeaderFileName>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>C:\PaxPayPro2017\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <IgnoreStandardIncludePath>true</IgnoreStandardIncludePath>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeaderOutputFile>.\Debug/XpressPOS.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\Debug/</AssemblerListingLocation>
+      <ObjectFileName>.\Debug/</ObjectFileName>
+      <ProgramDataBaseFileName>.\Debug/</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0804</Culture>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>payprocore2017.lib;legacy_stdio_definitions.lib;EntryVS2010.lib;Ws2_32.lib;PaxSSL.lib;PaxCrypto.lib;win_http.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>.\Debug/XpressPOS.exe</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>C:\PaxPayPro2017\LIB;m;C:\PaxPayPro2017\myapp\XpressPOS\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>.\Debug/XpressPOS.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+      <IgnoreSpecificDefaultLibraries>libc.lib;libcd.lib;Libcmtd.lib;</IgnoreSpecificDefaultLibraries>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+    </Link>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\Debug/XpressPOS.bsc</OutputFile>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

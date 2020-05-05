@@ -1,0 +1,781 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{d47d52e6-d19b-406a-afc9-bc7700ed4e73}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{1e6cca7d-0c18-432d-9866-d1b6b8c0693f}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Source Files\pax">
+      <UniqueIdentifier>{c066a89d-9561-4b69-95c2-c86171fe9981}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="paxlib">
+      <UniqueIdentifier>{dc7e816c-7f6d-42bc-8837-c6a943af98e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\pax">
+      <UniqueIdentifier>{d2d2dda6-2a69-49da-8b18-6868f17723c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\openssl">
+      <UniqueIdentifier>{a55ff079-761e-41f8-9059-e146544e34ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dl_iso8583">
+      <UniqueIdentifier>{359c64aa-2cd2-4b8c-9b82-955d2b1d5aa0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\appLib.c">
+      <Filter>Source Files\pax</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BmpToPrnLogo.c">
+      <Filter>Source Files\pax</Filter>
+    </ClCompile>
+    <ClCompile Include="src\checkopt.c">
+      <Filter>Source Files\pax</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ClssProc.c">
+      <Filter>Source Files\pax</Filter>
+    </ClCompile>
+    <ClCompile Include="src\commlib.c">
+      <Filter>Source Files\pax</Filter>
+    </ClCompile>
+    <ClCompile Include="src\commproc.c">
+      <Filter>Source Files\pax</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cpinpad.c">
+      <Filter>Source Files\pax</Filter>
+    </ClCompile>
+    <ClCompile Include="src\debug.c">
+      <Filter>Source Files\pax</Filter>
+    </ClCompile>
+    <ClCompile Include="src\emvproc.c">
+      <Filter>Source Files\pax</Filter>
+    </ClCompile>
+    <ClCompile Include="src\emvtest.c">
+      <Filter>Source Files\pax</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fileoper.c">
+      <Filter>Source Files\pax</Filter>
+    </ClCompile>
+    <ClCompile Include="src\global.c">
+      <Filter>Source Files\pax</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GUI.c">
+      <Filter>Source Files\pax</Filter>
+    </ClCompile>
+    <ClCompile Include="src\initpos.c">
+      <Filter>Source Files\pax</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lng.c">
+      <Filter>Source Files\pax</Filter>
+    </ClCompile>
+    <ClCompile Include="src\manage.c">
+      <Filter>Source Files\pax</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mlogo.c">
+      <Filter>Source Files\pax</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MultiApp.c">
+      <Filter>Source Files\pax</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pack8583.c">
+      <Filter>Source Files\pax</Filter>
+    </ClCompile>
+    <ClCompile Include="src\password.c">
+      <Filter>Source Files\pax</Filter>
+    </ClCompile>
+    <ClCompile Include="src\print.c">
+      <Filter>Source Files\pax</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ProcTrans.c">
+      <Filter>Source Files\pax</Filter>
+    </ClCompile>
+    <ClCompile Include="src\setup.c">
+      <Filter>Source Files\pax</Filter>
+    </ClCompile>
+    <ClCompile Include="src\st8583.c">
+      <Filter>Source Files\pax</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SxxCom.c">
+      <Filter>Source Files\pax</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util.c">
+      <Filter>Source Files\pax</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Logger.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xCommon.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\router.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\terminalMgt.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\emv_handler.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\termSetup.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xui.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\services.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\http_handler.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SxxComSSL.c">
+      <Filter>Source Files\pax</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bin2Hex.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Hex2Bin.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dl_iso8583.c">
+      <Filter>dl_iso8583</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dl_iso8583_common.c">
+      <Filter>dl_iso8583</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dl_iso8583_defs_1987.c">
+      <Filter>dl_iso8583</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dl_iso8583_defs_1993.c">
+      <Filter>dl_iso8583</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dl_iso8583_fields.c">
+      <Filter>dl_iso8583</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dl_mem.c">
+      <Filter>dl_iso8583</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dl_output.c">
+      <Filter>dl_iso8583</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dl_str.c">
+      <Filter>dl_iso8583</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dl_time.c">
+      <Filter>dl_iso8583</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dl_timer.c">
+      <Filter>dl_iso8583</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nibssConfiguration.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xIsoUtils.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xTime.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\converters.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Des.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sha256.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xCrypto.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\file_handler.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\parson.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\parsonHelper.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nibssTransaction.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\printHelper.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\notification.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\records.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\transaction.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\emvlib.c">
+      <Filter>Source Files\pax</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Logger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\appLib.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\arabic_farsi_api.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\bluetooth_MIPS.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\checkopt.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CL_common.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CLEntryApi.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ClssApi_AE.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ClssApi_DPAS.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ClssApi_JCB.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ClssApi_MC.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ClssApi_PBOC.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ClssApi_Wave.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ClssProc.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\commlib.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\commproc.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cpinpad.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\debug.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Device.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\emvlib.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\emvproc.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\emvtest.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fileoper.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\global.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GUI.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\initpos.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lng.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\manage.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mlogo.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MultiApp.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pack8583.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\password.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PEDPINPAD.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\print.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ProcTrans.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\setup.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sslapi.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\st8583.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SxxCom.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tranproc.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xCommon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xDefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xMenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xPrompt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\stdbool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\router.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\terminalMgt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xIsoDef.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\stdint.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HttpApi.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cryptlib.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\sha.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\aes.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\asn1.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\asn1_mac.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\asn1t.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\bio.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\blowfish.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\bn.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\buffer.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\camellia.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\cast.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\cmac.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\cms.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\comp.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\conf.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\conf_api.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\crypto.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\des.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\des_old.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\dh.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\dsa.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\dso.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\dtls1.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\e_os.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\e_os2.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\ebcdic.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\ec.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\ecdh.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\ecdsa.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\emv_handler.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\engine.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\err.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\evp.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\hmac.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\idea.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\krb5_asn.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\kssl.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\lhash.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\md2.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\md4.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\md5.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\md32_common.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\mdc2.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\modes.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\obj_mac.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\objects.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\ocsp.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\opensslconf.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\opensslv.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\ossl_typ.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\pem.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\pem2.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\pkcs7.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\pkcs12.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\pqueue.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\rand.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\rc2.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\rc4.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\rc5.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\ripemd.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\rsa.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\safestack.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\seed.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\sm.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\sm2.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\sm3.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\sm4.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\srp.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\srtp.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\ssl.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\ssl2.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\ssl3.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\ssl23.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\stack.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\symhacks.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\tls1.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\ts.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\txt_db.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\ui_compat.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\ui.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\whrlpool.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\x509.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\x509_vfy.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\openssl\x509v3.h">
+      <Filter>Header Files\openssl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\http_handler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SxxComSSL.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dl_base.h">
+      <Filter>dl_iso8583</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dl_err.h">
+      <Filter>dl_iso8583</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dl_iso8583.h">
+      <Filter>dl_iso8583</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dl_iso8583_common.h">
+      <Filter>dl_iso8583</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dl_iso8583_defs_1987.h">
+      <Filter>dl_iso8583</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dl_iso8583_defs_1993.h">
+      <Filter>dl_iso8583</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dl_iso8583_fields.h">
+      <Filter>dl_iso8583</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dl_mem.h">
+      <Filter>dl_iso8583</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dl_output.h">
+      <Filter>dl_iso8583</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dl_str.h">
+      <Filter>dl_iso8583</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dl_time.h">
+      <Filter>dl_iso8583</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dl_timer.h">
+      <Filter>dl_iso8583</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hex2Bin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Bin2Hex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xTime.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sha256.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Des.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\converters.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\file_handler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\parson.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\parsonHelper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\WlExt.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\records.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\printHelper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ClssApi_PURE.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EmvIIApi.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\L2_Device.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\L2Api_PUB.h">
+      <Filter>Header Files\pax</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="lib\PaxCrypto.lib">
+      <Filter>paxlib</Filter>
+    </Library>
+    <Library Include="lib\win_http.lib">
+      <Filter>paxlib</Filter>
+    </Library>
+    <Library Include="lib\PaxSSL.lib">
+      <Filter>paxlib</Filter>
+    </Library>
+    <Library Include="lib\libClAE_v203.lib">
+      <Filter>paxlib</Filter>
+    </Library>
+    <Library Include="lib\VC_DEVICE_LIB_v608_01.lib">
+      <Filter>paxlib</Filter>
+    </Library>
+    <Library Include="lib\VC_DPAS_LIB_v151_01.lib">
+      <Filter>paxlib</Filter>
+    </Library>
+    <Library Include="lib\VC_EMV_LIB_v653.lib">
+      <Filter>paxlib</Filter>
+    </Library>
+    <Library Include="lib\VC_ENTRY_LIB_v553_02.lib">
+      <Filter>paxlib</Filter>
+    </Library>
+    <Library Include="lib\VC_JCB_LIB_v150.lib">
+      <Filter>paxlib</Filter>
+    </Library>
+    <Library Include="lib\VC_MC_LIB_v553.lib">
+      <Filter>paxlib</Filter>
+    </Library>
+    <Library Include="lib\VC_PUBLIC_LIB_v108.lib">
+      <Filter>paxlib</Filter>
+    </Library>
+    <Library Include="lib\VC_PURE_LIB_v102.lib">
+      <Filter>paxlib</Filter>
+    </Library>
+    <Library Include="lib\VC_QPBOC_LIB_v351.lib">
+      <Filter>paxlib</Filter>
+    </Library>
+    <Library Include="lib\VC_WAVE_LIB_v353_01.lib">
+      <Filter>paxlib</Filter>
+    </Library>
+  </ItemGroup>
+</Project>
