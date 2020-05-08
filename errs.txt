@@ -397,11 +397,11 @@ In file included from C:\PaxPayPro2017\myapp\XpressPOS\src\/xDefs.h:11,
                  from C:\PaxPayPro2017\myapp\XpressPOS\src\emvproc.c:2:
 C:/PAXPAY~2/include/stddef.h:478:22: warning: no newline at end of file
 C:\PaxPayPro2017\myapp\XpressPOS\src\emvproc.c: In function 'cEMVGetHolderPwd':
-C:\PaxPayPro2017\myapp\XpressPOS\src\emvproc.c:455: warning: large integer implicitly truncated to unsigned type
+C:\PaxPayPro2017\myapp\XpressPOS\src\emvproc.c:456: warning: large integer implicitly truncated to unsigned type
 C:\PaxPayPro2017\myapp\XpressPOS\src\emvproc.c: In function 'FinishEmvTran':
-C:\PaxPayPro2017\myapp\XpressPOS\src\emvproc.c:659: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
+C:\PaxPayPro2017\myapp\XpressPOS\src\emvproc.c:660: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
 C:\PaxPayPro2017\myapp\XpressPOS\src\emvproc.c: In function 'FinishSwipeTran':
-C:\PaxPayPro2017\myapp\XpressPOS\src\emvproc.c:768: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
+C:\PaxPayPro2017\myapp\XpressPOS\src\emvproc.c:769: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
 In file included from C:\PaxPayPro2017\myapp\XpressPOS\src\/global.h:141,
                  from C:\PaxPayPro2017\myapp\XpressPOS\src\emvtest.c:2:
 C:/PAXPAY~2/include/Stdarg.h:151:22: warning: no newline at end of file
@@ -572,9 +572,9 @@ C:/PAXPAY~2/include/stddef.h:478:22: warning: no newline at end of file
 C:\PaxPayPro2017\myapp\XpressPOS\src\initpos.c: In function 'LoadEdcDefault':
 C:\PaxPayPro2017\myapp\XpressPOS\src\initpos.c:57: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
 C:\PaxPayPro2017\myapp\XpressPOS\src\initpos.c: In function 'NoDownloadInit':
-C:\PaxPayPro2017\myapp\XpressPOS\src\initpos.c:371: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
+C:\PaxPayPro2017\myapp\XpressPOS\src\initpos.c:374: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
 C:\PaxPayPro2017\myapp\XpressPOS\src\initpos.c: In function 'InitEdcParam':
-C:\PaxPayPro2017\myapp\XpressPOS\src\initpos.c:1453: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
+C:\PaxPayPro2017\myapp\XpressPOS\src\initpos.c:1456: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
 In file included from C:/PAXPAY~2/include/stdlib.h:10,
                  from C:/PAXPAY~2/include/posapi.h:10,
                  from C:\PaxPayPro2017\myapp\XpressPOS\src\lng.c:79:
@@ -627,12 +627,12 @@ C:\PaxPayPro2017\myapp\XpressPOS\src\main.c:12:1: warning: "TIMER_CALLHOME" rede
 In file included from C:\PaxPayPro2017\myapp\XpressPOS\src\main.c:2:
 C:\PaxPayPro2017\myapp\XpressPOS\src\/global.h:969:1: warning: this is the location of the previous definition
 C:\PaxPayPro2017\myapp\XpressPOS\src\main.c: In function 'adminMenu':
-C:\PaxPayPro2017\myapp\XpressPOS\src\main.c:166: warning: initialization from incompatible pointer type
+C:\PaxPayPro2017\myapp\XpressPOS\src\main.c:135: warning: initialization from incompatible pointer type
 C:\PaxPayPro2017\myapp\XpressPOS\src\main.c: In function 'ChkIdleTimer':
-C:\PaxPayPro2017\myapp\XpressPOS\src\main.c:199: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
+C:\PaxPayPro2017\myapp\XpressPOS\src\main.c:168: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
 C:\PaxPayPro2017\myapp\XpressPOS\src\main.c: In function 'initializeApp':
-C:\PaxPayPro2017\myapp\XpressPOS\src\main.c:207: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
-C:\PaxPayPro2017\myapp\XpressPOS\src\main.c:217:15: warning: no newline at end of file
+C:\PaxPayPro2017\myapp\XpressPOS\src\main.c:176: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
+C:\PaxPayPro2017\myapp\XpressPOS\src\main.c:186:15: warning: no newline at end of file
 In file included from C:\PaxPayPro2017\myapp\XpressPOS\src\/global.h:141,
                  from C:\PaxPayPro2017\myapp\XpressPOS\src\manage.c:2:
 C:/PAXPAY~2/include/Stdarg.h:151:22: warning: no newline at end of file
@@ -1018,7 +1018,7 @@ In file included from C:\PaxPayPro2017\myapp\XpressPOS\src\records.c:3:
 C:\PaxPayPro2017\myapp\XpressPOS\src\/utils.h:145:45: warning: no newline at end of file
 C:\PaxPayPro2017\myapp\XpressPOS\src\records.c: In function 'repushTransactions':
 C:\PaxPayPro2017\myapp\XpressPOS\src\records.c:195: warning: passing argument 1 of 'showInfo' discards qualifiers from pointer target type
-C:\PaxPayPro2017\myapp\XpressPOS\src\records.c:486:2: warning: no newline at end of file
+C:\PaxPayPro2017\myapp\XpressPOS\src\records.c:488:2: warning: no newline at end of file
 In file included from C:\PaxPayPro2017\myapp\XpressPOS\src\/global.h:141,
                  from C:\PaxPayPro2017\myapp\XpressPOS\src\router.c:1:
 C:/PAXPAY~2/include/Stdarg.h:151:22: warning: no newline at end of file
@@ -1221,15 +1221,15 @@ C:/PAXPAY~2/include/stddef.h:478:22: warning: no newline at end of file
 C:\PaxPayPro2017\myapp\XpressPOS\src\termSetup.c: In function 'initGUI':
 C:\PaxPayPro2017\myapp\XpressPOS\src\termSetup.c:65: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
 C:\PaxPayPro2017\myapp\XpressPOS\src\termSetup.c: In function 'loadDefaultPosParams':
-C:\PaxPayPro2017\myapp\XpressPOS\src\termSetup.c:121: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
+C:\PaxPayPro2017\myapp\XpressPOS\src\termSetup.c:124: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
 C:\PaxPayPro2017\myapp\XpressPOS\src\termSetup.c: In function 'initializeEMV':
-C:\PaxPayPro2017\myapp\XpressPOS\src\termSetup.c:169: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
+C:\PaxPayPro2017\myapp\XpressPOS\src\termSetup.c:172: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
 C:\PaxPayPro2017\myapp\XpressPOS\src\termSetup.c: In function 'FirstRunProc':
-C:\PaxPayPro2017\myapp\XpressPOS\src\termSetup.c:191: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
+C:\PaxPayPro2017\myapp\XpressPOS\src\termSetup.c:194: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
 C:\PaxPayPro2017\myapp\XpressPOS\src\termSetup.c: In function 'initializeComms':
-C:\PaxPayPro2017\myapp\XpressPOS\src\termSetup.c:245: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
-C:\PaxPayPro2017\myapp\XpressPOS\src\termSetup.c:249: warning: passing argument 1 of 'showNonModalDialog' discards qualifiers from pointer target type
-C:\PaxPayPro2017\myapp\XpressPOS\src\termSetup.c:266:2: warning: no newline at end of file
+C:\PaxPayPro2017\myapp\XpressPOS\src\termSetup.c:248: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
+C:\PaxPayPro2017\myapp\XpressPOS\src\termSetup.c:252: warning: passing argument 1 of 'showNonModalDialog' discards qualifiers from pointer target type
+C:\PaxPayPro2017\myapp\XpressPOS\src\termSetup.c:269:2: warning: no newline at end of file
 In file included from C:\PaxPayPro2017\myapp\XpressPOS\src\/global.h:141,
                  from C:\PaxPayPro2017\myapp\XpressPOS\src\xCrypto.c:9:
 C:/PAXPAY~2/include/Stdarg.h:151:22: warning: no newline at end of file
@@ -1343,18 +1343,18 @@ In file included from C:\PaxPayPro2017\myapp\XpressPOS\src\/xDefs.h:11,
                  from C:\PaxPayPro2017\myapp\XpressPOS\src\util.c:2:
 C:/PAXPAY~2/include/stddef.h:478:22: warning: no newline at end of file
 C:\PaxPayPro2017\myapp\XpressPOS\src\util.c: In function 'FunctionInput':
-C:\PaxPayPro2017\myapp\XpressPOS\src\util.c:404: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
+C:\PaxPayPro2017\myapp\XpressPOS\src\util.c:406: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
 C:\PaxPayPro2017\myapp\XpressPOS\src\util.c: In function 'ReadMagCardInfo':
-C:\PaxPayPro2017\myapp\XpressPOS\src\util.c:541: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
+C:\PaxPayPro2017\myapp\XpressPOS\src\util.c:543: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
 C:\PaxPayPro2017\myapp\XpressPOS\src\util.c: In function 'ValidCardExpiry':
-C:\PaxPayPro2017\myapp\XpressPOS\src\util.c:694: warning: large integer implicitly truncated to unsigned type
+C:\PaxPayPro2017\myapp\XpressPOS\src\util.c:696: warning: large integer implicitly truncated to unsigned type
 C:\PaxPayPro2017\myapp\XpressPOS\src\util.c: In function 'InsertCardProc':
-C:\PaxPayPro2017\myapp\XpressPOS\src\util.c:1064: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
+C:\PaxPayPro2017\myapp\XpressPOS\src\util.c:1066: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
 C:\PaxPayPro2017\myapp\XpressPOS\src\util.c: In function 'GetAddlPrompt':
-C:\PaxPayPro2017\myapp\XpressPOS\src\util.c:2394: warning: large integer implicitly truncated to unsigned type
-C:\PaxPayPro2017\myapp\XpressPOS\src\util.c:2394: warning: large integer implicitly truncated to unsigned type
+C:\PaxPayPro2017\myapp\XpressPOS\src\util.c:2396: warning: large integer implicitly truncated to unsigned type
+C:\PaxPayPro2017\myapp\XpressPOS\src\util.c:2396: warning: large integer implicitly truncated to unsigned type
 C:\PaxPayPro2017\myapp\XpressPOS\src\util.c: In function 'absolute':
-C:\PaxPayPro2017\myapp\XpressPOS\src\util.c:3818: warning: integer constant is too large for 'long' type
+C:\PaxPayPro2017\myapp\XpressPOS\src\util.c:3820: warning: integer constant is too large for 'long' type
 In file included from C:\PaxPayPro2017\myapp\XpressPOS\src\/global.h:141,
                  from C:\PaxPayPro2017\myapp\XpressPOS\src\/utils.h:2,
                  from C:\PaxPayPro2017\myapp\XpressPOS\src\utils.c:1:
@@ -1382,7 +1382,7 @@ In file included from C:\PaxPayPro2017\myapp\XpressPOS\src\utils.c:1:
 C:\PaxPayPro2017\myapp\XpressPOS\src\/utils.h:145:45: warning: no newline at end of file
 C:\PaxPayPro2017\myapp\XpressPOS\src\utils.c: In function 'tokenize':
 C:\PaxPayPro2017\myapp\XpressPOS\src\utils.c:31: warning: incompatible implicit declaration of built-in function 'snprintf'
-C:\PaxPayPro2017\myapp\XpressPOS\src\utils.c:544:2: warning: no newline at end of file
+C:\PaxPayPro2017\myapp\XpressPOS\src\utils.c:536:2: warning: no newline at end of file
 In file included from C:\PaxPayPro2017\myapp\XpressPOS\src\/global.h:141,
                  from C:\PaxPayPro2017\myapp\XpressPOS\src\xCommon.c:1:
 C:/PAXPAY~2/include/Stdarg.h:151:22: warning: no newline at end of file
@@ -1402,3 +1402,12 @@ In file included from C:\PaxPayPro2017\myapp\XpressPOS\src\/xDefs.h:11,
 C:/PAXPAY~2/include/stddef.h:478:22: warning: no newline at end of file
 C:\PaxPayPro2017\myapp\XpressPOS\src\xCommon.c: In function 'getNumberPrompt':
 C:\PaxPayPro2017\myapp\XpressPOS\src\xCommon.c:114: warning: assignment discards qualifiers from pointer target type
+In file included from C:/PAXPAY~2/include/stdio.h:30,
+                 from C:\PaxPayPro2017\myapp\XpressPOS\src\twister.c:48:
+C:/PAXPAY~2/include/stdarg.h:151:22: warning: no newline at end of file
+In file included from C:/PAXPAY~2/include/stdlib.h:10,
+                 from C:\PaxPayPro2017\myapp\XpressPOS\src\twister.c:49:
+C:/PAXPAY~2/include/stddef.h:478:22: warning: no newline at end of file
+C:\PaxPayPro2017\myapp\XpressPOS\src\twister.c: In function 'generateSequence':
+C:\PaxPayPro2017\myapp\XpressPOS\src\twister.c:186: warning: incompatible implicit declaration of built-in function 'memset'
+C:\PaxPayPro2017\myapp\XpressPOS\src\twister.c:202:2: warning: no newline at end of file

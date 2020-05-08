@@ -165,8 +165,8 @@ int reprintAll() {
 
 int repushTransactions(char silent) {
 	if (glPosParams.tranRecordCount <= 0) {
-		showErrorDialog("No transaction found", USER_OPER_TIMEOUT);
-		return -1;
+		//showErrorDialog("No transaction found", USER_OPER_TIMEOUT);
+		return 0;
 	}
 
 	if (!silent) {
@@ -182,7 +182,7 @@ int repushTransactions(char silent) {
 			count++;
 			do {
 				if (!silent) {
-					DispMessage("Repushing transaction");
+					DispMessage("Re-pushing notification");
 				}
 				
 			} while (sendCardNotification(&trans) != 0);
@@ -192,8 +192,10 @@ int repushTransactions(char silent) {
 	}
 
 	if (!silent) {
-		showInfo(GetCurrTitle(), USER_OPER_TIMEOUT, 1, "All transactions pushed");
+		showInfo(GetCurrTitle(), 10, 1, "All notifications pushed");
 	}
+
+	return 0;
 }
 
 static int tranLogToReportData(TRAN_LOG* trans, SummaryReport* summary, int indx) {

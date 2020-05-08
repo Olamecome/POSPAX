@@ -46,40 +46,6 @@ const APPINFO AppInfo =
 
 /******************>>>>>>>>>>>>>Implementations<<<<<<<<<<<<*****************/
 
-extern int des3EcbEncrypt(uchar key[16], uchar* srcBytes, int inlen, uchar* destBytes);
-
-static void testApi() {
-	char* url = "https://54.191.157.159/Tellerpoint/rpc/ptsp/terminal-activation/stage/5C099003";
-
-	MemoryStruct chunk = { 0 };
-	const char* headers[2] = { "Content-Type: application/json",
-		"Accept: application/json" };
-
-	if (sendHttpRequest(HTTP_POST, url, NULL, 0, headers, 2, &chunk) == 0) {
-		logd(("Success"));
-		logDirect("Response", chunk.memory);
-	}
-
-	if (chunk.memory) {
-		free(chunk.memory);
-	}
-	
-}
-
-static void testDecrypt() {
-	char* szKey = "7BAED5D98D1FD61769D2FD637BAED5D9";
-	char* data = "123456FF";
-
-	uchar key[16] = { 0 };
-	uchar outData[8] = { 0 };
-
-	PubAsc2Bcd(szKey, strlen(szKey), key);
-
-	des3EcbEncrypt(key, data, strlen(data), outData);
-	
-	logHexString("Decrypted data: ", outData, lengthOf(outData));
-}
-
 int event_main(ST_EVENT_MSG *msg)
 {
 	SystemInit();
@@ -105,7 +71,8 @@ int main(void)
 	int selItem = 0;
 	while (1)
 	{
-		if (0 > (res = showMainMenu(&selItem))) {
+		if (0 == (res = showMainMenu(&selItem))) {
+			// ensure that after completing a route processing, it can't immediately go to call home
 			continue;
 		}
 
@@ -123,7 +90,9 @@ int main(void)
 		if (!res) {
 			logTrace("Calling home");
 			doNibssCallHome();
-			resetCallHomeTimer(); //reset timer
+			DispMessage("Checking notifications");
+			repushTransactions(TRUE);
+			resetCallHomeTimer();
 		}
 
 
@@ -138,10 +107,9 @@ int showMainMenu(int* selItem) {
 	GUI_MENU menu;
 	GUI_MENUITEM menuItems[] = {
 		{ "Purchase", PURCHASE, true, NULL },
-		{ "Pre-Authorisation", POS_PRE_AUTHORIZATION, true, NULL },
-		{ "Sales Completion", POS_PRE_AUTH_COMPLETION, true, NULL },
+		//{ "Pre-Authorisation", POS_PRE_AUTHORIZATION, true, NULL },
+		//{ "Sales Completion", POS_PRE_AUTH_COMPLETION, true, NULL },
 		{ "Services", REPORTING, true, NULL },
-		//{ "Test API", 0, true, testDecrypt },
 		{ "\0", -1, false, NULL }
 	};
 
@@ -151,7 +119,8 @@ int showMainMenu(int* selItem) {
 	if (GUI_OK != res) {
 		return res;
 	}
-	return route(*selItem);
+	route(*selItem);
+	return 0;
 }
 
 void  adminMenu(void) {

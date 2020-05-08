@@ -30,7 +30,7 @@ extern int rollbackNibssTransaction(int reason);
 #define DE55_COND_SET		0x30	// 根据条件存在
 /********************** Internal structure declaration *********************/
 // callback function for GetTLVItem() to save TLV value
-typedef void (*SaveTLVData)(uint uiTag, const uchar *psData, int iDataLen);
+typedef void(*SaveTLVData)(uint uiTag, const uchar *psData, int iDataLen);
 
 typedef struct _tagDE55Tag
 {
@@ -120,16 +120,17 @@ static DE55Tag sgAmexTagList[] =
 // tags data in field 55 of transaction sale/(pre-)authorization (TLV format)
 static DE55Tag sgStdEmvTagList[] =
 {
-	{0x5F2A, DE55_MUST_SET, 0},
-	{0x5F34, DE55_MUST_SET, 1}, // notice it's limited to L=1
 	{0x82,   DE55_MUST_SET, 0},
 	{0x84,   DE55_MUST_SET, 0},
 	{0x95,   DE55_MUST_SET, 0},
 	{0x9A,   DE55_MUST_SET, 0},
 	{0x9C,   DE55_MUST_SET, 0},
+	{0x5F2A, DE55_MUST_SET, 0},
+	{0x5F30, DE55_MUST_SET, 0},
+	{0x5F34, DE55_MUST_SET, 1}, // notice it's limited to L=1
 	{0x9F02, DE55_MUST_SET, 0},
 	{0x9F03, DE55_MUST_SET, 0},
-	{0x9F06, DE55_MUST_SET, 0 },
+	{0x9F06, DE55_MUST_SET, 0},
 	{0x9F09, DE55_MUST_SET, 0},
 	{0x9F10, DE55_MUST_SET, 0},
 	{0x9F1A, DE55_MUST_SET, 0},
@@ -188,7 +189,7 @@ void InitTransEMVCfg(void)
 
 	EMVGetParameter(&glEmvParam);
 	glEmvParam.ForceOnline = 0;
-	memcpy(glEmvParam.CountryCode,   glPosParams.currency.sCountryCode, 2);
+	memcpy(glEmvParam.CountryCode, glPosParams.currency.sCountryCode, 2);
 	memcpy(glEmvParam.TransCurrCode, glPosParams.currency.sCurrencyCode, 2);
 	memcpy(glEmvParam.ReferCurrCode, glPosParams.currency.sCurrencyCode, 2);
 	glEmvParam.TransCurrExp = glPosParams.currency.ucDecimal;
@@ -203,11 +204,11 @@ int cEMVWaitAppSel(int TryCnt, EMV_APPLIST List[], int AppNum)
 {
 	int			iRet, iCnt, iAppCnt;
 	GUI_MENU		stAppMenu;
-	GUI_MENUITEM	stAppMenuItem[MAX_APP_NUM+1];
+	GUI_MENUITEM	stAppMenuItem[MAX_APP_NUM + 1];
 	APPLABEL_LIST	stAppList[MAX_APP_NUM];
 	int iSelected = 0;
 
-	if( TryCnt!=0 )
+	if (TryCnt != 0)
 	{
 		unsigned char szBuff[200];
 		sprintf(szBuff, "%s\n%s", _T("NOT ACCEPT"), _T("PLS TRY AGAIN"));
@@ -217,14 +218,14 @@ int cEMVWaitAppSel(int TryCnt, EMV_APPLIST List[], int AppNum)
 
 	EMVGetLabelList(stAppList, &iAppCnt);
 
-	PubASSERT( AppNum<=MAX_APP_NUM );
+	PubASSERT(AppNum <= MAX_APP_NUM);
 	memset(stAppMenuItem, 0, sizeof(stAppMenuItem));
-	for(iCnt=0; iCnt<iAppCnt && iCnt<MAX_APP_NUM; iCnt++)
+	for (iCnt = 0; iCnt < iAppCnt && iCnt < MAX_APP_NUM; iCnt++)
 	{
-		stAppMenuItem[iCnt].bVisible = TRUE;	
+		stAppMenuItem[iCnt].bVisible = TRUE;
 		stAppMenuItem[iCnt].nValue = iCnt;
 		stAppMenuItem[iCnt].vFunc = NULL;
- 		sprintf((char *)stAppMenuItem[iCnt].szText, "%.16s", stAppList[iCnt].aucAppLabel);
+		sprintf((char *)stAppMenuItem[iCnt].szText, "%.16s", stAppList[iCnt].aucAppLabel);
 	}
 	strcpy(stAppMenuItem[iCnt].szText, "");
 
@@ -232,7 +233,7 @@ int cEMVWaitAppSel(int TryCnt, EMV_APPLIST List[], int AppNum)
 	Gui_ClearScr();
 	iSelected = 0;
 	iRet = Gui_ShowMenuList(&stAppMenu, 0, USER_OPER_TIMEOUT, &iSelected);
-	if( iRet != GUI_OK)
+	if (iRet != GUI_OK)
 	{
 		return EMV_USER_CANCEL;
 	}
@@ -248,13 +249,13 @@ int cEMVInputAmount(ulong *AuthAmt, ulong *CashBackAmt)
 	uchar	szTotalAmt[20];
 	uchar   szBuff[32];
 
-	if( glProcInfo.stTranLog.szAmount[0]!=0 )
+	if (glProcInfo.stTranLog.szAmount[0] != 0)
 	{
 		PubAscAdd(glProcInfo.stTranLog.szAmount, glProcInfo.stTranLog.szOtherAmount, 12, szTotalAmt);
 		logTrace("szAmount: %s", glProcInfo.stTranLog.szAmount);
 
 		*AuthAmt = atol((char *)szTotalAmt);
-		if( CashBackAmt!=NULL )
+		if (CashBackAmt != NULL)
 		{
 			*CashBackAmt = 0L;
 		}
@@ -262,23 +263,23 @@ int cEMVInputAmount(ulong *AuthAmt, ulong *CashBackAmt)
 	else
 	{
 		*AuthAmt = 0L;
-		if( CashBackAmt!=NULL )
+		if (CashBackAmt != NULL)
 		{
 			*CashBackAmt = 0L;
 		}
 	}
-	
-	if (glProcInfo.stTranLog.ucTranType ==CASH)
+
+	if (glProcInfo.stTranLog.ucTranType == CASH)
 	{
-		if( CashBackAmt==NULL )
+		if (CashBackAmt == NULL)
 		{
-            if ((EMVReadVerInfo(szBuff)==EMV_OK) && (memcmp(szBuff, "v2", 2)==0))
-            {
-                // For EMV2x, "v28_7" etc. Not for EMV4xx
-			    // Set cash back amount
-			    EMVSetTLVData(0x9F03, (uchar *)"\x00\x00\x00\x00\x00\x00", 6);
-			    EMVSetTLVData(0x9F04, (uchar *)"\x00\x00\x00\x00", 4);
-            }
+			if ((EMVReadVerInfo(szBuff) == EMV_OK) && (memcmp(szBuff, "v2", 2) == 0))
+			{
+				// For EMV2x, "v28_7" etc. Not for EMV4xx
+				// Set cash back amount
+				EMVSetTLVData(0x9F03, (uchar *)"\x00\x00\x00\x00\x00\x00", 6);
+				EMVSetTLVData(0x9F04, (uchar *)"\x00\x00\x00\x00", 4);
+			}
 		}
 	}
 
@@ -294,7 +295,7 @@ int cEMVInputAmount(ulong *AuthAmt, ulong *CashBackAmt)
 // if really unable to, just return -1
 int cEMVUnknowTLVData(ushort iTag, uchar *psDat, int iDataLen)
 {
-	switch( iTag )
+	switch (iTag)
 	{
 		/*
 		'C' = CASH DESBUS
@@ -330,12 +331,12 @@ int cEMVGetHolderPwd(int iTryFlag, int iRemainCnt, uchar *pszPlainPin)
 	uchar	sPinBlock[8];
 
 	// online PIN
-	if( pszPlainPin==NULL )
+	if (pszPlainPin == NULL)
 	{
 		iResult = GetPIN(GETPIN_EMV);
-		if( iResult==0 )
+		if (iResult == 0)
 		{
-			if( glProcInfo.stTranLog.uiEntryMode & MODE_PIN_INPUT )
+			if (glProcInfo.stTranLog.uiEntryMode & MODE_PIN_INPUT)
 			{
 				return EMV_OK;
 			}
@@ -344,7 +345,7 @@ int cEMVGetHolderPwd(int iTryFlag, int iRemainCnt, uchar *pszPlainPin)
 				return EMV_NO_PASSWORD;
 			}
 		}
-		else if( iResult==ERR_USERCANCEL )
+		else if (iResult == ERR_USERCANCEL)
 		{
 			return EMV_USER_CANCEL;
 		}
@@ -356,9 +357,9 @@ int cEMVGetHolderPwd(int iTryFlag, int iRemainCnt, uchar *pszPlainPin)
 
 	// Offline plain/enciphered PIN processing below
 	Gui_ClearScr();
-	if( iRemainCnt==1 )
+	if (iRemainCnt == 1)
 	{
-		Gui_ShowMsgBox(GetCurrTitle(), gl_stTitleAttr,_T("LAST PIN TRY"), gl_stCenterAttr, GUI_BUTTON_NONE, 2, NULL);
+		Gui_ShowMsgBox(GetCurrTitle(), gl_stTitleAttr, _T("LAST PIN TRY"), gl_stCenterAttr, GUI_BUTTON_NONE, 2, NULL);
 	}
 
 	PubAscAdd(glProcInfo.stTranLog.szAmount, glProcInfo.stTranLog.szOtherAmount, 12, szAmount);
@@ -366,9 +367,9 @@ int cEMVGetHolderPwd(int iTryFlag, int iRemainCnt, uchar *pszPlainPin)
 	// Modified by Kim_LinHB 2014-8-11 v1.01.0003
 	Gui_ShowMsgBox(GetCurrTitle(), gl_stTitleAttr, NULL, gl_stCenterAttr, GUI_BUTTON_NONE, 0, NULL);
 
-	if( iTryFlag==0 )
+	if (iTryFlag == 0)
 	{
-	    GetDispAmount(szAmount, szAmount);
+		GetDispAmount(szAmount, szAmount);
 		Gui_DrawText(szAmount, gl_stCenterAttr, 0, 25);
 	}
 	else
@@ -385,7 +386,7 @@ ENTERPIN:
 		// Offline PIN, done by core itself since EMV core V25_T1. Application only needs to display prompt message.
 		// In this mode, cEMVGetHolderPwd() will be called twice. the first time is to display message to user,
 		// then back to kernel and wait PIN. afterwards kernel call this again and inform the process result.
-		if (pszPlainPin[0]==EMV_PED_TIMEOUT)
+		if (pszPlainPin[0] == EMV_PED_TIMEOUT)
 		{
 			// EMV core has processed PIN entry and it's timeout
 			Gui_ClearScr();
@@ -393,7 +394,7 @@ ENTERPIN:
 			Gui_ShowMsgBox(GetCurrTitle(), gl_stTitleAttr, _T("PED ERROR"), gl_stCenterAttr, GUI_BUTTON_CANCEL, 3, NULL);
 			return EMV_TIME_OUT;
 		}
-		else if (pszPlainPin[0]==EMV_PED_WAIT)
+		else if (pszPlainPin[0] == EMV_PED_WAIT)
 		{
 			// API is called too frequently
 			DelayMs(1000);
@@ -404,7 +405,7 @@ ENTERPIN:
 			ScrGotoxy(32, 6);
 			return EMV_OK;
 		}
-		else if (pszPlainPin[0]==EMV_PED_FAIL)
+		else if (pszPlainPin[0] == EMV_PED_FAIL)
 		{
 			// EMV core has processed PIN entry and PED failed.
 			Gui_ClearScr();
@@ -426,7 +427,7 @@ ENTERPIN:
 		App_ConvAmountTran(szAmount, szBuff, 0);
 		// show amount on PINPAD
 		ucRet = PPScrCls();
-		if( ucRet )
+		if (ucRet)
 		{
 			return EMV_NO_PINPAD;
 		}
@@ -435,7 +436,7 @@ ENTERPIN:
 
 		memset(sPinBlock, 0, sizeof(sPinBlock));
 		ucRet = PPEmvGetPwd(4, 12, sPinBlock);
-		switch( ucRet )
+		switch (ucRet)
 		{
 		case 0x00:
 			// PinBlock Format: C L P P P P P/F P/F P/F P/F P/F P/F P/F P/F F F
@@ -452,10 +453,10 @@ ENTERPIN:
 			return EMV_USER_CANCEL;
 
 		case 0x0A:
-			if(!ChkIssuerOption(ISSUER_EN_EMVPIN_BYPASS) && ChkIfAmex())
+			if (!ChkIssuerOption(ISSUER_EN_EMVPIN_BYPASS) && ChkIfAmex())
 			{
 				PPScrCls();
-				PPScrPrint(1,0," NOT PERMITTED");
+				PPScrPrint(1, 0, " NOT PERMITTED");
 				PPBeep();
 
 				Gui_ClearScr();
@@ -472,7 +473,7 @@ ENTERPIN:
 		default:
 			return EMV_NO_PINPAD;
 		}
-	} 
+	}
 	else	// PED_EXT_PCI
 	{
 		// !!!! extern PCI, to be implemented.
@@ -536,7 +537,7 @@ void cEMVAdviceProc(void)
 	等交易处理成功后，应用程序才可以清除冲正标志。
 */
 /* Online processing.
-    steps:
+	steps:
 	(1) Dial. If dial failed, return ONLINE_FAILED
 	(2) Use EMVGetTLVData() to retrieve data from core, pack to ISO8583.
 	(3) Save reversal data and flag, then send request to host
@@ -544,23 +545,23 @@ void cEMVAdviceProc(void)
 	   A. If host approved, copy RspCode,AuthCode,AuthCodeLen or so, and return ONLINE_APPROVE
 	   B. If host denial, copy RspCode or so, return ONLINE_DENIAL
 	   C. If host require voice referral, copy RspCode or so.,return ONLINE_REFER.
-	       Note that if not support, needn't return ONLINE_REFER but directly ONLINE_DENIAL
+		   Note that if not support, needn't return ONLINE_REFER but directly ONLINE_DENIAL
 
 	Reversal flag can only be cleared after all EMV processing, NOT immediately after online.
 */
-int  cEMVOnlineProc(uchar *psRspCode,  uchar *psAuthCode, int *piAuthCodeLen,
-					uchar *psAuthData, int *piAuthDataLen,
-					uchar *psScript,   int *piScriptLen)
+int  cEMVOnlineProc(uchar *psRspCode, uchar *psAuthCode, int *piAuthCodeLen,
+	uchar *psAuthData, int *piAuthDataLen,
+	uchar *psScript, int *piScriptLen)
 {
 	int		iRet, iLength, iRetryPIN;
 	ulong	ulICCDataLen;
 	uchar	*psICCData, *psTemp;
 
 	// initialize output parameters
-	*psRspCode      = 0;
-	*piAuthCodeLen  = 0;
-	*piAuthDataLen  = 0;
-	*piScriptLen    = 0;
+	*psRspCode = 0;
+	*piAuthCodeLen = 0;
+	*piAuthDataLen = 0;
+	*piScriptLen = 0;
 	SaveTVRTSI(TRUE);
 	glProcInfo.bIsFirstGAC = FALSE;
 
@@ -578,7 +579,7 @@ int  cEMVOnlineProc(uchar *psRspCode,  uchar *psAuthCode, int *piAuthCodeLen,
 	logHexString("ICC Data ", glProcInfo.stTranLog.sIccData, glProcInfo.stTranLog.uiIccDataLen);
 
 	iRet = processNibssTransaction();
-	if( iRet!=0 )
+	if (iRet != 0)
 	{
 		if (iRet < 0) {
 			glProcInfo.ucOnlineStatus = ST_ONLINE_FAIL;
@@ -593,7 +594,7 @@ int  cEMVOnlineProc(uchar *psRspCode,  uchar *psAuthCode, int *piAuthCodeLen,
 	}
 
 	// set response code
-	memcpy(psRspCode,  glProcInfo.stTranLog.szRspCode,  LEN_RSP_CODE);
+	memcpy(psRspCode, glProcInfo.stTranLog.szRspCode, LEN_RSP_CODE);
 	glProcInfo.ucOnlineStatus = ST_ONLINE_APPV;
 
 	// get response issuer data
@@ -601,23 +602,23 @@ int  cEMVOnlineProc(uchar *psRspCode,  uchar *psAuthCode, int *piAuthCodeLen,
 
 	ulICCDataLen = glProcInfo.uiResponseIccLen;
 	psICCData = glProcInfo.sResponseIcc;
-	for(psTemp=psICCData; psTemp<psICCData+ulICCDataLen; ) {
-			iRet = GetTLVItem(&psTemp, psICCData+ulICCDataLen-psTemp, SaveRspICCData, FALSE);
+	for (psTemp = psICCData; psTemp < psICCData + ulICCDataLen; ) {
+		iRet = GetTLVItem(&psTemp, psICCData + ulICCDataLen - psTemp, SaveRspICCData, FALSE);
 	}
 
 	memcpy(psAuthData, sAuthData, sgAuthDataLen);
 	*piAuthDataLen = sgAuthDataLen;
-	
+
 	// version 1.00.0016 change by Jolie Yang at 2013-08-16
 	// due to the application need not extract the sub-tag of 71/72, just get contents of 71\72, and transfer to EMV kernal
 	// AdjustIssuerScript();
 	LOG_HEX_PRINTF("Issuer script", sIssuerScript, sgScriptLen);
 	logd(("Issuer Scripts: %s, length: %d", sIssuerScript, sgScriptLen));
-	
+
 	memcpy(psScript, sIssuerScript, sgScriptLen);
 	*piScriptLen = sgScriptLen;
 
-	if( memcmp(glProcInfo.stTranLog.szRspCode, "00", LEN_RSP_CODE)!=0 )
+	if (memcmp(glProcInfo.stTranLog.szRspCode, "00", LEN_RSP_CODE) != 0)
 	{
 		return ONLINE_DENIAL;
 	}
@@ -635,7 +636,7 @@ int  cEMVOnlineProc(uchar *psRspCode,  uchar *psAuthCode, int *piAuthCodeLen,
 void cEMVVerifyPINOK(void)
 {
 	Gui_ClearScr();
-	Gui_ShowMsgBox(GetCurrTitle(),  gl_stTitleAttr, _T("PIN OK"), gl_stCenterAttr, GUI_BUTTON_NONE, 1, NULL);
+	Gui_ShowMsgBox(GetCurrTitle(), gl_stTitleAttr, _T("PIN OK"), gl_stCenterAttr, GUI_BUTTON_NONE, 1, NULL);
 }
 
 // 持卡人认证例程
@@ -643,7 +644,7 @@ void cEMVVerifyPINOK(void)
 // Don't need to care about this function
 int cCertVerify(void)
 {
-//	AppSetMckParam(!ChkIssuerOption(ISSUER_EN_EMVPIN_BYPASS));
+	//	AppSetMckParam(!ChkIssuerOption(ISSUER_EN_EMVPIN_BYPASS));
 	return -1;
 }
 
@@ -680,7 +681,7 @@ int FinishEmvTran(void)
 	iRet = EMVProcTrans();
 	SaveTVRTSI(FALSE);
 	UpdateEntryModeForOfflinePIN();
-	if( iRet==EMV_TIME_OUT || iRet==EMV_USER_CANCEL )
+	if (iRet == EMV_TIME_OUT || iRet == EMV_USER_CANCEL)
 	{
 		return ERR_USERCANCEL;
 	}
@@ -698,7 +699,7 @@ int FinishEmvTran(void)
 
 	}
 
-	if( (glProcInfo.ucOnlineStatus==ST_ONLINE_APPV) && memcmp(glProcInfo.stTranLog.szRspCode, "00", 2)==0 )
+	if ((glProcInfo.ucOnlineStatus == ST_ONLINE_APPV) && memcmp(glProcInfo.stTranLog.szRspCode, "00", 2) == 0)
 	{
 		SetDE55(DE55_SALE, glProcInfo.stTranLog.sIccData, &iLength);
 		glProcInfo.stTranLog.uiIccDataLen = (ushort)iLength;
@@ -708,7 +709,7 @@ int FinishEmvTran(void)
 	EMVGetTLVData(0x95, glProcInfo.stTranLog.sTVR, &iLength);
 	EMVGetTLVData(0x9B, glProcInfo.stTranLog.sTSI, &iLength);
 
-	if( iRet!=EMV_OK )
+	if (iRet != EMV_OK)
 	{
 		if (glProcInfo.ucOnlineStatus != ST_OFFLINE && isSuccessResponse(glProcInfo.stTranLog.szRspCode)) { //host approved, but declined offline, rollback transaction
 			rollbackNibssTransaction(REASON_TIME_OUT);
@@ -716,8 +717,8 @@ int FinishEmvTran(void)
 
 		SaveEmvErrLog();
 		EMVGetVerifyICCStatus(&ucSW1, &ucSW2);
-		if( glProcInfo.bIsFirstGAC && ucSW1==0x69 && ucSW2==0x85 &&
-			glProcInfo.stTranLog.szPan[0]=='5' )
+		if (glProcInfo.bIsFirstGAC && ucSW1 == 0x69 && ucSW2 == 0x85 &&
+			glProcInfo.stTranLog.szPan[0] == '5')
 		{	// for TIP fallback when 1st GAC return 6985
 			return ERR_NEED_FALLBACK;
 		}
@@ -725,8 +726,8 @@ int FinishEmvTran(void)
 		SetDE55(DE55_SALE, glProcInfo.stTranLog.sIccData, &iLength);
 		glProcInfo.stTranLog.uiIccDataLen = (ushort)iLength;
 
-		if( glProcInfo.stTranLog.szRspCode[0]!=0 &&
-			memcmp(glProcInfo.stTranLog.szRspCode, "00", 2)!=0 )
+		if (glProcInfo.stTranLog.szRspCode[0] != 0 &&
+			memcmp(glProcInfo.stTranLog.szRspCode, "00", 2) != 0)
 		{	// show reject code from host
 			return 0; //AfterTranProc();
 		}
@@ -735,11 +736,11 @@ int FinishEmvTran(void)
 
 	// transaction approved. save EMV data
 	SaveEmvData();
-	if( glProcInfo.ucOnlineStatus!=ST_ONLINE_APPV )
+	if (glProcInfo.ucOnlineStatus != ST_ONLINE_APPV)
 	{
 		return FinishOffLine();
 	}
-	
+
 
 	return 0; //AfterTranProc();
 }
@@ -767,7 +768,7 @@ int FinishSwipeTran(void)
 {
 	logTrace(__func__);
 	int		iRet, iLength;
-	
+
 	iRet = GetPIN(GETPIN_EMV);
 	if (iRet != 0) {
 		return iRet;
@@ -798,12 +799,12 @@ int FinishSwipeTran(void)
 		DispErrMsg("DECLINED", responseCodeToString(glProcInfo.stTranLog.szRspCode), 10, 0);
 	}
 
-	
+
 	return 0; //AfterTranProc();
 }
 
 // Set bit 55 data for online transaction.
-int SetDE55(DE55_TYPE ucType, uchar *psOutData, int *piOutLen )
+int SetDE55(DE55_TYPE ucType, uchar *psOutData, int *piOutLen)
 {
 	/*if( ChkIfAmex() )
 	{
@@ -811,7 +812,7 @@ int SetDE55(DE55_TYPE ucType, uchar *psOutData, int *piOutLen )
 	}
 	else
 	{*/
-		return SetStdDE55((uchar)ucType, sgStdEmvTagList, psOutData, piOutLen);
+	return SetStdDE55((uchar)ucType, sgStdEmvTagList, psOutData, piOutLen);
 	//}
 }
 
@@ -823,37 +824,37 @@ int SetAmexDE55(const DE55Tag *pstList, uchar *psOutData, int *piOutLen)
 
 	*piOutLen = 0;
 	memcpy(psOutData, "\xC1\xC7\xD5\xE2\x00\x01", 6);	// AMEX header
-	psTemp = psOutData+6;
+	psTemp = psOutData + 6;
 
-	for(iCnt=0; pstList[iCnt].uiEmvTag!=0; iCnt++)
+	for (iCnt = 0; pstList[iCnt].uiEmvTag != 0; iCnt++)
 	{
 		iLength = 0;
 		memset(sBuff, 0, sizeof(sBuff));
 		iRet = EMVGetTLVData(pstList[iCnt].uiEmvTag, sBuff, &iLength);
-		if( (iRet!=EMV_OK ) && (iRet!=EMV_NO_DATA))
+		if ((iRet != EMV_OK) && (iRet != EMV_NO_DATA))
 		{
 			return ERR_TRAN_FAIL;
 		}
 
-		if(iRet==EMV_NO_DATA)
+		if (iRet == EMV_NO_DATA)
 		{
 			iLength = pstList[iCnt].ucLen;
 			memset(sBuff, 0, sizeof(sBuff));
 		}
 
-		if( pstList[iCnt].ucOption==DE55_LEN_VAR1 )
+		if (pstList[iCnt].ucOption == DE55_LEN_VAR1)
 		{
 			*psTemp++ = (uchar)iLength;
 		}
-		else if( pstList[iCnt].ucOption==DE55_LEN_VAR2 )
+		else if (pstList[iCnt].ucOption == DE55_LEN_VAR2)
 		{
-			*psTemp++ = (uchar)(iLength>>8);
+			*psTemp++ = (uchar)(iLength >> 8);
 			*psTemp++ = (uchar)iLength;
 		}
 		memcpy(psTemp, sBuff, iLength);
 		psTemp += iLength;
 	}
-	*piOutLen = (psTemp-psOutData);
+	*piOutLen = (psTemp - psOutData);
 
 	return 0;
 }
@@ -864,16 +865,16 @@ int AppendStdTagList(DE55Tag *pstList, ushort uiTag, uchar ucOption, uchar ucMax
 	int	iCnt;
 
 	iCnt = 0;
-	while (pstList[iCnt].uiEmvTag!=0)
+	while (pstList[iCnt].uiEmvTag != 0)
 	{
 		iCnt++;
 	}
 	pstList[iCnt].uiEmvTag = uiTag;
 	pstList[iCnt].ucOption = ucOption;
-	pstList[iCnt].ucLen    = ucMaxLen;
-	pstList[iCnt+1].uiEmvTag = 0;
-	pstList[iCnt+1].ucOption = 0;
-	pstList[iCnt+1].ucLen    = 0;
+	pstList[iCnt].ucLen = ucMaxLen;
+	pstList[iCnt + 1].uiEmvTag = 0;
+	pstList[iCnt + 1].ucOption = 0;
+	pstList[iCnt + 1].ucLen = 0;
 	return 0;
 }
 
@@ -881,21 +882,21 @@ int RemoveFromTagList(DE55Tag *pstList, ushort uiTag)
 {
 	int	iCnt;
 
-	for (iCnt=0; pstList[iCnt].uiEmvTag!=0; iCnt++)
+	for (iCnt = 0; pstList[iCnt].uiEmvTag != 0; iCnt++)
 	{
-		if (pstList[iCnt].uiEmvTag==uiTag)
+		if (pstList[iCnt].uiEmvTag == uiTag)
 		{
 			break;
 		}
 	}
-	if (pstList[iCnt].uiEmvTag==0)
+	if (pstList[iCnt].uiEmvTag == 0)
 	{
 		return -1;
 	}
 
-	for (; pstList[iCnt].uiEmvTag!=0; iCnt++)
+	for (; pstList[iCnt].uiEmvTag != 0; iCnt++)
 	{
-		pstList[iCnt] = pstList[iCnt+1];
+		pstList[iCnt] = pstList[iCnt + 1];
 	}
 
 	return 0;
@@ -909,24 +910,24 @@ int SetStdDE55(uchar bForUpLoad, const DE55Tag *pstList, uchar *psOutData, int *
 	DE55Tag	astLocalTaglist[64];
 
 	*piOutLen = 0;
-	psTemp    = psOutData;
+	psTemp = psOutData;
 
- if( glProcInfo.stTranLog.uiEntryMode & MODE_CHIP_INPUT )
+	if (glProcInfo.stTranLog.uiEntryMode & MODE_CHIP_INPUT)
 	{
 		// Copy from std tag list
 		//-----------------------------------------------------------
 		memset(astLocalTaglist, 0, sizeof(astLocalTaglist));
-		for(iCnt=0; pstList[iCnt].uiEmvTag!=0; iCnt++)
+		for (iCnt = 0; pstList[iCnt].uiEmvTag != 0; iCnt++)
 		{
 			astLocalTaglist[iCnt] = pstList[iCnt];
 		}
 		//-----------------------------------------------------------
 		// Generate data by tag list
-		for(iCnt=0; pstList[iCnt].uiEmvTag!=0; iCnt++)
+		for (iCnt = 0; pstList[iCnt].uiEmvTag != 0; iCnt++)
 		{
 			memset(sBuff, 0, sizeof(sBuff));
 			iRet = EMVGetTLVData(pstList[iCnt].uiEmvTag, sBuff, &iLength);
-			if( iRet==EMV_OK )
+			if (iRet == EMV_OK)
 			{
 				if ((pstList[iCnt].ucLen > 0) && (iLength > pstList[iCnt].ucLen))
 				{
@@ -934,7 +935,7 @@ int SetStdDE55(uchar bForUpLoad, const DE55Tag *pstList, uchar *psOutData, int *
 				}
 				BuildTLVString(pstList[iCnt].uiEmvTag, sBuff, iLength, &psTemp);
 			}
-			else if( pstList[iCnt].ucOption==DE55_MUST_SET )
+			else if (pstList[iCnt].ucOption == DE55_MUST_SET)
 			{
 				BuildTLVString(pstList[iCnt].uiEmvTag, NULL, 0, &psTemp);
 			}
@@ -942,14 +943,14 @@ int SetStdDE55(uchar bForUpLoad, const DE55Tag *pstList, uchar *psOutData, int *
 
 		//-----------------------------------------------------------
 		// Generate custom tag content
-		if( glProcInfo.stTranLog.szPan[0]=='5' )
+		if (glProcInfo.stTranLog.szPan[0] == '5')
 		{	// for master card TCC = "R" -- retail
 			BuildTLVString(0x9F53, (uchar *)"R", 1, &psTemp);
 		}
 
 		memset(sBuff, 0, sizeof(sBuff));
 		iRet = EMVGetScriptResult(sBuff, &iLength);
-		if( iRet==EMV_OK )
+		if (iRet == EMV_OK)
 		{
 			BuildTLVString(0xDF5B, sBuff, iLength, &psTemp);
 		}
@@ -959,60 +960,60 @@ int SetStdDE55(uchar bForUpLoad, const DE55Tag *pstList, uchar *psOutData, int *
 		return 0;
 	}
 
-	*piOutLen = (psTemp-psOutData);
+	*piOutLen = (psTemp - psOutData);
 
 	return 0;
 }
 
 int SetTCDE55(void *pstTranLog, uchar *psOutData, int *piOutLen)
 {
-    char    sBuff[LEN_ICC_DATA];
-    ushort  uiLen;
-    int     iRet;
+	char    sBuff[LEN_ICC_DATA];
+	ushort  uiLen;
+	int     iRet;
 
-    if (ChkIfICBC_MACAU())
-    {
-        // ICBC-Macau only need 9F26 in TC DE55
-        *piOutLen = 0;
-        iRet = GetSpecTLVItem(((TRAN_LOG *)pstTranLog)->sIccData, ((TRAN_LOG *)pstTranLog)->uiIccDataLen, 0x9F26, sBuff, &uiLen);
-        if (iRet==0)
-        {
-            memcpy(psOutData, sBuff, uiLen);
-            psOutData += uiLen;
-            *piOutLen += uiLen;
-        }
-        return 0;
-    }
-    else if (ChkIfDah() || ChkIfWingHang())
-    {
-        *piOutLen = 0;
-        iRet = GetSpecTLVItem(((TRAN_LOG *)pstTranLog)->sIccData, ((TRAN_LOG *)pstTranLog)->uiIccDataLen, 0x9F26, sBuff, &uiLen);
-        if (iRet==0)
-        {
-            memcpy(psOutData, sBuff, uiLen);
-            psOutData += uiLen;
-            *piOutLen += uiLen;
-        }
-        iRet = GetSpecTLVItem(((TRAN_LOG *)pstTranLog)->sIccData, ((TRAN_LOG *)pstTranLog)->uiIccDataLen, 0x9F27, sBuff, &uiLen);
-        if (iRet==0)
-        {
-            memcpy(psOutData, sBuff, uiLen);
-            psOutData += uiLen;
-            *piOutLen += uiLen;
-        }
-        return 0;
-    }
+	if (ChkIfICBC_MACAU())
+	{
+		// ICBC-Macau only need 9F26 in TC DE55
+		*piOutLen = 0;
+		iRet = GetSpecTLVItem(((TRAN_LOG *)pstTranLog)->sIccData, ((TRAN_LOG *)pstTranLog)->uiIccDataLen, 0x9F26, sBuff, &uiLen);
+		if (iRet == 0)
+		{
+			memcpy(psOutData, sBuff, uiLen);
+			psOutData += uiLen;
+			*piOutLen += uiLen;
+		}
+		return 0;
+	}
+	else if (ChkIfDah() || ChkIfWingHang())
+	{
+		*piOutLen = 0;
+		iRet = GetSpecTLVItem(((TRAN_LOG *)pstTranLog)->sIccData, ((TRAN_LOG *)pstTranLog)->uiIccDataLen, 0x9F26, sBuff, &uiLen);
+		if (iRet == 0)
+		{
+			memcpy(psOutData, sBuff, uiLen);
+			psOutData += uiLen;
+			*piOutLen += uiLen;
+		}
+		iRet = GetSpecTLVItem(((TRAN_LOG *)pstTranLog)->sIccData, ((TRAN_LOG *)pstTranLog)->uiIccDataLen, 0x9F27, sBuff, &uiLen);
+		if (iRet == 0)
+		{
+			memcpy(psOutData, sBuff, uiLen);
+			psOutData += uiLen;
+			*piOutLen += uiLen;
+		}
+		return 0;
+	}
 
-    *piOutLen = ((TRAN_LOG *)pstTranLog)->uiIccDataLen;
-    memcpy(psOutData, ((TRAN_LOG *)pstTranLog)->sIccData, *piOutLen);
-    return 0;
+	*piOutLen = ((TRAN_LOG *)pstTranLog)->uiIccDataLen;
+	memcpy(psOutData, ((TRAN_LOG *)pstTranLog)->sIccData, *piOutLen);
+	return 0;
 }
 
 //Set 56 field
 int SetDE56(uchar *psOutData, int *piOutLen)
 {
 	*piOutLen = 0;
-	if( ChkIfAmex() )
+	if (ChkIfAmex())
 	{
 		return 0;
 	}
@@ -1022,18 +1023,18 @@ int SetDE56(uchar *psOutData, int *piOutLen)
 
 int SetStdEmptyDE56(uchar *psOutData, int *piOutLen)
 {
-	if( ChkIfAmex() )
+	if (ChkIfAmex())
 	{
 		*piOutLen = 0;
 		return 0;
 	}
 
-	if( ChkIfBea() )
+	if (ChkIfBea())
 	{
 		memcpy(psOutData, "\xDF\xF0\x0D\x00\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20", 16);
 		*piOutLen = 16;
 	}
-	else if( ChkIfBoc() || ChkIfFubon() )
+	else if (ChkIfBoc() || ChkIfFubon())
 	{
 		memcpy(psOutData, "\xDF\xF0\x07\x00\x20\x20\x20\x20\x20\x20", 10);
 		*piOutLen = 10;
@@ -1054,8 +1055,8 @@ int SetStdDE56(const DE55Tag *pstList, uchar *psOutData, int *piOutLen)
 
 	// build header of bit 56
 	*piOutLen = 0;
-	psTemp    = psOutData;
-	if( ChkIfBea() )
+	psTemp = psOutData;
+	if (ChkIfBea())
 	{
 		memcpy(psTemp, "\xDF\xF0\x0D\x01", 4);
 		psTemp += 4;
@@ -1068,7 +1069,7 @@ int SetStdDE56(const DE55Tag *pstList, uchar *psOutData, int *piOutLen)
 	}
 	else
 	{
-		if( ChkIfBoc() || ChkIfFubon() )
+		if (ChkIfBoc() || ChkIfFubon())
 		{
 			memcpy(psTemp, "\xDF\xF0\x07\x01", 4);
 		}
@@ -1085,11 +1086,11 @@ int SetStdDE56(const DE55Tag *pstList, uchar *psOutData, int *piOutLen)
 	}
 
 	// build common EMV core tags for all HK banks
-	for(iCnt=0; pstList[iCnt].uiEmvTag!=0; iCnt++)
+	for (iCnt = 0; pstList[iCnt].uiEmvTag != 0; iCnt++)
 	{
 		memset(sBuff, 0, sizeof(sBuff));
 		iRet = EMVGetTLVData(pstList[iCnt].uiEmvTag, sBuff, &iLength);
-		if( iRet==EMV_OK )
+		if (iRet == EMV_OK)
 		{
 			BuildTLVString(pstList[iCnt].uiEmvTag, sBuff, iLength, &psTemp);
 		}
@@ -1100,13 +1101,13 @@ int SetStdDE56(const DE55Tag *pstList, uchar *psOutData, int *piOutLen)
 	}
 
 	// process special EMC core tags for different banks
-	if( ChkIfFubon() )
+	if (ChkIfFubon())
 	{
 		memset(sBuff, 0, sizeof(sBuff));
 		EMVGetTLVData(0x9A, sBuff, &iLength);
 		BuildTLVString(0x9A, sBuff, iLength, &psTemp);
 	}
-	if( ChkIfHSBC() )
+	if (ChkIfHSBC())
 	{
 		memset(sBuff, 0, sizeof(sBuff));
 		EMVGetTLVData(0x9F36, sBuff, &iLength);
@@ -1115,18 +1116,18 @@ int SetStdDE56(const DE55Tag *pstList, uchar *psOutData, int *piOutLen)
 
 	memset(sBuff, 0, sizeof(sBuff));
 	iRet = EMVGetScriptResult(sBuff, &iLength);
-	if( iRet!=EMV_OK )
+	if (iRet != EMV_OK)
 	{
-		*piOutLen = (psTemp-psOutData);
+		*piOutLen = (psTemp - psOutData);
 		return 0;
 	}
 
 	// continue issuer script result process
-	if( ChkIfBoc() || ChkIfFubon() || ChkIfBea() )
+	if (ChkIfBoc() || ChkIfFubon() || ChkIfBea())
 	{
 		memcpy(psTemp, "\xDF\x91", 2);
 	}
-	else if( ChkIfDah() || ChkIfScb() || ChkIfCiti() )
+	else if (ChkIfDah() || ChkIfScb() || ChkIfCiti())
 	{
 		memcpy(psTemp, "\x9F\x5B", 2);
 	}
@@ -1134,12 +1135,12 @@ int SetStdDE56(const DE55Tag *pstList, uchar *psOutData, int *piOutLen)
 	{
 		memcpy(psTemp, "\xDF\x5B", 2);
 	}
-	psTemp   += 2;
+	psTemp += 2;
 	*psTemp++ = (uchar)iLength;
 	memcpy(psTemp, sBuff, iLength);
 	psTemp += iLength;
 
-	*piOutLen = (psTemp-psOutData);
+	*piOutLen = (psTemp - psOutData);
 
 	return 0;
 }
@@ -1153,14 +1154,14 @@ int GetTLVItem(uchar **ppsTLVString, int iMaxLen, SaveTLVData pfSaveData, uchar 
 	ulong		lTemp;
 
 	// skip null tags
-	for(psTag=*ppsTLVString; psTag<*ppsTLVString+iMaxLen; psTag++)
+	for (psTag = *ppsTLVString; psTag < *ppsTLVString + iMaxLen; psTag++)
 	{
-		if( (*psTag!=TAG_NULL_1) && (*psTag!=TAG_NULL_2) )
+		if ((*psTag != TAG_NULL_1) && (*psTag != TAG_NULL_2))
 		{
 			break;
 		}
 	}
-	if( psTag>=*ppsTLVString+iMaxLen )
+	if (psTag >= *ppsTLVString + iMaxLen)
 	{
 		*ppsTLVString = psTag;
 		return 0;	// no tag available
@@ -1168,45 +1169,45 @@ int GetTLVItem(uchar **ppsTLVString, int iMaxLen, SaveTLVData pfSaveData, uchar 
 
 	// process tag bytes
 	uiTag = *psTag++;
-	if( (uiTag & TAGMASK_FIRSTBYTE)==TAGMASK_FIRSTBYTE )
+	if ((uiTag & TAGMASK_FIRSTBYTE) == TAGMASK_FIRSTBYTE)
 	{	// have another byte
-		uiTag = (uiTag<<8) + *psTag++;
+		uiTag = (uiTag << 8) + *psTag++;
 	}
-	if( psTag>=*ppsTLVString+iMaxLen )
+	if (psTag >= *ppsTLVString + iMaxLen)
 	{
 		return -1;
 	}
 
 	// process length bytes
-	if( (*psTag & LENMASK_NEXTBYTE)==LENMASK_NEXTBYTE )
+	if ((*psTag & LENMASK_NEXTBYTE) == LENMASK_NEXTBYTE)
 	{
 		uiLenBytes = *psTag & LENMASK_LENBYTES;
-		lTemp = PubChar2Long(psTag+1, uiLenBytes);
+		lTemp = PubChar2Long(psTag + 1, uiLenBytes);
 	}
 	else
 	{
 		uiLenBytes = 0;
-		lTemp      = *psTag & LENMASK_LENBYTES;
+		lTemp = *psTag & LENMASK_LENBYTES;
 	}
-	psTag += uiLenBytes+1;
-	if( psTag+lTemp>*ppsTLVString+iMaxLen )
+	psTag += uiLenBytes + 1;
+	if (psTag + lTemp > *ppsTLVString + iMaxLen)
 	{
 		return -2;
 	}
-	*ppsTLVString = psTag+lTemp;	// advance pointer of TLV string
+	*ppsTLVString = psTag + lTemp;	// advance pointer of TLV string
 
 	// save data
 	(*pfSaveData)(uiTag, psTag, (int)lTemp);
-	if( !IsConstructedTag(uiTag) || !bExpandAll )
+	if (!IsConstructedTag(uiTag) || !bExpandAll)
 	{
 		return 0;
 	}
 
 	// constructed data
-	for(psSubTag=psTag; psSubTag<psTag+lTemp; )
+	for (psSubTag = psTag; psSubTag < psTag + lTemp; )
 	{
-		iRet = GetTLVItem(&psSubTag, psTag+lTemp-psSubTag, pfSaveData, TRUE);
-		if( iRet<0 )
+		iRet = GetTLVItem(&psSubTag, psTag + lTemp - psSubTag, pfSaveData, TRUE);
+		if (iRet < 0)
 		{
 			return iRet;
 		}
@@ -1222,73 +1223,73 @@ int GetSpecTLVItem(const uchar *psTLVString, int iMaxLen, uint uiSearchTag, ucha
 	ulong		lTemp;
 
 	// skip null tags
-    for (psTag=(uchar *)psTLVString; psTag<psTLVString+iMaxLen; psTag++)
-    {
-        if ((*psTag!=TAG_NULL_1) && (*psTag!=TAG_NULL_2))
-        {
-            break;
-        }
-    }
-    if ( psTag>=psTLVString+iMaxLen )
-    {
-        return -1;	// no tag available
-    }
-    
-    while (1)
-    {
-        psTagStr = psTag;
-        // process tag bytes
-        uiTag = *psTag++;
-        if ((uiTag & TAGMASK_FIRSTBYTE)==TAGMASK_FIRSTBYTE)
-        {	// have another byte
-            uiTag = (uiTag<<8) + *psTag++;
-        }
-        if (psTag>=psTLVString+iMaxLen)
-        {
-            return -2;	// specific tag not found
-        }
-        
-        // process length bytes
-        if ((*psTag & LENMASK_NEXTBYTE)==LENMASK_NEXTBYTE)
-        {
-            uiLenBytes = *psTag & LENMASK_LENBYTES;
-            lTemp = PubChar2Long(psTag+1, uiLenBytes);
-        }
-        else
-        {
-            uiLenBytes = 0;
-            lTemp      = *psTag & LENMASK_LENBYTES;
-        }
-        psTag += uiLenBytes+1;
-        if (psTag+lTemp>psTLVString+iMaxLen)
-        {
-            return -2;	// specific tag not found also
-        }
-        
-        // Check if tag needed
-        if (uiTag==uiSearchTag)
-        {
-            *puiOutLen = (ushort)(psTag-psTagStr+lTemp);
-            memcpy(psOutTLV, psTagStr, *puiOutLen);
-            return 0;
-        }
-        
-        if (IsConstructedTag(uiTag))
-        {
-            if (GetSpecTLVItem(psTag, (int)lTemp, uiSearchTag, psOutTLV, puiOutLen)==0)
-            {
-                return 0;
-            }
-        }
-        
-        psTag += lTemp;	// advance pointer of TLV string
-        if (psTag>=psTLVString+iMaxLen)
-        {
-            return -2;
-        }
-    }
+	for (psTag = (uchar *)psTLVString; psTag < psTLVString + iMaxLen; psTag++)
+	{
+		if ((*psTag != TAG_NULL_1) && (*psTag != TAG_NULL_2))
+		{
+			break;
+		}
+	}
+	if (psTag >= psTLVString + iMaxLen)
+	{
+		return -1;	// no tag available
+	}
 
-    return 0;
+	while (1)
+	{
+		psTagStr = psTag;
+		// process tag bytes
+		uiTag = *psTag++;
+		if ((uiTag & TAGMASK_FIRSTBYTE) == TAGMASK_FIRSTBYTE)
+		{	// have another byte
+			uiTag = (uiTag << 8) + *psTag++;
+		}
+		if (psTag >= psTLVString + iMaxLen)
+		{
+			return -2;	// specific tag not found
+		}
+
+		// process length bytes
+		if ((*psTag & LENMASK_NEXTBYTE) == LENMASK_NEXTBYTE)
+		{
+			uiLenBytes = *psTag & LENMASK_LENBYTES;
+			lTemp = PubChar2Long(psTag + 1, uiLenBytes);
+		}
+		else
+		{
+			uiLenBytes = 0;
+			lTemp = *psTag & LENMASK_LENBYTES;
+		}
+		psTag += uiLenBytes + 1;
+		if (psTag + lTemp > psTLVString + iMaxLen)
+		{
+			return -2;	// specific tag not found also
+		}
+
+		// Check if tag needed
+		if (uiTag == uiSearchTag)
+		{
+			*puiOutLen = (ushort)(psTag - psTagStr + lTemp);
+			memcpy(psOutTLV, psTagStr, *puiOutLen);
+			return 0;
+		}
+
+		if (IsConstructedTag(uiTag))
+		{
+			if (GetSpecTLVItem(psTag, (int)lTemp, uiSearchTag, psOutTLV, puiOutLen) == 0)
+			{
+				return 0;
+			}
+		}
+
+		psTag += lTemp;	// advance pointer of TLV string
+		if (psTag >= psTLVString + iMaxLen)
+		{
+			return -2;
+		}
+	}
+
+	return 0;
 }
 
 
@@ -1298,39 +1299,39 @@ int GetDE55Amex(const uchar *psSendHeader, const uchar *psRecvDE55, int iLen)
 	uint	uiLenBytes;
 
 	// invalid length
-	if (iLen<6)
+	if (iLen < 6)
 	{
 		return -1;
 	}
 	// header mismatch
-	if (memcmp(psSendHeader, psRecvDE55, 6)!=0)
+	if (memcmp(psSendHeader, psRecvDE55, 6) != 0)
 	{
 		return -1;
 	}
 
-	psTmp = (uchar *)psRecvDE55+6;
+	psTmp = (uchar *)psRecvDE55 + 6;
 
 	// Data Sub Field 1 : Issuer Authentication Data EMV (Tag 91)
 	uiLenBytes = *psTmp++;
-	if (uiLenBytes>16)
+	if (uiLenBytes > 16)
 	{
 		return -2;
 	}
 	memcpy(sAuthData, psTmp, uiLenBytes);
 	sgAuthDataLen = uiLenBytes;
 	psTmp += uiLenBytes;
-	if (psTmp-psRecvDE55>iLen)
+	if (psTmp - psRecvDE55 > iLen)
 	{
 		return -3;
 	}
-	if (psTmp-psRecvDE55==iLen)	// end up
+	if (psTmp - psRecvDE55 == iLen)	// end up
 	{
 		return 0;
 	}
 
 	// Data Sub Field 2 : Issuer Script Data
 	uiLenBytes = *psTmp++;
-	if (uiLenBytes>128)
+	if (uiLenBytes > 128)
 	{
 		return -2;
 	}
@@ -1338,11 +1339,11 @@ int GetDE55Amex(const uchar *psSendHeader, const uchar *psRecvDE55, int iLen)
 	memcpy(&sIssuerScript[sgScriptLen], psTmp, uiLenBytes);
 	sgScriptLen += uiLenBytes;
 	psTmp += uiLenBytes;
-	if (psTmp-psRecvDE55>iLen)
+	if (psTmp - psRecvDE55 > iLen)
 	{
 		return -3;
 	}
-	if (psTmp-psRecvDE55==iLen)	// end up
+	if (psTmp - psRecvDE55 == iLen)	// end up
 	{
 		return 0;
 	}
@@ -1354,18 +1355,18 @@ int IsConstructedTag(uint uiTag)
 {
 	int		i;
 
-	for(i=0; (uiTag&0xFF00) && i<2; i++)
+	for (i = 0; (uiTag & 0xFF00) && i < 2; i++)
 	{
 		uiTag >>= 8;
 	}
 
-	return ((uiTag & TAGMASK_CONSTRUCTED)==TAGMASK_CONSTRUCTED);
+	return ((uiTag & TAGMASK_CONSTRUCTED) == TAGMASK_CONSTRUCTED);
 }
 
 // Save Iuuser Authentication Data, Issuer Script.
 void SaveRspICCData(uint uiTag, const uchar *psData, int iDataLen)
 {
-	switch( uiTag )
+	switch (uiTag)
 	{
 	case 0x91:
 		memcpy(sAuthData, psData, MIN(iDataLen, 16));
@@ -1375,7 +1376,7 @@ void SaveRspICCData(uint uiTag, const uchar *psData, int iDataLen)
 	case 0x71:
 	case 0x72:
 		sIssuerScript[sgScriptLen++] = (uchar)uiTag;
-		if( iDataLen>127 )
+		if (iDataLen > 127)
 		{
 			sIssuerScript[sgScriptLen++] = 0x81;
 		}
@@ -1385,7 +1386,7 @@ void SaveRspICCData(uint uiTag, const uchar *psData, int iDataLen)
 		break;
 
 	case 0x9F36:
-//		memcpy(sATC, psData, MIN(iDataLen, 2));	// ignore
+		//		memcpy(sATC, psData, MIN(iDataLen, 2));	// ignore
 		break;
 
 	default:
@@ -1399,14 +1400,14 @@ void BuildTLVString(ushort uiEmvTag, const uchar *psData, int iLength, uchar **p
 {
 	uchar	*psTemp;
 
-	if( iLength<0 )
+	if (iLength < 0)
 	{
 		return;
 	}
 
 	// set tags
 	psTemp = *ppsOutData;
-	if( uiEmvTag & 0xFF00 )
+	if (uiEmvTag & 0xFF00)
 	{
 		*psTemp++ = (uchar)(uiEmvTag >> 8);
 	}
@@ -1414,19 +1415,19 @@ void BuildTLVString(ushort uiEmvTag, const uchar *psData, int iLength, uchar **p
 
 	// set length
 	// for now, lengths of all data are less then 127 bytes, but still extend the rest part based on standard
-	if( iLength<=127 )	
-	{	
+	if (iLength <= 127)
+	{
 		*psTemp++ = (uchar)iLength;
 	}
 	else
-	{	
+	{
 		// the upper limit is 255 bytes data defined by EMV standard
 		*psTemp++ = 0x81;
 		*psTemp++ = (uchar)iLength;
 	}
 
 	// set value
-	if( iLength>0 )
+	if (iLength > 0)
 	{
 		memcpy(psTemp, psData, iLength);
 		psTemp += iLength;
@@ -1441,34 +1442,34 @@ void SaveEmvData(void)
 	int		iLength;
 
 	EMVGetTLVData(0x9F26, glProcInfo.stTranLog.sAppCrypto, &iLength);
-	EMVGetTLVData(0x8A,   glProcInfo.stTranLog.szRspCode,  &iLength);
-	EMVGetTLVData(0x95,   glProcInfo.stTranLog.sTVR,       &iLength);
-	EMVGetTLVData(0x9B,   glProcInfo.stTranLog.sTSI,       &iLength);
-	EMVGetTLVData(0x9F36, glProcInfo.stTranLog.sATC,       &iLength);
+	EMVGetTLVData(0x8A, glProcInfo.stTranLog.szRspCode, &iLength);
+	EMVGetTLVData(0x95, glProcInfo.stTranLog.sTVR, &iLength);
+	EMVGetTLVData(0x9B, glProcInfo.stTranLog.sTSI, &iLength);
+	EMVGetTLVData(0x9F36, glProcInfo.stTranLog.sATC, &iLength);
 
 	// save for upload
 	SetDE55(DE55_UPLOAD, glProcInfo.stTranLog.sIccData, &iLength);
 	glProcInfo.stTranLog.uiIccDataLen = (ushort)iLength;
 
-	if( glProcInfo.ucOnlineStatus!=ST_ONLINE_APPV )
-	{	
+	if (glProcInfo.ucOnlineStatus != ST_ONLINE_APPV)
+	{
 		// ICC脱机, offline approved
 		SaveTVRTSI(TRUE);
 		GetNewTraceNo();
-//		sprintf((char *)glProcInfo.stTranLog.szRspCode, "00");
-//		sprintf((char *)glProcInfo.stTranLog.szCondCode, "06");
+		//		sprintf((char *)glProcInfo.stTranLog.szRspCode, "00");
+		//		sprintf((char *)glProcInfo.stTranLog.szCondCode, "06");
 		sprintf((char *)glProcInfo.stTranLog.szAuthCode, "%06lu", glSysCtrl.ulSTAN);
-		if(ChkIfAmex())
+		if (ChkIfAmex())
 		{
-			if(glProcInfo.ucOnlineStatus==ST_ONLINE_FAIL)
+			if (glProcInfo.ucOnlineStatus == ST_ONLINE_FAIL)
 			{
 				sprintf((char *)glProcInfo.stTranLog.szAuthCode, "Y3");
-			} 
+			}
 			else
 			{
 				// for AMEX, approval code = Y1 while chip off line apporved.
-				sprintf((char *)glProcInfo.stTranLog.szAuthCode, "Y1");	
-			}		
+				sprintf((char *)glProcInfo.stTranLog.szAuthCode, "Y1");
+			}
 		}
 		else
 		{
@@ -1494,16 +1495,16 @@ void AdjustIssuerScript(void)
 	memset(sgScriptBak, 0, sizeof(sgScriptBak));
 	memset(&sgScriptInfo, 0, sizeof(sgScriptInfo));
 	sgCurScript = sgScriptBakLen = 0;
-	bHaveScript  = FALSE;
-	for(psTemp=sIssuerScript; psTemp<sIssuerScript+sgScriptLen; )
+	bHaveScript = FALSE;
+	for (psTemp = sIssuerScript; psTemp < sIssuerScript + sgScriptLen; )
 	{
-		iRet = GetTLVItem(&psTemp, sIssuerScript+sgScriptLen-psTemp, SaveScriptData, TRUE);
-		if( iRet<0 )
+		iRet = GetTLVItem(&psTemp, sIssuerScript + sgScriptLen - psTemp, SaveScriptData, TRUE);
+		if (iRet < 0)
 		{
 			return;
 		}
 	}
-	if( bHaveScript && sgCurScript>0 )
+	if (bHaveScript && sgCurScript > 0)
 	{
 		PackScriptData();
 	}
@@ -1515,11 +1516,11 @@ void AdjustIssuerScript(void)
 // callback function for process issuer script
 void  SaveScriptData(uint uiTag, const uchar *psData, int iDataLen)
 {
-	switch( uiTag )
+	switch (uiTag)
 	{
 	case 0x71:
 	case 0x72:
-		if( bHaveScript && sgCurScript>0 )
+		if (bHaveScript && sgCurScript > 0)
 		{
 			PackScriptData();
 		}
@@ -1548,8 +1549,8 @@ void PackTLVData(uint uiTag, const uchar *psData, uint uiDataLen, uchar *psOutDa
 	int		iHeadLen;
 
 	PackTLVHead(uiTag, uiDataLen, psOutData, &iHeadLen);
-	memcpy(psOutData+iHeadLen, psData, uiDataLen);
-	*piOutLen = (uiDataLen+iHeadLen);
+	memcpy(psOutData + iHeadLen, psData, uiDataLen);
+	*piOutLen = (uiDataLen + iHeadLen);
 }
 
 void PackTLVHead(uint uiTag, uint uiDataLen, uchar *psOutData, int *piOutLen)
@@ -1558,24 +1559,24 @@ void PackTLVHead(uint uiTag, uint uiDataLen, uchar *psOutData, int *piOutLen)
 
 	// pack tag bytes
 	psTemp = psOutData;
-	if( uiTag & 0xFF00 )
+	if (uiTag & 0xFF00)
 	{
-		*psTemp++ = uiTag>>8;
+		*psTemp++ = uiTag >> 8;
 	}
 	*psTemp++ = uiTag;
 
 	// pack length bytes
-	if( uiDataLen<=127 )
+	if (uiDataLen <= 127)
 	{
 		*psTemp++ = (uchar)uiDataLen;
 	}
 	else
 	{
-		*psTemp++ = LENMASK_NEXTBYTE|0x01;	// one byte length
+		*psTemp++ = LENMASK_NEXTBYTE | 0x01;	// one byte length
 		*psTemp++ = (uchar)uiDataLen;
 	}
 
-	*piOutLen = (psTemp-psOutData);
+	*piOutLen = (psTemp - psOutData);
 }
 
 int CalcTLVTotalLen(uint uiTag, uint uiDataLen)
@@ -1584,19 +1585,19 @@ int CalcTLVTotalLen(uint uiTag, uint uiDataLen)
 
 	// get length of TLV tag bytes
 	iLen = 1;
-	if( uiTag & 0xFF00 )
+	if (uiTag & 0xFF00)
 	{
 		iLen++;
 	}
 
 	// get length of TLV length bytes
 	iLen++;
-	if( uiDataLen>127 )
+	if (uiDataLen > 127)
 	{
 		iLen++;
 	}
 
-	return (iLen+uiDataLen);
+	return (iLen + uiDataLen);
 }
 
 // re-generate issuer script(remove issuer script ID, if the length is zero)
@@ -1605,23 +1606,23 @@ void PackScriptData(void)
 	int		iCnt, iTotalLen, iTempLen;
 
 	iTotalLen = 0;
-	if( sgScriptInfo.iIDLen>0 )
+	if (sgScriptInfo.iIDLen > 0)
 	{
 		iTotalLen += CalcTLVTotalLen(0x9F18, 4);
 	}
-	for(iCnt=0; iCnt<sgCurScript; iCnt++)
+	for (iCnt = 0; iCnt < sgCurScript; iCnt++)
 	{
 		iTotalLen += CalcTLVTotalLen(0x86, sgScriptInfo.iCmdLen[iCnt]);
 	}
 	PackTLVHead(sgScriptInfo.uiTag, iTotalLen, &sgScriptBak[sgScriptBakLen], &iTempLen);
 	sgScriptBakLen += iTempLen;
 
-	if( sgScriptInfo.iIDLen>0 )
+	if (sgScriptInfo.iIDLen > 0)
 	{
 		PackTLVData(0x9F18, sgScriptInfo.sScriptID, 4, &sgScriptBak[sgScriptBakLen], &iTempLen);
 		sgScriptBakLen += iTempLen;
 	}
-	for(iCnt=0; iCnt<sgCurScript; iCnt++)
+	for (iCnt = 0; iCnt < sgCurScript; iCnt++)
 	{
 		PackTLVData(0x86, sgScriptInfo.sScriptCmd[iCnt], sgScriptInfo.iCmdLen[iCnt], &sgScriptBak[sgScriptBakLen], &iTempLen);
 		sgScriptBakLen += iTempLen;
@@ -1664,13 +1665,13 @@ void SaveTVRTSI(uchar bBeforeOnline)
 		{0},
 	};
 
-	SetStdDE55(FALSE, stList, glEmvStatus.sTLV+2, &iLength);
-	glEmvStatus.sTLV[0] = iLength/256;
-	glEmvStatus.sTLV[1] = iLength%256;
+	SetStdDE55(FALSE, stList, glEmvStatus.sTLV + 2, &iLength);
+	glEmvStatus.sTLV[0] = iLength / 256;
+	glEmvStatus.sTLV[1] = iLength % 256;
 
 	if (glProcInfo.bIsFirstGAC)
 	{
-		psTLVData = glEmvStatus.sAppCryptoFirst+2;
+		psTLVData = glEmvStatus.sAppCryptoFirst + 2;
 
 		EMVGetTLVData(0x9F26, sBuff, &iLength);
 		BuildTLVString(0x9F26, sBuff, iLength, &psTLVData);
@@ -1679,12 +1680,12 @@ void SaveTVRTSI(uchar bBeforeOnline)
 		BuildTLVString(0x9F27, sBuff, iLength, &psTLVData);
 
 		iLength = psTLVData - glEmvStatus.sAppCryptoFirst - 2;
-		glEmvStatus.sAppCryptoFirst[0] = iLength/256;
-		glEmvStatus.sAppCryptoFirst[1] = iLength%256;
+		glEmvStatus.sAppCryptoFirst[0] = iLength / 256;
+		glEmvStatus.sAppCryptoFirst[1] = iLength % 256;
 	}
 	else
 	{
-		psTLVData = glEmvStatus.sAppCryptoSecond+2;
+		psTLVData = glEmvStatus.sAppCryptoSecond + 2;
 
 		EMVGetTLVData(0x9F26, sBuff, &iLength);
 		BuildTLVString(0x9F26, sBuff, iLength, &psTLVData);
@@ -1693,14 +1694,14 @@ void SaveTVRTSI(uchar bBeforeOnline)
 		BuildTLVString(0x9F27, sBuff, iLength, &psTLVData);
 
 		iLength = psTLVData - glEmvStatus.sAppCryptoSecond - 2;
-		glEmvStatus.sAppCryptoSecond[0] = iLength/256;
-		glEmvStatus.sAppCryptoSecond[1] = iLength%256;
+		glEmvStatus.sAppCryptoSecond[0] = iLength / 256;
+		glEmvStatus.sAppCryptoSecond[1] = iLength % 256;
 	}
 
-	if( bBeforeOnline )
+	if (bBeforeOnline)
 	{
-		EMVGetTLVData(0x95,   glEmvStatus.sgTVROld,  &iLength);
-		EMVGetTLVData(0x9B,   glEmvStatus.sgTSIOld,  &iLength);
+		EMVGetTLVData(0x95, glEmvStatus.sgTVROld, &iLength);
+		EMVGetTLVData(0x9B, glEmvStatus.sgTSIOld, &iLength);
 		glEmvStatus.sgARQCLenOld = 0;
 		EMVGetTLVData(0x9F10, glEmvStatus.sgARQCOld, &glEmvStatus.sgARQCLenOld);
 
@@ -1711,18 +1712,18 @@ void SaveTVRTSI(uchar bBeforeOnline)
 		// search TAC from terminal parameter
 		memset(sTermAID, 0, sizeof(sTermAID));
 		EMVGetTLVData(0x9F06, sTermAID, &iLength);
-		for(iCnt=0; iCnt<MAX_APP_NUM; iCnt++)
+		for (iCnt = 0; iCnt < MAX_APP_NUM; iCnt++)
 		{
 			memset(&stEmvApp, 0, sizeof(EMV_APPLIST));
 			iRet = EMVGetApp(iCnt, &stEmvApp);
-			if( iRet!=EMV_OK )
+			if (iRet != EMV_OK)
 			{
 				continue;
 			}
-			if( memcmp(sTermAID, stEmvApp.AID, stEmvApp.AidLen)==0 )
+			if (memcmp(sTermAID, stEmvApp.AID, stEmvApp.AidLen) == 0)
 			{
-				memcpy(glEmvStatus.sgTACDeinal,  stEmvApp.TACDenial,  5);
-				memcpy(glEmvStatus.sgTACOnline,  stEmvApp.TACOnline,  5);
+				memcpy(glEmvStatus.sgTACDeinal, stEmvApp.TACDenial, 5);
+				memcpy(glEmvStatus.sgTACOnline, stEmvApp.TACOnline, 5);
 				memcpy(glEmvStatus.sgTACDefault, stEmvApp.TACDefault, 5);
 				break;
 			}
@@ -1730,8 +1731,8 @@ void SaveTVRTSI(uchar bBeforeOnline)
 	}
 	else
 	{
-		EMVGetTLVData(0x95,   glEmvStatus.sgTVRNew,  &iLength);
-		EMVGetTLVData(0x9B,   glEmvStatus.sgTSINew,  &iLength);
+		EMVGetTLVData(0x95, glEmvStatus.sgTVRNew, &iLength);
+		EMVGetTLVData(0x9B, glEmvStatus.sgTSINew, &iLength);
 	}
 	SaveEmvStatus();
 }
@@ -1741,22 +1742,22 @@ void UpdateEntryModeForOfflinePIN(void)
 	int		iRet, iLength;
 	uchar	sTemp[64];
 
-	if ( !(glProcInfo.stTranLog.uiEntryMode & MODE_CHIP_INPUT) )
+	if (!(glProcInfo.stTranLog.uiEntryMode & MODE_CHIP_INPUT))
 	{
 		return;
 	}
 
 	memset(sTemp, 0, sizeof(sTemp));
 	iRet = EMVGetTLVData(0x9F34, sTemp, &iLength);
-	if( iRet==EMV_OK )
+	if (iRet == EMV_OK)
 	{
 		sTemp[0] &= 0x3F;
-		if (sTemp[2]==0x02)		// last CVM succeed
+		if (sTemp[2] == 0x02)		// last CVM succeed
 		{
-			if (sTemp[0]==0x01 ||	// plaintext PIN
-				sTemp[0]==0x03 ||	// plaintext PIN and signature
-				sTemp[0]==0x04 ||	// enciphered PIN
-				sTemp[0]==0x05)	// enciphered PIN and signature
+			if (sTemp[0] == 0x01 ||	// plaintext PIN
+				sTemp[0] == 0x03 ||	// plaintext PIN and signature
+				sTemp[0] == 0x04 ||	// enciphered PIN
+				sTemp[0] == 0x05)	// enciphered PIN and signature
 			{
 				glProcInfo.stTranLog.uiEntryMode |= MODE_OFF_PIN;
 			}
@@ -1770,13 +1771,13 @@ int ViewTVR_TSI(void)
 {
 	int		iTemp;
 	GUI_PAGELINE stBuff[100];
-	unsigned char szHex[1+1];
+	unsigned char szHex[1 + 1];
 	int		nLine = 0;
 	GUI_PAGE stPage;
 	GUI_TEXT_ATTR stLeftAttr_Small = gl_stLeftAttr;
 
 	SetCurrTitle(_T("View TVR TSI")); // Added by Kim_LinHB 2014/9/16 v1.01.0009 bug493
-	if( PasswordBank()!=0 )
+	if (PasswordBank() != 0)
 	{
 		return ERR_NO_DISP;
 	}
@@ -1786,22 +1787,22 @@ int ViewTVR_TSI(void)
 	memset(stBuff, 0, sizeof(stBuff));
 	stLeftAttr_Small.eFontSize = GUI_FONT_SMALL;
 
-	sprintf(stBuff[nLine].szLine,"Before TSI=%02X %02X", glEmvStatus.sgTSIOld[0], glEmvStatus.sgTSIOld[1]);
+	sprintf(stBuff[nLine].szLine, "Before TSI=%02X %02X", glEmvStatus.sgTSIOld[0], glEmvStatus.sgTSIOld[1]);
 	stBuff[nLine++].stLineAttr = gl_stLeftAttr;
 
-	sprintf(stBuff[nLine].szLine,"TVR=%02X %02X %02X %02X %02X",
-								glEmvStatus.sgTVROld[0], glEmvStatus.sgTVROld[1], glEmvStatus.sgTVROld[2],
-								glEmvStatus.sgTVROld[3], glEmvStatus.sgTVROld[4]);
+	sprintf(stBuff[nLine].szLine, "TVR=%02X %02X %02X %02X %02X",
+		glEmvStatus.sgTVROld[0], glEmvStatus.sgTVROld[1], glEmvStatus.sgTVROld[2],
+		glEmvStatus.sgTVROld[3], glEmvStatus.sgTVROld[4]);
 	stBuff[nLine++].stLineAttr = stLeftAttr_Small;
 
 	sprintf(stBuff[nLine].szLine, "IssuAppData=");
 	stBuff[nLine++].stLineAttr = gl_stLeftAttr;
 
-	for(iTemp=0; iTemp<glEmvStatus.sgARQCLenOld; iTemp++)
-	{	
+	for (iTemp = 0; iTemp < glEmvStatus.sgARQCLenOld; iTemp++)
+	{
 		sprintf(szHex, "%02X", glEmvStatus.sgARQCOld[iTemp]);
 		strcat(stBuff[nLine].szLine, szHex);
-		if(0 == iTemp % 5)
+		if (0 == iTemp % 5)
 			++nLine;
 	}
 	stBuff[nLine++].stLineAttr = gl_stLeftAttr;
@@ -1810,60 +1811,60 @@ int ViewTVR_TSI(void)
 	stBuff[nLine++].stLineAttr = gl_stLeftAttr;
 
 	sprintf(stBuff[nLine].szLine, "TVR=%02X %02X %02X %02X %02X",
-								glEmvStatus.sgTVRNew[0], glEmvStatus.sgTVRNew[1], glEmvStatus.sgTVRNew[2],
-								glEmvStatus.sgTVRNew[3], glEmvStatus.sgTVRNew[4]);
+		glEmvStatus.sgTVRNew[0], glEmvStatus.sgTVRNew[1], glEmvStatus.sgTVRNew[2],
+		glEmvStatus.sgTVRNew[3], glEmvStatus.sgTVRNew[4]);
 	stBuff[nLine++].stLineAttr = stLeftAttr_Small;
 
 	strcpy(stBuff[nLine].szLine, "TACDenial =");
-	PubBcd2Asc0(glEmvStatus.sgTACDeinal, 5, stBuff[nLine].szLine+strlen("TACDenial ="));
+	PubBcd2Asc0(glEmvStatus.sgTACDeinal, 5, stBuff[nLine].szLine + strlen("TACDenial ="));
 	stBuff[nLine++].stLineAttr = stLeftAttr_Small;
 
 	strcpy(stBuff[nLine].szLine, "TACOnline =");
-	PubBcd2Asc0(glEmvStatus.sgTACOnline, 5, stBuff[nLine].szLine+strlen("TACOnline ="));
+	PubBcd2Asc0(glEmvStatus.sgTACOnline, 5, stBuff[nLine].szLine + strlen("TACOnline ="));
 	stBuff[nLine++].stLineAttr = stLeftAttr_Small;
 
 	strcpy(stBuff[nLine].szLine, "IACDenial =");
-	PubBcd2Asc0(glEmvStatus.sgIACDeinal, 5, stBuff[nLine].szLine+strlen("IACDenial ="));
+	PubBcd2Asc0(glEmvStatus.sgIACDeinal, 5, stBuff[nLine].szLine + strlen("IACDenial ="));
 	stBuff[nLine++].stLineAttr = stLeftAttr_Small;
 
 	strcpy(stBuff[nLine].szLine, "IACOnline =");
-	PubBcd2Asc0(glEmvStatus.sgIACOnline, 5, stBuff[nLine].szLine+strlen("IACOnline ="));
+	PubBcd2Asc0(glEmvStatus.sgIACOnline, 5, stBuff[nLine].szLine + strlen("IACOnline ="));
 	stBuff[nLine++].stLineAttr = stLeftAttr_Small;
 
 	strcpy(stBuff[nLine].szLine, "IACDefault =");
-	PubBcd2Asc0(glEmvStatus.sgIACDefault, 5, stBuff[nLine].szLine+strlen("IACDefault ="));
+	PubBcd2Asc0(glEmvStatus.sgIACDefault, 5, stBuff[nLine].szLine + strlen("IACDefault ="));
 	stBuff[nLine++].stLineAttr = stLeftAttr_Small;
 
 	Gui_CreateInfoPage(GetCurrTitle(), gl_stTitleAttr, stBuff, nLine, &stPage);
-	
+
 	Gui_ClearScr();
 	Gui_ShowInfoPage(&stPage, FALSE, USER_OPER_TIMEOUT);
 
-    if(glEmvStatus.sAppCryptoFirst[1] > 0 ||
-       glEmvStatus.sAppCryptoSecond[1] > 0 ||
-       glEmvStatus.sTLV[1] > 0) // Added by Kim 20150116 bug612
-    {
-        Gui_ClearScr();
-        if(GUI_OK != Gui_ShowMsgBox(GetCurrTitle(), gl_stTitleAttr, _T("PRINT DETAIL?"), gl_stCenterAttr, GUI_BUTTON_YandN, USER_OPER_TIMEOUT, NULL)){
-            return 0;
-        }
+	if (glEmvStatus.sAppCryptoFirst[1] > 0 ||
+		glEmvStatus.sAppCryptoSecond[1] > 0 ||
+		glEmvStatus.sTLV[1] > 0) // Added by Kim 20150116 bug612
+	{
+		Gui_ClearScr();
+		if (GUI_OK != Gui_ShowMsgBox(GetCurrTitle(), gl_stTitleAttr, _T("PRINT DETAIL?"), gl_stCenterAttr, GUI_BUTTON_YandN, USER_OPER_TIMEOUT, NULL)) {
+			return 0;
+		}
 
-        PrnInit();
-        PrnSetNormal();
-        PubDebugOutput("FIRST GAC", glEmvStatus.sAppCryptoFirst+2,
-                        glEmvStatus.sAppCryptoFirst[1],
-                        DEVICE_PRN, TLV_MODE);
-        PubDebugOutput("SECOND GAC", glEmvStatus.sAppCryptoSecond+2,
-                        glEmvStatus.sAppCryptoSecond[1],
-                        DEVICE_PRN, TLV_MODE);
-        PubDebugOutput("TRANS TLV", glEmvStatus.sTLV+2,
-                        glEmvStatus.sTLV[1],
-                        DEVICE_PRN, TLV_MODE);
+		PrnInit();
+		PrnSetNormal();
+		PubDebugOutput("FIRST GAC", glEmvStatus.sAppCryptoFirst + 2,
+			glEmvStatus.sAppCryptoFirst[1],
+			DEVICE_PRN, TLV_MODE);
+		PubDebugOutput("SECOND GAC", glEmvStatus.sAppCryptoSecond + 2,
+			glEmvStatus.sAppCryptoSecond[1],
+			DEVICE_PRN, TLV_MODE);
+		PubDebugOutput("TRANS TLV", glEmvStatus.sTLV + 2,
+			glEmvStatus.sTLV[1],
+			DEVICE_PRN, TLV_MODE);
 	}
-    return 0;
+	return 0;
 }
 
-unsigned char  cEMVPiccIsoCommand(unsigned char cid,APDU_SEND *ApduSend,APDU_RESP *ApduRecv)
+unsigned char  cEMVPiccIsoCommand(unsigned char cid, APDU_SEND *ApduSend, APDU_RESP *ApduRecv)
 {
 	return 0;
 }
@@ -1875,12 +1876,12 @@ unsigned char cPiccIsoCommand_Entry(uchar cid, APDU_SEND *ApduSend, APDU_RESP *A
 	return PiccIsoCommand(cid, ApduSend, ApduRecv);
 }
 
-unsigned char  cPiccIsoCommand_Pboc (unsigned char cid,APDU_SEND *ApduSend,APDU_RESP *ApduRecv)
+unsigned char  cPiccIsoCommand_Pboc(unsigned char cid, APDU_SEND *ApduSend, APDU_RESP *ApduRecv)
 {
 	return PiccIsoCommand(cid, ApduSend, ApduRecv);
 }
 
-unsigned char cPiccIsoCommand_Wave(uchar cid,APDU_SEND *ApduSend,APDU_RESP *ApduRecv)
+unsigned char cPiccIsoCommand_Wave(uchar cid, APDU_SEND *ApduSend, APDU_RESP *ApduRecv)
 {
 	return PiccIsoCommand(cid, ApduSend, ApduRecv);
 }
@@ -1891,7 +1892,7 @@ unsigned char cPiccIsoCommand_MC(uchar cid, APDU_SEND *ApduSend, APDU_RESP *Apdu
 }
 
 //added by kevinliu 2015/10/19
-unsigned char cPiccIsoCommand_AE(uchar cid,APDU_SEND *ApduSend,APDU_RESP *ApduRecv)
+unsigned char cPiccIsoCommand_AE(uchar cid, APDU_SEND *ApduSend, APDU_RESP *ApduRecv)
 {
 	return PiccIsoCommand(cid, ApduSend, ApduRecv);
 }
@@ -1901,12 +1902,12 @@ int cClssCheckExceptionFile_Pboc(uchar *pucPAN, int nPANLen, uchar *pucPANSeq)
 	return EMV_OK;
 }
 
-unsigned char cEMVSM2Verify(unsigned char *paucPubkeyIn,unsigned char *paucMsgIn,int nMsglenIn, unsigned char *paucSignIn, int nSignlenIn)
+unsigned char cEMVSM2Verify(unsigned char *paucPubkeyIn, unsigned char *paucMsgIn, int nMsglenIn, unsigned char *paucSignIn, int nSignlenIn)
 {
 	return EMV_OK;
 }
 
-unsigned char cEMVSM3(unsigned char *paucMsgIn, int nMsglenIn,unsigned char *paucResultOut)
+unsigned char cEMVSM3(unsigned char *paucMsgIn, int nMsglenIn, unsigned char *paucResultOut)
 {
 	return EMV_OK;
 }

@@ -83,6 +83,7 @@ static void initGUI(void) {
 			tempFonts[ii].Bold, tempFonts[ii].Italic));
 	}
 
+
 	if (sTermInfo[19] & 0x02) {
 		LOG_PRINTF(("IS COLOR"));
 
@@ -101,11 +102,13 @@ static void initGUI(void) {
 		stFont[0].Width = 6;
 		stFont[0].Height = 8;
 
-		stFont[1].Width = 8;
-		stFont[1].Height = 16;
+		stFont[1].Width = 6;
+		stFont[1].Height = 8;
+		stFont[1].Bold = 0;
 
-		stFont[2].Width = 12;
-		stFont[2].Height = 24;
+		stFont[2].Width = 8;
+		stFont[2].Height = 16;
+		stFont[2].Bold = 0;
 	}
 
 	ScrSelectFont(&stFont[0], NULL);

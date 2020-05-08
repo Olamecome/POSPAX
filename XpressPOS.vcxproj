@@ -66,6 +66,7 @@
     <ClCompile Include="src\SxxComSSL.c" />
     <ClCompile Include="src\terminalMgt.c" />
     <ClCompile Include="src\termSetup.c" />
+    <ClCompile Include="src\twister.c" />
     <ClCompile Include="src\xCrypto.c" />
     <ClCompile Include="src\xIsoUtils.c" />
     <ClCompile Include="src\xTime.c" />

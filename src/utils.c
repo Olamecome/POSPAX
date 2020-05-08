@@ -363,15 +363,7 @@ static int genRandom(unsigned char *buf, int len)
 }
 
 
-void generateSequence(int count, char* output) {
-	CLEAR_STRING(output, count);
-	
-	int len = count / 2;
-	unsigned char * buff = calloc(len, sizeof(unsigned char));
-	genRandom(buff, len);
-	PubBcd2Asc0(buff, len, output);
-	free(buff);
-}
+
 
 /**
 *

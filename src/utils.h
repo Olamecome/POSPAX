@@ -107,7 +107,7 @@ int GetAmountNew(char* title, char amount[12 + 1], uint amtType);
 
 void showCommError(int ret);
 
-void generateSequence(int count, char* output);
+extern void generateSequence(int count, char* output);
 
 void getRRN(char rrn[12 + 1]);
 

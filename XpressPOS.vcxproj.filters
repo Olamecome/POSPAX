@@ -224,6 +224,9 @@
     <ClCompile Include="src\emvlib.c">
       <Filter>Source Files\pax</Filter>
     </ClCompile>
+    <ClCompile Include="src\twister.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Logger.h">

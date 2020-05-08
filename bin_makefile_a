@@ -82,7 +82,8 @@ OBJ       = $(LOCOBJ)\init.o \
             $(LOCOBJ)\xui.o \
             $(LOCOBJ)\util.o \
             $(LOCOBJ)\utils.o \
-            $(LOCOBJ)\xCommon.o
+            $(LOCOBJ)\xCommon.o \
+            $(LOCOBJ)\twister.o
 
 #  ADS-ROM version
 $(NAME).elf: $(OBJ) C:\PAXPAY~2\myapp\XPRESS~1\BIN_MA~1
@@ -232,6 +233,8 @@ $(LOCOBJ)\utils.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\utils.c"
         $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\utils.c" -o "$(LOCOBJ)\utils.o"
 $(LOCOBJ)\xCommon.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\xCommon.c"
         $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\xCommon.c" -o "$(LOCOBJ)\xCommon.o"
+$(LOCOBJ)\twister.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\twister.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\twister.c" -o "$(LOCOBJ)\twister.o"
 
 		
 clean:

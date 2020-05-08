@@ -178,12 +178,12 @@ int setBaseTransactionField() {
 		glProcInfo.szTrack2[37] = '\0';
 	}
 
-	/*int j = 0;
+	int j = 0;
 	for (j = 0; j < strlen(glProcInfo.szTrack2); j++) {
 		if (glProcInfo.szTrack2[j] == '=') {
 			glProcInfo.szTrack2[j] = 'D';
 		}
-	}*/
+	}
 
 	ASSERT_RETURNCODE(
 		DL_ISO8583_MSG_SetField_Str(TRACK2_DATA_35, glProcInfo.szTrack2, &isoMsg));

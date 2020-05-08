@@ -147,6 +147,7 @@ void InitTransInfo(void)
 	glCommCfg = glPosParams.commConfig;
 }
 
+
 // 获得新的流水号
 // generate a new trace NO.
 ulong GetNewTraceNo(void)
@@ -155,7 +156,8 @@ ulong GetNewTraceNo(void)
 	glSysCtrl.ulSTAN++;
 	if (!(glSysCtrl.ulSTAN>0 && glSysCtrl.ulSTAN <= 999999L))
 	{
-		glSysCtrl.ulSTAN = 1L;
+		srand(DEVICE_GetTickCount());
+		glSysCtrl.ulSTAN = rand() % 3000;
 	}
 	SaveSysCtrlBase();
 

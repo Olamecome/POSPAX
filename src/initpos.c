@@ -63,7 +63,10 @@ void LoadEdcDefault(void)
 
 	memset(&glSysCtrl, 0, sizeof(SYS_CONTROL));
 	glSysCtrl.ulInvoiceNo = 1L;
-	glSysCtrl.ulSTAN      = 1L;
+	
+	srand(DEVICE_GetTickCount());
+	glSysCtrl.ulSTAN = rand() % 3000;
+
 	glSysCtrl.uiLastRecNo = 0xFFFF;
 	glSysCtrl.uiErrLogNo  = 0;
 	for(iCnt=0; iCnt<MAX_ACQ; iCnt++)
