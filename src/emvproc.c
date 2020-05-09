@@ -126,7 +126,7 @@ static DE55Tag sgStdEmvTagList[] =
 	{0x9A,   DE55_MUST_SET, 0},
 	{0x9C,   DE55_MUST_SET, 0},
 	{0x5F2A, DE55_MUST_SET, 0},
-	{0x5F30, DE55_MUST_SET, 0},
+	{0x5F30, DE55_OPT_SET,	0},
 	{0x5F34, DE55_MUST_SET, 1}, // notice it's limited to L=1
 	{0x9F02, DE55_MUST_SET, 0},
 	{0x9F03, DE55_MUST_SET, 0},
@@ -202,6 +202,7 @@ void InitTransEMVCfg(void)
 // if there is only one application in the chip, then EMV kernel will not call this callback function
 int cEMVWaitAppSel(int TryCnt, EMV_APPLIST List[], int AppNum)
 {
+	logTrace("==%s==", __func__);
 	int			iRet, iCnt, iAppCnt;
 	GUI_MENU		stAppMenu;
 	GUI_MENUITEM	stAppMenuItem[MAX_APP_NUM + 1];
@@ -257,7 +258,7 @@ int cEMVInputAmount(ulong *AuthAmt, ulong *CashBackAmt)
 		*AuthAmt = atol((char *)szTotalAmt);
 		if (CashBackAmt != NULL)
 		{
-			*CashBackAmt = 0L;
+			*CashBackAmt = atol(glProcInfo.stTranLog.szOtherAmount);
 		}
 	}
 	else
@@ -265,9 +266,18 @@ int cEMVInputAmount(ulong *AuthAmt, ulong *CashBackAmt)
 		*AuthAmt = 0L;
 		if (CashBackAmt != NULL)
 		{
-			*CashBackAmt = 0L;
+			*CashBackAmt = atol(glProcInfo.stTranLog.szOtherAmount);
 		}
 	}
+
+	/*if (glProcInfo.stTranLog.szOtherAmount[0] != 0) {
+		memset(szBuff, 0, sizeof(szBuff));
+		PubAsc2Bcd(glProcInfo.stTranLog.szOtherAmount, 12, szBuff);
+		EMVSetTLVData(0x9F03, (uchar *)szBuff, 6);
+	}
+	else {
+		EMVSetTLVData(0x9F03, (uchar *)"\x00\x00\x00\x00\x00\x00", 6);
+	}*/
 
 	if (glProcInfo.stTranLog.ucTranType == CASH)
 	{
@@ -326,6 +336,7 @@ int cEMVUnknowTLVData(ushort iTag, uchar *psDat, int iDataLen)
 // Modified by Kim_LinHB 2014-6-8 v1.01.0000
 int cEMVGetHolderPwd(int iTryFlag, int iRemainCnt, uchar *pszPlainPin)
 {
+	logTrace("==%s==", __func__);
 	int		iResult;
 	uchar	ucRet, szBuff[30], szAmount[15];
 	uchar	sPinBlock[8];
@@ -338,6 +349,7 @@ int cEMVGetHolderPwd(int iTryFlag, int iRemainCnt, uchar *pszPlainPin)
 		{
 			if (glProcInfo.stTranLog.uiEntryMode & MODE_PIN_INPUT)
 			{
+				logd(("Online pin entered"));
 				return EMV_OK;
 			}
 			else
@@ -500,6 +512,7 @@ ENTERPIN:
 // If not support, return REFER_DENIAL.
 int cEMVReferProc(void)
 {
+	logTrace("==%s==", __func__);
 	return REFER_DENIAL;
 }
 
@@ -507,6 +520,7 @@ int cEMVReferProc(void)
 // TC advise after EMV transaction. If not support, immediately return.
 void cEMVAdviceProc(void)
 {
+	logTrace("==%s==", __func__);
 	//	脱机通知的处理：
 	//	通过函数EMVGetTLVData()获得通知数据包需要的数据，存贮到交易日志中，
 	//	然后在交易结算时，再联机发送到主机。
@@ -553,6 +567,7 @@ int  cEMVOnlineProc(uchar *psRspCode, uchar *psAuthCode, int *piAuthCodeLen,
 	uchar *psAuthData, int *piAuthDataLen,
 	uchar *psScript, int *piScriptLen)
 {
+	logTrace("==%s==", __func__);
 	int		iRet, iLength, iRetryPIN;
 	ulong	ulICCDataLen;
 	uchar	*psICCData, *psTemp;
@@ -679,10 +694,17 @@ int FinishEmvTran(void)
 
 	// Process EMV transaction.
 	iRet = EMVProcTrans();
+	if (iRet != EMV_OK) {
+		logd(("EMV process failed:: %d", iRet));
+		int debug_info = -1;
+		EMVGetDebugInfo(0, NULL, &debug_info);
+		logd(("Debug Info: %d", debug_info));
+	}
 	SaveTVRTSI(FALSE);
 	UpdateEntryModeForOfflinePIN();
 	if (iRet == EMV_TIME_OUT || iRet == EMV_USER_CANCEL)
 	{
+		logd(("EMV user cancelled"));
 		return ERR_USERCANCEL;
 	}
 
@@ -926,6 +948,14 @@ int SetStdDE55(uchar bForUpLoad, const DE55Tag *pstList, uchar *psOutData, int *
 		for (iCnt = 0; pstList[iCnt].uiEmvTag != 0; iCnt++)
 		{
 			memset(sBuff, 0, sizeof(sBuff));
+
+			if (pstList[iCnt].uiEmvTag == 0x9F03) {
+				memset(sBuff, 0, sizeof(sBuff));
+				PubAsc2Bcd(glProcInfo.stTranLog.szOtherAmount, 12, sBuff);
+				iLength = 6;
+				BuildTLVString(pstList[iCnt].uiEmvTag, sBuff, iLength, &psTemp);
+				continue;
+			}
 			iRet = EMVGetTLVData(pstList[iCnt].uiEmvTag, sBuff, &iLength);
 			if (iRet == EMV_OK)
 			{

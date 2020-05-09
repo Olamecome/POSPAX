@@ -69,6 +69,9 @@ static uint32   state[N + 1];     // state vector + 1 extra to not violate ANSI 
 static uint32   *next;          // next random value is computed from here
 static int      left = -1;      // can *next++ this many times before reloading
 
+long getLongRand();
+int getIntRand();
+
 void seedMT(uint32 seed)
 {
 	//
@@ -185,18 +188,28 @@ int main(void)
 void generateSequence(int count, char* output) {
 	memset(output, '\0', count);
 
-	/*int len = count / 2;
-	unsigned char * buff = calloc(len, sizeof(unsigned char));
-	genRandom(buff, len);
-	PubBcd2Asc0(buff, len, output);
-	free(buff);*/
-
 	srand(DEVICE_GetTickCount());
 	seedMT(DEVICE_GetTickCount() + rand());
 	srand(randomMT());
 	int i;
 	for (i = 0; i < count; i++) {
-		output[i] = '0' + (rand() % 9);
+		output[i] = '0' + (
+			rand()
+			% 9);
 	}
 
+}
+
+int getIntRand() {
+	srand(DEVICE_GetTickCount());
+	seedMT(DEVICE_GetTickCount() + rand());
+	srand(randomMT());
+	return rand();
+}
+
+long getLongRand() {
+	srand(DEVICE_GetTickCount());
+	seedMT(DEVICE_GetTickCount() + rand());
+	//srand(randomMT());
+	return randomMT();
 }

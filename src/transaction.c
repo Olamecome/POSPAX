@@ -124,6 +124,9 @@ ENTER_AMT:
 
 		logTrace("Other Amount: %s", glProcInfo.stTranLog.szOtherAmount);
 	}
+	else {
+		sprintf((char *)glProcInfo.stTranLog.szOtherAmount, "%012ld", 0L);
+	}
 
 #ifdef ENABLE_ACCT_SEL
 	if (GUI_OK != GetAccountType("Account Type", &glProcInfo.stTranLog.ucAccountType)) {

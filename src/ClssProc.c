@@ -121,13 +121,13 @@ static DE55ClSSTag sgStdClssTagList[] =
 	{ 0x9F26, DE55_MUST_SET, 0 },
 	{ 0x9F27, DE55_MUST_SET, 0 },
 	{ 0x9F33, DE55_MUST_SET, 0 },
-	{ 0x9F34, DE55_MUST_SET, 0 },
+	{ 0x9F34, DE55_OPT_SET, 0 },
 	{ 0x9F35, DE55_MUST_SET, 0 },
 	{ 0x9F36, DE55_MUST_SET, 0 },
 	{ 0x9F37, DE55_MUST_SET, 0 },
 	{ 0x9F41, DE55_OPT_SET, 0 },
 	{ 0x9F53, DE55_OPT_SET, 0 },
-	{ 0x8E,	 DE55_MUST_SET, 0 },
+	{ 0x8E,	 DE55_OPT_SET, 0 },
 	{ 0x9F6E, DE55_OPT_SET, 0 },
 	{ 0 },
 };
@@ -229,7 +229,7 @@ int SetStdDEClSS55(uchar bForUpLoad, DE55ClSSTag *pstList, uchar *psOutData, int
 
 	for(iCnt=0; pstList[iCnt].uiEmvTag!=0; iCnt++)
 	{
-		memset(sBuff, 0, lengthOf(sBuff));
+		memset(sBuff, 0, sizeof(sBuff));
 		//在非接触L2 的qPBOC及payWave中,'终端性能(9F33)'数据元无法从这两个库中获取。
 		if (pstList[iCnt].uiEmvTag == 0x9F33)
 		{
@@ -237,6 +237,15 @@ int SetStdDEClSS55(uchar bForUpLoad, DE55ClSSTag *pstList, uchar *psOutData, int
 			memcpy(sBuff, glEmvParam.Capability, 3);
 			iLength = 3;
 			BuildCLSSTLVString(pstList[iCnt].uiEmvTag, sBuff, iLength, &psTemp);
+		} else if (pstList[iCnt].uiEmvTag == 0x9F03) {
+			PubAsc2Bcd(glProcInfo.stTranLog.szOtherAmount, 12, sBuff);
+			iLength = 6;
+			BuildCLSSTLVString(pstList[iCnt].uiEmvTag, sBuff, iLength, &psTemp);
+			continue;
+		} else if (pstList[iCnt].uiEmvTag == 0x9F35) {
+			iLength = 1;
+			BuildCLSSTLVString(pstList[iCnt].uiEmvTag, (uchar*)"\x22", iLength, &psTemp);
+			continue;
 		}
 		else
 		{
@@ -1105,7 +1114,7 @@ int ClssPreProcTxnParam()
 
 	//pre-process
 	memset(&ClssTransParam, 0, sizeof(Clss_TransParam));
-	ClssTransParam.ulAmntAuth = atol((char *)glProcInfo.stTranLog.szAmount);// +atol((char *)glProcInfo.stTranLog.szOtherAmount);
+	ClssTransParam.ulAmntAuth = atol((char *)glProcInfo.stTranLog.szAmount) + atol((char *)glProcInfo.stTranLog.szOtherAmount);
 	ClssTransParam.ulAmntOther = atol((char *)glProcInfo.stTranLog.szOtherAmount);// 0;
 	ClssTransParam.ucTransType = 0x00;//EMV_GOODS;
 	PubAsc2Bcd(glProcInfo.stTranLog.szDateTime+2, 6, ClssTransParam.aucTransDate);
@@ -1199,6 +1208,10 @@ int TransClssSale(uchar skipDetect)
 	}
 
 
+	//DispWait();
+	CommDial(DM_PREDIAL);
+
+
 	while(1)
 	{
 		//contactless transaction flow
@@ -1245,6 +1258,7 @@ int TransClssSale(uchar skipDetect)
 			break;
 		}
 	}
+
 
 	ucKernType = ucAppGetAppType();
 	ucPathType = ucAppGetTransPath();

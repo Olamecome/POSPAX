@@ -24,17 +24,18 @@ int sendHttpRequest(uchar httpMethod, const char* hostURL, const char* postData,
 	Debug[1] = DEBUG_PRI_CHAR;
 	HttpParaCtl(0, HTTP_CMD_SET_DEBUG, Debug, 2);
 #endif // APP_DEBUG
-
+	
+	int dial_mode = DM_PREDIAL;
 	DispDial();
-	ret = CommDial(DM_DIAL);
+	ret = CommDial(dial_mode);
 	if (ret != 0)
 	{
 		//Retry
 		DispDial();
-		if (0 != (ret = CommDial(DM_DIAL))) {
+		if (0 != (ret = CommDial(dial_mode))) {
 			DispCommErrMsg(ret);
 			logTrace("CommDial failed");
-			CommOnHook(TRUE);
+			CommOnHook(FALSE);
 			return ret;
 		}
 	}
@@ -42,7 +43,7 @@ int sendHttpRequest(uchar httpMethod, const char* hostURL, const char* postData,
 
 	int sockfd = HttpCreate();
 	if (sockfd < 0) {
-		DispErrMsg("Check Connection", "HTTP library init failed", 10, DERR_BEEP);
+		DispErrMsg(GetCurrTitle(), "HTTP library init failed", 10, DERR_BEEP);
 		return -1;
 	}
 	logd(("socfd=%d", sockfd));
@@ -91,7 +92,7 @@ int sendHttpRequest(uchar httpMethod, const char* hostURL, const char* postData,
 		logd(("HTTP Send failed = %d", sl));
 		showCommError(sl);
 		HttpClose(sockfd);
-		CommOnHook(TRUE);
+		CommOnHook(FALSE);
 		return -1;
 	} else {
 		logd(("HTTP Send GET status = %d", sl));
@@ -120,13 +121,13 @@ int sendHttpRequest(uchar httpMethod, const char* hostURL, const char* postData,
 			logd(("recv failed"));
 			DispErrMsg("Request Failed", "Receive Error", 10, DERR_BEEP);
 			HttpClose(sockfd);
-			CommOnHook(TRUE);
+			CommOnHook(FALSE);
 			return -1;
 		}
 	}
 
 	HttpClose(sockfd);
-	CommOnHook(TRUE);
+	CommOnHook(FALSE);
 	
 	return 0;
 }

@@ -9,6 +9,24 @@ void resetTransactionData() {
 }
 
 
+static void resetFallbackInfo() {
+	SYS_PROC_INFO temp = glProcInfo;
+	resetTransactionData();
+	glProcInfo.stTranLog.ucTranType = temp.stTranLog.ucTranType;
+	glProcInfo.stTranLog.ucAccountType = temp.stTranLog.ucAccountType;
+	memcpy(glProcInfo.stTranLog.szAmount, temp.stTranLog.szAmount, sizeof(glProcInfo.stTranLog.szAmount));
+	memcpy(glProcInfo.stTranLog.szOtherAmount, temp.stTranLog.szOtherAmount, sizeof(glProcInfo.stTranLog.szOtherAmount));
+
+	strmcpy(glProcInfo.stTranLog.szOrgAmount, temp.stTranLog.szOrgAmount, lengthOf(glProcInfo.stTranLog.szOrgAmount));
+	strmcpy(glProcInfo.stTranLog.szOrgDateTime, temp.stTranLog.szOrgDateTime, lengthOf(glProcInfo.stTranLog.szOrgDateTime));
+	strmcpy(glProcInfo.stTranLog.szOrgRRN, temp.stTranLog.szOrgRRN, lengthOf(glProcInfo.stTranLog.szOrgRRN));
+	strmcpy(glProcInfo.stTranLog.szOriginalForwdInstCode, temp.stTranLog.szOriginalForwdInstCode, lengthOf(glProcInfo.stTranLog.szOriginalForwdInstCode));
+	glProcInfo.stTranLog.ucOrgTranType = temp.stTranLog.ucOrgTranType;
+	glProcInfo.stTranLog.ulOrgSTAN = temp.stTranLog.ulOrgSTAN;
+
+}
+
+
 static void notifyTransaction() {
 	DispMessage("Sending Notification");
 	RunnerData runnerData = { 0 };
@@ -33,7 +51,6 @@ static int statusReceiptAndNotification() {
 	
 	if (!ChkHardware(HWCFG_PRINTER, 0) &&  checkPrinter())
 	{
-		//PrintReceipt(PRN_NORMAL);
 		printTransactionReceipt(&glProcInfo.stTranLog, CUSTOMER_COPY, 0);
 		PubWaitKey(1);
 		printTransactionReceipt(&glProcInfo.stTranLog, MERCHANT_COPY, 0);
@@ -71,7 +88,7 @@ static int finishContactTransaction() {
 
 	if (ret == ERR_NEED_FALLBACK) {
 		logd(("Fallback required"));
-		resetTransactionData();
+		resetFallbackInfo();
 		return startEmvTransaction(FALLBACK_SWIPE, glProcInfo.stTranLog.ucTranType, glProcInfo.stTranLog.szAmount, glProcInfo.stTranLog.szOtherAmount);
 	} 
 
@@ -85,12 +102,11 @@ static int finishContactTransaction() {
 
 int finishContactlessTransaction() {
 	logTrace(__func__);
-	CommDial(DM_PREDIAL);
 	int ret = TransClssSale(TRUE);
 
 	if (ret == ERR_NEED_FALLBACK) {
 		logd(("Fallback required"));
-		resetTransactionData();
+		resetFallbackInfo();
 
 		return startEmvTransaction(CARD_INSERTED, glProcInfo.stTranLog.ucTranType, glProcInfo.stTranLog.szAmount, glProcInfo.stTranLog.szOtherAmount);
 	} else if (0 == ret) {//Normal processing completed (approved or declined)

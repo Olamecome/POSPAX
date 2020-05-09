@@ -116,8 +116,11 @@ void LoadEmvDefault(void)
 	glEmvParam.SurportPSESel = 1;
 	EMVSetParameter(&glEmvParam);
 
+#ifdef APP_DEBUG
 	InitTestApps();
 	InitTestKeys();
+#endif // APP_DEBUG
+
 	InitLiveApps();
 	InitLiveKeys();
 

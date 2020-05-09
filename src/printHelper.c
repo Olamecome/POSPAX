@@ -4,10 +4,6 @@
 
 
 int checkPrinter() {
-
-#ifdef  DEV
-	return 1;
-#endif //  DEV
 	int ret = PrnStatus();
 	logd(("Printer check: %d", ret));
 	if (ret != PRN_OK) {

@@ -84,7 +84,6 @@ Set to correct macro before compile
 #define ENABLE_EMV			// Link EMV lib into the application.
 #define EMV_TEST_VERSION	// use hard coded emv parameters for EMV test. Valid only when ENABLE_EMV defined
 #define APP_DEBUG			// debug mode
-#define DEV					// Dev mode
 //#define FUN2_READ_ONLY	// Allow operator to modify FUNCTION 2.
 #define ENABLE_CONTLESS   // Contactless card support (CLSS)
 
