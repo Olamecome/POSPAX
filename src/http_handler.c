@@ -18,7 +18,7 @@ int sendHttpRequest(uchar httpMethod, const char* hostURL, const char* postData,
 
 	int ret = -1;
 
-#ifdef APP_DEBUG
+#ifdef _DEBUG//APP_DEBUG
 	char Debug[2];
 	Debug[0] = 1;
 	Debug[1] = DEBUG_PRI_CHAR;

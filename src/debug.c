@@ -11,7 +11,7 @@
 static unsigned int debugPort = 0;
 
 
-#ifdef APP_DEBUG
+#ifdef _DEBUG
 
 #define LEN_DBGDATA         1024    // Maximum debug data length
 #define MAX_CHARS           5       // Max characters per line in debug usage
@@ -114,7 +114,7 @@ void setDebugPort(unsigned int port) {
 // int g_hnd=-1;
 void send_log(char *a_szTxt)
 {
-#ifdef  APP_DEBUG
+#ifdef  _DEBUG
 	unsigned char ucRet;
 
 	//	ucRet=PortOpen(0,(unsigned char*)"230400,8,n,1");
@@ -152,7 +152,7 @@ void send_log(char *a_szTxt)
 	// 		}
 	// 	}
 
-#endif //  APP_DEBUG
+#endif //  _DEBUG
 }
 
 void prepare_header(char *a_szDest, char*a_szFile, long a_lLine)
