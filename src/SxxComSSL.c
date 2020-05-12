@@ -622,12 +622,24 @@ int SxxSSLRxd(uchar *psRxdData, ushort uiExpLen, ushort uiTimeOutSec, ushort *pu
 	
 	rcvTimeOut = uiTimeOutSec * 1000;
 	
-	iRet = SslRecv(sslCon.sslSock, psRxdData, uiExpLen);
-	if(iRet > 0) {
-		*puiOutLen = iRet;
-	} else {
-		*puiOutLen = 0;
+	while (1) {
+		iRet = SslRecv(sslCon.sslSock, psRxdData, uiExpLen);
+
+		if (iRet == 1) {
+			//Posvas nonsense.  Header is sent first before message.
+			logHexString("POSVAS RECV: ", psRxdData, iRet);
+			continue;
+		}
+
+		if(iRet > 0) {
+			*puiOutLen = iRet;
+		} else {
+			*puiOutLen = 0;
+		}
+
+		break;
 	}
+
 	
 	return iRet;
 }

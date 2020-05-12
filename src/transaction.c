@@ -68,6 +68,10 @@ static int getOriginalTransaction() {
 			strmcpy(glProcInfo.stTranLog.szOriginalForwdInstCode, trans.szOriginalForwdInstCode, lengthOf(glProcInfo.stTranLog.szOriginalForwdInstCode));
 			glProcInfo.stTranLog.ucOrgTranType = trans.ucTranType;
 			glProcInfo.stTranLog.ulOrgSTAN = trans.ulSTAN;
+
+			if (glProcInfo.stTranLog.ucTranType == REVERSAL) {
+				strmcpy(glProcInfo.stTranLog.szRRN, trans.szRRN, lengthOf(glProcInfo.stTranLog.szRRN));
+			}
 			return 0;
 		}
 	}
@@ -80,14 +84,14 @@ int transaction(uchar tranType) {
 
 	clearScreen();
 	SetCurrTitle(getTransactionTitle(tranType));
-	glProcInfo.stTranLog.ucTranType = tranType;
-
+	
 	if (!checkTerminalPrepStatus())// || !checkPrinter()) 
 	{
 		return -1;
 	}
 
 	resetTransactionData();
+	glProcInfo.stTranLog.ucTranType = tranType;
 
 	if (glPosParams.tranRecordCount >= MAX_TRANLOG) {
 		DispErrMsg("Memory Full", "Run Close Batch!!!", USER_OPER_TIMEOUT, DERR_BEEP);

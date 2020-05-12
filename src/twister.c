@@ -55,6 +55,13 @@
 // GCC at -O3 optimization so try your options and see what's best for you
 //
 
+
+long getLongRand();
+int getIntRand();
+unsigned long mix(unsigned long a, unsigned long b, unsigned long c);
+
+
+
 typedef unsigned long uint32;
 
 #define N              (624)                 // length of state vector
@@ -68,9 +75,6 @@ typedef unsigned long uint32;
 static uint32   state[N + 1];     // state vector + 1 extra to not violate ANSI C
 static uint32   *next;          // next random value is computed from here
 static int      left = -1;      // can *next++ this many times before reloading
-
-long getLongRand();
-int getIntRand();
 
 void seedMT(uint32 seed)
 {
@@ -190,7 +194,9 @@ void generateSequence(int count, char* output) {
 
 	srand(DEVICE_GetTickCount());
 	seedMT(DEVICE_GetTickCount() + rand());
-	srand(randomMT());
+	unsigned long seed = mix(DEVICE_GetTickCount(), randomMT(), rand());
+	srand(seed);
+
 	int i;
 	for (i = 0; i < count; i++) {
 		output[i] = '0' + (
@@ -200,16 +206,34 @@ void generateSequence(int count, char* output) {
 
 }
 
+unsigned long mix(unsigned long a, unsigned long b, unsigned long c)
+{
+	a = a - b;  a = a - c;  a = a ^ (c >> 13);
+	b = b - c;  b = b - a;  b = b ^ (a << 8);
+	c = c - a;  c = c - b;  c = c ^ (b >> 13);
+	a = a - b;  a = a - c;  a = a ^ (c >> 12);
+	b = b - c;  b = b - a;  b = b ^ (a << 16);
+	c = c - a;  c = c - b;  c = c ^ (b >> 5);
+	a = a - b;  a = a - c;  a = a ^ (c >> 3);
+	b = b - c;  b = b - a;  b = b ^ (a << 10);
+	c = c - a;  c = c - b;  c = c ^ (b >> 15);
+	return c;
+}
+
 int getIntRand() {
 	srand(DEVICE_GetTickCount());
 	seedMT(DEVICE_GetTickCount() + rand());
-	srand(randomMT());
+	unsigned long seed = mix(DEVICE_GetTickCount(), randomMT(), rand());
+	srand(seed);
+
 	return rand();
 }
 
 long getLongRand() {
 	srand(DEVICE_GetTickCount());
 	seedMT(DEVICE_GetTickCount() + rand());
-	//srand(randomMT());
+	unsigned long seed = mix(DEVICE_GetTickCount(), randomMT(), rand());
+	seedMT(seed);
+	
 	return randomMT();
 }
