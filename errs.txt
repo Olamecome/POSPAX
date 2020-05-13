@@ -63,9 +63,15 @@ In file included from C:\PaxPayPro2017\myapp\XpressPOS\src\/xDefs.h:11,
                  from C:\PaxPayPro2017\myapp\XpressPOS\src\/global.h:207,
                  from C:\PaxPayPro2017\myapp\XpressPOS\src\ClssProc.c:1:
 C:/PAXPAY~2/include/stddef.h:478:22: warning: no newline at end of file
+C:\PaxPayPro2017\myapp\XpressPOS\src\ClssProc.c: In function 'GetPanFromTrack2':
+C:\PaxPayPro2017\myapp\XpressPOS\src\ClssProc.c:368: warning: passing argument 1 of 'log_formater' discards qualifiers from pointer target type
+C:\PaxPayPro2017\myapp\XpressPOS\src\ClssProc.c: In function 'ClssProcFlow_MC':
+C:\PaxPayPro2017\myapp\XpressPOS\src\ClssProc.c:598: warning: passing argument 1 of 'log_formater' discards qualifiers from pointer target type
 C:\PaxPayPro2017\myapp\XpressPOS\src\ClssProc.c: In function 'TransClssSale':
 C:\PaxPayPro2017\myapp\XpressPOS\src\ClssProc.c:1585: warning: passing argument 3 of 'SetClSSDE55' from incompatible pointer type
 C:\PaxPayPro2017\myapp\XpressPOS\src\ClssProc.c:1594: warning: passing argument 3 of 'SetClSSDE55' from incompatible pointer type
+C:\PaxPayPro2017\myapp\XpressPOS\src\ClssProc.c: In function 'ClssCompleteTrans_AE':
+C:\PaxPayPro2017\myapp\XpressPOS\src\ClssProc.c:1770: warning: passing argument 1 of 'log_formater' discards qualifiers from pointer target type
 C:\PaxPayPro2017\myapp\XpressPOS\src\ClssProc.c: In function 'Clss_transmit':
 C:\PaxPayPro2017\myapp\XpressPOS\src\ClssProc.c:2074: warning: passing argument 3 of 'SetClSSDE55' from incompatible pointer type
 In file included from C:\PaxPayPro2017\myapp\XpressPOS\src\/global.h:140,
@@ -89,6 +95,10 @@ C:\PaxPayPro2017\myapp\XpressPOS\src\commlib.c: In function 'CommInitModule':
 C:\PaxPayPro2017\myapp\XpressPOS\src\commlib.c:343: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
 C:\PaxPayPro2017\myapp\XpressPOS\src\commlib.c: In function 'CommSetCfgParam':
 C:\PaxPayPro2017\myapp\XpressPOS\src\commlib.c:378: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
+C:\PaxPayPro2017\myapp\XpressPOS\src\commlib.c: In function 'CommDial':
+C:\PaxPayPro2017\myapp\XpressPOS\src\commlib.c:496: warning: passing argument 1 of 'log_formater' discards qualifiers from pointer target type
+C:\PaxPayPro2017\myapp\XpressPOS\src\commlib.c: In function 'UpdateTimer':
+C:\PaxPayPro2017\myapp\XpressPOS\src\commlib.c:1768: warning: passing argument 1 of 'log_formater' discards qualifiers from pointer target type
 In file included from C:\PaxPayPro2017\myapp\XpressPOS\src\/global.h:140,
                  from C:\PaxPayPro2017\myapp\XpressPOS\src\commproc.c:2:
 C:/PAXPAY~2/include/Stdarg.h:151:22: warning: no newline at end of file
@@ -594,6 +604,8 @@ In file included from C:\PaxPayPro2017\myapp\XpressPOS\src\/xDefs.h:11,
                  from C:\PaxPayPro2017\myapp\XpressPOS\src\/Logger.h:10,
                  from C:\PaxPayPro2017\myapp\XpressPOS\src\Logger.c:8:
 C:/PAXPAY~2/include/stddef.h:478:22: warning: no newline at end of file
+C:\PaxPayPro2017\myapp\XpressPOS\src\Logger.c: In function 'logHexString':
+C:\PaxPayPro2017\myapp\XpressPOS\src\Logger.c:65: warning: passing argument 4 of 'log_hex_printf' discards qualifiers from pointer target type
 In file included from C:\PaxPayPro2017\myapp\XpressPOS\src\/global.h:140,
                  from C:\PaxPayPro2017\myapp\XpressPOS\src\main.c:2:
 C:/PAXPAY~2/include/Stdarg.h:151:22: warning: no newline at end of file
@@ -949,6 +961,8 @@ In file included from C:\PaxPayPro2017\myapp\XpressPOS\src\/xDefs.h:11,
                  from C:\PaxPayPro2017\myapp\XpressPOS\src\/global.h:207,
                  from C:\PaxPayPro2017\myapp\XpressPOS\src\ProcTrans.c:3:
 C:/PAXPAY~2/include/stddef.h:478:22: warning: no newline at end of file
+C:\PaxPayPro2017\myapp\XpressPOS\src\ProcTrans.c: In function 'nAppTransProc_MC':
+C:\PaxPayPro2017\myapp\XpressPOS\src\ProcTrans.c:872: warning: passing argument 1 of 'log_formater' discards qualifiers from pointer target type
 In file included from C:\PaxPayPro2017\myapp\XpressPOS\src\/global.h:140,
                  from C:\PaxPayPro2017\myapp\XpressPOS\src\transaction.c:1:
 C:/PAXPAY~2/include/Stdarg.h:151:22: warning: no newline at end of file
@@ -1042,15 +1056,13 @@ In file included from C:\PaxPayPro2017\myapp\XpressPOS\src\/xDefs.h:11,
 C:/PAXPAY~2/include/stddef.h:478:22: warning: no newline at end of file
 In file included from C:\PaxPayPro2017\myapp\XpressPOS\src\services.c:3:
 C:\PaxPayPro2017\myapp\XpressPOS\src\/records.h:25:24: warning: no newline at end of file
-C:\PaxPayPro2017\myapp\XpressPOS\src\services.c: In function 'checkConnection':
-C:\PaxPayPro2017\myapp\XpressPOS\src\services.c:93: warning: passing argument 1 of 'showMessageDialog' discards qualifiers from pointer target type
 C:\PaxPayPro2017\myapp\XpressPOS\src\services.c: In function 'reprint':
-C:\PaxPayPro2017\myapp\XpressPOS\src\services.c:111: warning: 'return' with a value, in function returning void
+C:\PaxPayPro2017\myapp\XpressPOS\src\services.c:129: warning: 'return' with a value, in function returning void
 C:\PaxPayPro2017\myapp\XpressPOS\src\services.c: In function 'summaryReport':
-C:\PaxPayPro2017\myapp\XpressPOS\src\services.c:155: warning: 'return' with a value, in function returning void
+C:\PaxPayPro2017\myapp\XpressPOS\src\services.c:173: warning: 'return' with a value, in function returning void
 C:\PaxPayPro2017\myapp\XpressPOS\src\services.c: In function 'endOfDay':
-C:\PaxPayPro2017\myapp\XpressPOS\src\services.c:194: warning: 'return' with a value, in function returning void
-C:\PaxPayPro2017\myapp\XpressPOS\src\services.c:262:2: warning: no newline at end of file
+C:\PaxPayPro2017\myapp\XpressPOS\src\services.c:212: warning: 'return' with a value, in function returning void
+C:\PaxPayPro2017\myapp\XpressPOS\src\services.c:280:2: warning: no newline at end of file
 In file included from C:\PaxPayPro2017\myapp\XpressPOS\src\/global.h:140,
                  from C:\PaxPayPro2017\myapp\XpressPOS\src\setup.c:2:
 C:/PAXPAY~2/include/Stdarg.h:151:22: warning: no newline at end of file
@@ -1128,6 +1140,12 @@ In file included from C:\PaxPayPro2017\myapp\XpressPOS\src\/xDefs.h:11,
                  from C:\PaxPayPro2017\myapp\XpressPOS\src\/global.h:207,
                  from C:\PaxPayPro2017\myapp\XpressPOS\src\SxxCom.c:2:
 C:/PAXPAY~2/include/stddef.h:478:22: warning: no newline at end of file
+C:\PaxPayPro2017\myapp\XpressPOS\src\SxxCom.c: In function 'SxxTcpConnect':
+C:\PaxPayPro2017\myapp\XpressPOS\src\SxxCom.c:23: warning: passing argument 1 of 'log_formater' discards qualifiers from pointer target type
+C:\PaxPayPro2017\myapp\XpressPOS\src\SxxCom.c: In function 'SxxTcpTxd':
+C:\PaxPayPro2017\myapp\XpressPOS\src\SxxCom.c:140: warning: passing argument 1 of 'log_formater' discards qualifiers from pointer target type
+C:\PaxPayPro2017\myapp\XpressPOS\src\SxxCom.c: In function 'SXXWlDial':
+C:\PaxPayPro2017\myapp\XpressPOS\src\SxxCom.c:444: warning: passing argument 1 of 'log_formater' discards qualifiers from pointer target type
 In file included from C:\PaxPayPro2017\myapp\XpressPOS\src\/global.h:140,
                  from C:\PaxPayPro2017\myapp\XpressPOS\src\SxxComSSL.c:15:
 C:/PAXPAY~2/include/Stdarg.h:151:22: warning: no newline at end of file
@@ -1146,6 +1164,14 @@ In file included from C:\PaxPayPro2017\myapp\XpressPOS\src\/xDefs.h:11,
                  from C:\PaxPayPro2017\myapp\XpressPOS\src\SxxComSSL.c:15:
 C:/PAXPAY~2/include/stddef.h:478:22: warning: no newline at end of file
 C:\PaxPayPro2017\myapp\XpressPOS\src\SxxComSSL.c:257: warning: initialization from incompatible pointer type
+C:\PaxPayPro2017\myapp\XpressPOS\src\SxxComSSL.c: In function 'SxxSSLObjInit':
+C:\PaxPayPro2017\myapp\XpressPOS\src\SxxComSSL.c:397: warning: passing argument 1 of 'log_formater' discards qualifiers from pointer target type
+C:\PaxPayPro2017\myapp\XpressPOS\src\SxxComSSL.c: In function 'SxxSSLConnect':
+C:\PaxPayPro2017\myapp\XpressPOS\src\SxxComSSL.c:423: warning: passing argument 1 of 'log_formater' discards qualifiers from pointer target type
+C:\PaxPayPro2017\myapp\XpressPOS\src\SxxComSSL.c: In function 'SxxSSLConnectCheck':
+C:\PaxPayPro2017\myapp\XpressPOS\src\SxxComSSL.c:575: warning: passing argument 1 of 'log_formater' discards qualifiers from pointer target type
+C:\PaxPayPro2017\myapp\XpressPOS\src\SxxComSSL.c: In function 'SxxSSLTxd':
+C:\PaxPayPro2017\myapp\XpressPOS\src\SxxComSSL.c:604: warning: passing argument 1 of 'log_formater' discards qualifiers from pointer target type
 In file included from C:\PaxPayPro2017\myapp\XpressPOS\src\/global.h:140,
                  from C:\PaxPayPro2017\myapp\XpressPOS\src\/terminalMgt.h:2,
                  from C:\PaxPayPro2017\myapp\XpressPOS\src\terminalMgt.c:1:

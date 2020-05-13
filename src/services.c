@@ -1,12 +1,30 @@
 #include "global.h"
 #include "xui.h"
 #include "records.h"
+#include "http_handler.h"
 
 extern int doNibssEod();
 
 static void checkConnection() {
-	char* url = "http://216.58.223.238";
-	char params[5] = { 0 };
+	char* url = "http://www.google.com";
+
+	MemoryStruct chunk = { 0 };
+	int ret = sendHttpRequest(HTTP_GET, url, NULL, 0, NULL, 0, &chunk);
+	if (chunk.memory) {
+		free(chunk.memory);
+	}
+
+	if (ret == 0) {
+		//logTrace("Data Received:\n%s\nreceived length: %d", receivedData, reclen);
+		PubBeepOk();
+		showMessageDialog("Check Connection", "Connection OK", 1, 10);
+	}
+	else {
+		DispErrMsg("Check Connection", "Connection Error", 10, DERR_BEEP);
+	}
+
+
+	/*char params[5] = { 0 };
 	char* receivedData = NULL;
 	int reclen = 0;
 	char temp[100] = { 0 };
@@ -101,7 +119,7 @@ static void checkConnection() {
 
 	CommOnHook(FALSE);
 	HttpClose(sockfd);
-	return;
+	return;*/
 
 }
 
