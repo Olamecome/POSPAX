@@ -54,7 +54,7 @@ int sendHttpRequest(uchar httpMethod, const char* hostURL, const char* postData,
 	HttpParaCtl(sockfd, HTTP_CMD_SET_PROTO, params, 1);
 
 	memset(params, 0, lengthOf(params));
-	strcat(params, "180");	
+	strcat(params, "240"); //4 minutes	
 	HttpParaCtl(sockfd, HTTP_CMD_SET_TIMEOUT, params, strlen(params));
 
 	memset(params, 0, lengthOf(params));
