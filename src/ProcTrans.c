@@ -314,7 +314,7 @@ void ClssBaseParameterSet_WAVE(void)
 
 	tVisaAidParam.ucDomesticOnly = 0x00; // 01(default):only supports domestic cl transaction
 	tVisaAidParam.ucEnDDAVerNo = 0;// fDDA ver 00 & 01 are all supported
-	tVisaAidParam.ulTermFLmt = 500;
+	tVisaAidParam.ulTermFLmt = 0;
 	Clss_SetVisaAidParam_Wave(&tVisaAidParam);
 
 }
@@ -390,7 +390,7 @@ void ClssTermParamSet_JCB(void)
 	nSetDETData("\xDF\x81\x22", 3, "\xF8\x50\xAC\xF8\x00", 5);//TAC online
 	
 	//[1/9/2015 jiangjy] limit  set for AID
-	nSetDETData("\xDF\x81\x23", 3, "\x00\x00\x00\x00\x05\x00", 6);//floor limit
+	nSetDETData("\xDF\x81\x23", 3, "\x00\x00\x00\x00\x00\x00", 6);//floor limit
 	nSetDETData("\xDF\x81\x24", 3, "\x00\x00\x00\x10\x00\x00", 6);
 	nSetDETData("\xDF\x81\x26", 3, "\x00\x00\x00\x00\x50\x00", 6);//cvm limit 
 
@@ -450,7 +450,7 @@ void ClssTermParamSet_DPAS(void)
 
 	nSetDETData("\xDF\x81\x22", 3, "\xF8\x50\xAC\xF8\x00", 5);//TAC online
 	//[1/9/2015 jiangjy] limit  set for AID
-	nSetDETData("\xDF\x81\x23", 3, "\x00\x00\x00\x00\x05\x00", 6);//floor limit
+	nSetDETData("\xDF\x81\x23", 3, "\x00\x00\x00\x00\x00\x00", 6);//floor limit
 	nSetDETData("\xDF\x81\x24", 3, "\x0\x00\x00\x10\x00\x00", 6);
 	nSetDETData("\xDF\x81\x26", 3, "\x00\x00\x00\x00\x50\x00", 6);//cvm limit
 
@@ -582,7 +582,7 @@ void ClssTermParamSet_MC(void)//for paypass
 	nSetDETData("\xDF\x81\x22", 3, "\xF8\x50\xAC\xF8\x00", 5);//TAC online
 
 															  //[1/9/2015 jiangjy] limit  set for AID
-	nSetDETData("\xDF\x81\x23", 3, "\x00\x00\x00\x00\x50\x00", 6);//floor limit
+	nSetDETData("\xDF\x81\x23", 3, "\x00\x00\x00\x00\x00\x00", 6);//floor limit
 	nSetDETData("\xDF\x81\x24", 3, "\x00\x00\x00\x20\x00\x00", 6);
 	nSetDETData("\xDF\x81\x25", 3, "\x00\x00\x00\x20\x00\x00", 6);
 	nSetDETData("\xDF\x81\x26", 3, "\x00\x00\x00\x10\x00\x00", 6);//cvm limit

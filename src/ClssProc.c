@@ -1917,10 +1917,10 @@ int ClssTransInit()
 		}
 
 		memset(&glClss_PreProcInfoIn, 0, sizeof(Clss_PreProcInfo));
-		glClss_PreProcInfoIn.ulTermFLmt = 500;	//Terminal Offline limit
+		glClss_PreProcInfoIn.ulTermFLmt = 0;// 500;	//Terminal Offline limit
 		glClss_PreProcInfoIn.ulRdClssTxnLmt = 100000;	//Reader contactless transaction limit
 		glClss_PreProcInfoIn.ulRdCVMLmt = 5000;	//Reader CVM limit
-		glClss_PreProcInfoIn.ulRdClssFLmt = 500;	//Reader contactless Offline limit
+		glClss_PreProcInfoIn.ulRdClssFLmt = 0;// 500;	//Reader contactless Offline limit
 
 		memcpy(glClss_PreProcInfoIn.aucAID, EMV_APP.AID, EMV_APP.AidLen);
 		glClss_PreProcInfoIn.ucAidLen = EMV_APP.AidLen;
