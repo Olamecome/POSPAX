@@ -502,7 +502,9 @@ int SXXWlDial(const WIRELESS_PARAM *pstWlPara, int iTimeOut, int iAliveInterval,
 		if (iRet == 0)
 		{
 			logd(("PPP connected, jumping to TCPCONNECT"));
-			break;//goto TCPCONNECT; //jump disabled because of 
+			goto TCPCONNECT;
+			//break;//jump disabled because of 
+			
 		}
 	}
 
