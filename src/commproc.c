@@ -279,9 +279,8 @@ int sendSocketRequest(char* dataIn, int inlen, char* dataOut, int* outlen) {
 	DispSend();
 
 #ifdef APP_DEBUG
-	//PubDebugOutput("ISO REQ:", dataIn, inlen, DEVICE_COM1, HEX_MODE);
+	PubDebugOutput("ISO REQ:", dataIn, inlen, DEVICE_COM1, HEX_MODE);
 #endif
-
 	iRet = CommTxd(dataIn, inlen, glPosParams.requestTimeOutSec);	// "no timeout" is forbidden
 	if (iRet != 0)
 	{
@@ -320,6 +319,16 @@ int sendSocketRequest(char* dataIn, int inlen, char* dataOut, int* outlen) {
 		DispCommErrMsg(iRet);
 		CommOnHook(FALSE);
 		return ERR_NO_DISP;
+	}
+
+	logTrace("Response: %s", dataOut);
+	if (dataOut[0] == '0') {
+		logTrace("Posvas mode");
+		//Posvas nonesense. Sending Iso response without 2-byte header
+		memmove(dataOut + 2, dataOut, *outlen);
+		dataOut[0] = *outlen >> 8;
+		dataOut[1] = *outlen;
+		*outlen += 2;
 	}
 
 #ifdef APP_DEBUG

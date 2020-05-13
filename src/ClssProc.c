@@ -105,7 +105,7 @@ int ClssCompleteTrans_WAVE(uchar ucInOnlineResult, uchar aucRspCode[], uchar auc
 static DE55ClSSTag sgStdClssTagList[] =
 {
 	{ 0x5F2A, DE55_MUST_SET, 0 },
-	{ 0x5F34, DE55_MUST_SET, 1 }, // notice it's limited to L=1
+	{ 0x5F34, DE55_OPT_SET, 1 }, // notice it's limited to L=1
 	{ 0x82,   DE55_MUST_SET, 0 },
 	{ 0x84,   DE55_MUST_SET, 0 },
 	{ 0x95,   DE55_MUST_SET, 0 },
@@ -138,7 +138,7 @@ static DE55ClSSTag sgStdClssTagList[] =
 static DE55ClSSTag sgTcClssTagList[] =
 {
 	{ 0x5F2A, DE55_MUST_SET, 0 },
-	{ 0x5F34, DE55_MUST_SET, 1 }, // notice it's limited to L=1
+	{ 0x5F34, DE55_OPT_SET, 1 }, // notice it's limited to L=1
 	{ 0x82,   DE55_MUST_SET, 0 },
 	{ 0x84,   DE55_MUST_SET, 0 },
 	{ 0x95,   DE55_MUST_SET, 0 },
@@ -233,8 +233,14 @@ int SetStdDEClSS55(uchar bForUpLoad, DE55ClSSTag *pstList, uchar *psOutData, int
 		//在非接触L2 的qPBOC及payWave中,'终端性能(9F33)'数据元无法从这两个库中获取。
 		if (pstList[iCnt].uiEmvTag == 0x9F33)
 		{
-			EMVGetParameter(&glEmvParam);
-			memcpy(sBuff, glEmvParam.Capability, 3);
+			if (memcmp(glProcInfo.stTranLog.sAID, "\xA0\x00\x00\x00\x04\x30\x60", 7) == 0) {
+				memcpy(sBuff, "\xE0\x08\xC8", 3);
+			}
+			else {
+				EMVGetParameter(&glEmvParam);
+				memcpy(sBuff, glEmvParam.Capability, 3);
+			}
+
 			iLength = 3;
 			BuildCLSSTLVString(pstList[iCnt].uiEmvTag, sBuff, iLength, &psTemp);
 		} else if (pstList[iCnt].uiEmvTag == 0x9F03) {
@@ -1207,11 +1213,6 @@ int TransClssSale(uchar skipDetect)
 		}
 	}
 
-
-	//DispWait();
-	CommDial(DM_PREDIAL);
-
-
 	while(1)
 	{
 		//contactless transaction flow
@@ -1422,7 +1423,7 @@ int TransClssSale(uchar skipDetect)
 	//get PAN compare with PAN in track2
 	iLen = 0;
 	memset(ucTemp, 0, sizeof(ucTemp));
-	//Application Primary Account Number (PAN) Sequence Number
+	//Application Primary Account Number (PAN)
 	iRet = Clss_GetTLVData(0x5A, ucTemp, &iLen, ucKernType);
 	if(iRet == EMV_OK)
 	{
@@ -1446,7 +1447,7 @@ int TransClssSale(uchar skipDetect)
 	iRet = Clss_GetTLVData(0x5f34, ucTemp, &iLen, ucKernType);
 	if(iRet == EMV_OK)
 	{
-		glProcInfo.stTranLog.ucPanSeqNo = ucTemp[0];
+		glProcInfo.stTranLog.ucPanSeqNo = PubBcd2Long(ucTemp, iLen); //ucTemp[0];
 		logd(("PanSeqNo: %03d", ucTemp[0]));
 		glProcInfo.stTranLog.bPanSeqOK = TRUE;
 	}

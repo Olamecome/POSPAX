@@ -102,6 +102,7 @@ static int finishContactTransaction() {
 
 int finishContactlessTransaction() {
 	logTrace(__func__);
+	CommDial(DM_PREDIAL);
 	int ret = TransClssSale(TRUE);
 
 	if (ret == ERR_NEED_FALLBACK) {

@@ -94,11 +94,14 @@ static int buildNibssKeyRequestNew(int nibssKeyType, char* downloadedKey) {
 	/* initialise ISO message */
 	DL_ISO8583_MSG_Init(NULL, 0, &isoMsg);
 
+	char stan[6 + 1] = "\0";
+	sprintf(stan, "%06ld", GetNewTraceNo());
+
 	/* set ISO message fields */
 	(void)DL_ISO8583_MSG_SetField_Str(MESSAGE_TYPE_INDICATOR_0, NETWORK_MGT_REQUEST_MTI, &isoMsg);
 	(void)DL_ISO8583_MSG_SetField_Str(PROCESSING_CODE_3, processingCode, &isoMsg);
 	(void)DL_ISO8583_MSG_SetField_Str(TRANSACTION_DATE_TIME_7, isoTime.longDate_F7, &isoMsg);
-	(void)DL_ISO8583_MSG_SetField_Str(SYSTEM_TRACE_AUDIT_NUMBER_11, isoTime.time_F12, &isoMsg);
+	(void)DL_ISO8583_MSG_SetField_Str(SYSTEM_TRACE_AUDIT_NUMBER_11, stan, &isoMsg);
 	(void)DL_ISO8583_MSG_SetField_Str(LOCAL_TIME_OF_TRANSACTION_12, isoTime.time_F12, &isoMsg);
 	(void)DL_ISO8583_MSG_SetField_Str(LOCAL_DATE_OF_TRANSACTION_13, isoTime.shortDate_F13, &isoMsg);
 	(void)DL_ISO8583_MSG_SetField_Str(CARD_ACCEPTOR_TERMINAL_IDENTIFICATION_41, glPosParams.terminalId, &isoMsg);
@@ -319,10 +322,13 @@ static int processNetworkManagementRequest(int requestType, char* responseMgtDat
 	DL_ISO8583_DEFS_1987_Nibss_GetHandler(&isoHandler);
 	DL_ISO8583_MSG_Init(NULL, 0, &isoMsg);
 
+	char stan[6 + 1] = "\0";
+	sprintf(stan, "%06ld", GetNewTraceNo());
+
 	(void)DL_ISO8583_MSG_SetField_Str(MESSAGE_TYPE_INDICATOR_0, NETWORK_MGT_REQUEST_MTI, &isoMsg);
 	(void)DL_ISO8583_MSG_SetField_Str(PROCESSING_CODE_3, processingCode, &isoMsg);
 	(void)DL_ISO8583_MSG_SetField_Str(TRANSACTION_DATE_TIME_7, isoTime.longDate_F7, &isoMsg);
-	(void)DL_ISO8583_MSG_SetField_Str(SYSTEM_TRACE_AUDIT_NUMBER_11, isoTime.time_F12, &isoMsg);
+	(void)DL_ISO8583_MSG_SetField_Str(SYSTEM_TRACE_AUDIT_NUMBER_11, stan, &isoMsg);
 	(void)DL_ISO8583_MSG_SetField_Str(LOCAL_TIME_OF_TRANSACTION_12, isoTime.time_F12, &isoMsg);
 	(void)DL_ISO8583_MSG_SetField_Str(LOCAL_DATE_OF_TRANSACTION_13, isoTime.shortDate_F13, &isoMsg);
 	(void)DL_ISO8583_MSG_SetField_Str(CARD_ACCEPTOR_TERMINAL_IDENTIFICATION_41, glPosParams.terminalId, &isoMsg);
