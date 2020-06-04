@@ -3848,6 +3848,53 @@ int get_wl_info(WlInfo_T *wl_info)
 	return ret;
 }
 
+int GetSignal_Status(char * status)
+{
+	int Sig;
+	char dSignal[6];
+
+	//ScrCls();
+	if (WlGetSignal((char *)dSignal) == 0)
+	{
+		if (dSignal[0] == 0x00)//Very good
+		{
+			strcpy(status, "VERY GOOD SIGNAL");
+			Sig = 100;
+		}
+		else if (dSignal[0] == 0x01) {//Good
+			strcpy(status, "GOOD SIGNAL");
+			Sig = 80;
+		}
+		else if (dSignal[0] == 0x02) {//signal ok
+			strcpy(status, "SIGNAL OK");
+			Sig = 60;
+		}
+		else if (dSignal[0] == 0x03) {//Signal weak
+			strcpy(status, "SIGNAL WEAK");
+			Sig = 40;	
+		}
+		else if (dSignal[0] == 0x04) {//Signal very weak
+			Sig = 20;
+			strcpy(status, "SIGNAL VERY WEAK");
+		}
+		else if (dSignal[0] == 0x05) {//No signal
+			Sig = 0;
+			strcpy(status, "NO SIGNAL");
+		}
+		else {
+			Sig = 0;
+			strcpy(status, "NO NETWORK");
+		}
+	}
+	else
+	{
+		strcpy(status, "NO NETWORK");
+		Sig = 0;
+	}
+
+	return Sig;
+}
+
 
 // end of file
 

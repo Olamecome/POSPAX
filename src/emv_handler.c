@@ -1,7 +1,7 @@
 #include "global.h"
 #include "xui.h"
 #include "utils.h"
-
+#include "printHelper.h"
 
 void resetTransactionData() {
 	InitTransInfo();
@@ -23,7 +23,6 @@ static void resetFallbackInfo() {
 	strmcpy(glProcInfo.stTranLog.szOriginalForwdInstCode, temp.stTranLog.szOriginalForwdInstCode, lengthOf(glProcInfo.stTranLog.szOriginalForwdInstCode));
 	glProcInfo.stTranLog.ucOrgTranType = temp.stTranLog.ucOrgTranType;
 	glProcInfo.stTranLog.ulOrgSTAN = temp.stTranLog.ulOrgSTAN;
-
 }
 
 
@@ -38,7 +37,7 @@ static void notifyTransaction() {
 	notificationHandler((void*)&runnerData);
 }
 
-static int statusReceiptAndNotification() {
+int statusReceiptAndNotification() {
 	DispPrinting();
 	CommDial(DM_PREDIAL);
 
@@ -51,9 +50,33 @@ static int statusReceiptAndNotification() {
 	
 	if (!ChkHardware(HWCFG_PRINTER, 0) &&  checkPrinter())
 	{
-		printTransactionReceipt(&glProcInfo.stTranLog, CUSTOMER_COPY, 0);
-		PubWaitKey(1);
-		printTransactionReceipt(&glProcInfo.stTranLog, MERCHANT_COPY, 0);
+		logTrace("Declined count: %d, Approved count: %d", glPosParams.declinedReceiptCount, glPosParams.approvedReceiptCount);
+		int count = isSuccessResponse(glProcInfo.stTranLog.szRspCode) ? glPosParams.approvedReceiptCount : glPosParams.declinedReceiptCount;
+		logTrace("Receipt count: %d", count);
+		int i = 1;
+		for (; i < count; i++) {
+			logTrace("I = %d", i);
+			if (1 == i) {
+				logTrace("Customer copy");
+				if (0 != printTransactionReceipt(&glProcInfo.stTranLog, CUSTOMER_COPY, 0)) {
+					break;
+				}
+				
+				if (count > 1) {
+					Gui_ClearScr();
+					Gui_DrawText("Printing merchant copy", gl_stCenterAttr, 0, 30);
+					Gui_DrawText("Press any key", gl_stCenterAttr, 0, 50);
+					PubWaitKey(5);
+				}
+			}
+			
+			logTrace("Merchant copy");
+			DispPrinting();
+			if (0 != printTransactionReceipt(&glProcInfo.stTranLog, MERCHANT_COPY, 0)) {
+				break;
+			}
+		}
+		
 	}
 
 	notifyTransaction();
@@ -69,6 +92,9 @@ static int finishSwipeTransaction() {
 	logTrace("security code: %s", glProcInfo.szSecurityCode);
 	logTrace("PAN: %s", glProcInfo.stTranLog.szPan);
 	logTrace("Card Expirity: %d", glProcInfo.stTranLog.szExpDate);
+
+	showErrorDialog("Magstripe not allowed", 10);
+	return APP_CANCEL;
 
 	int ret = FinishSwipeTran();
 

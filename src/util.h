@@ -164,6 +164,7 @@ double absolute(double number);
 uchar checkTerminalPrepStatus();
 
 int get_wl_info(WlInfo_T *wl_info);
+int GetSignal_Status(char * status);
 
 #ifdef __cplusplus
 }

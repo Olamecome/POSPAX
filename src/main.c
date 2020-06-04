@@ -109,10 +109,12 @@ int showMainMenu(int* selItem) {
 		{ "Purchase", PURCHASE, true, NULL },
 		{ "Pre-Authorisation", POS_PRE_AUTHORIZATION, true, NULL },
 		{ "Sales Completion", POS_PRE_AUTH_COMPLETION, true, NULL },
+		{ "Pay With Phone Number", PAYATTITUDE, true, NULL },
 		{ "Services", REPORTING, true, NULL },
 		{ "\0", -1, false, NULL }
 	};
 
+	SetCurrTitle(AppInfo.AppName);
 	Gui_BindMenu(AppInfo.AppName, gl_stTitleAttr, gl_stLeftAttr, menuItems, &menu);
 	Gui_ClearScr();
 	int res = Gui_ShowMenuListWithoutButtons(&menu, 0, 3 * 60, selItem);
@@ -133,6 +135,8 @@ void  adminMenu(void) {
 		{ "Network Parameters", COMM_SETTINGS, true,  networkConfig },
 		{ "Prep Terminal", TERMINAL_NIBSS_KEY_EXCHANGE, true, prepTerminal },
 		{ "Print Terminal Config", COM_PARAM_PRINT, true, printTerminalDetails },
+		{ "Count Of Receipt", COUNT_OF_RECEIPT, true, updateReceiptCountMenu },
+		{ "Update Supervisor Pin", SUPERVISOR_PIN_UPDATE, true, changeSupervisorPin },
 		{ "\0", -1, false, NULL }
 	};
 
@@ -140,9 +144,21 @@ void  adminMenu(void) {
 	SetCurrTitle("ADMIN MENU");
 	Gui_BindMenu("ADMIN MENU", gl_stTitleAttr, gl_stLeftAttr, menuItems, &menu);
 
+	int ret = -1;
+	char termInfo[32] = { 0 };
+	GetTermInfo(termInfo);
+
 	while (1) {
 		Gui_ClearScr();
-		if (0 != Gui_ShowMenuList(&menu, GUI_MENU_DIRECT_RETURN, 60, &selected)) {
+
+		if (termInfo[19] & 0x02) {
+			ret = Gui_ShowMenuList(&menu, GUI_MENU_DIRECT_RETURN, 60, &selected);
+		}
+		else {
+			ret = Gui_ShowMenuListWithoutButtons(&menu, GUI_MENU_DIRECT_RETURN, 60, &selected);
+		}
+
+		if (0 != ret) {
 			break;
 		}
 	}

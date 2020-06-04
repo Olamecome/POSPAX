@@ -502,8 +502,7 @@ int SXXWlDial(const WIRELESS_PARAM *pstWlPara, int iTimeOut, int iAliveInterval,
 		if (iRet == 0)
 		{
 			logd(("PPP connected, jumping to TCPCONNECT"));
-			goto TCPCONNECT;
-			//break;//jump disabled because of 
+			goto TCPCONNECT; 
 			
 		}
 	}
@@ -513,7 +512,8 @@ int SXXWlDial(const WIRELESS_PARAM *pstWlPara, int iTimeOut, int iAliveInterval,
 	while(iRetryTime--)
 	{
 		logd(("WlPppLogin"));
-		iRet = WlPppLogin((uchar *)pstWlPara->szAPN, (uchar *)pstWlPara->szUID, (uchar *)pstWlPara->szPwd, 0xFF, iTimeOut*1000, iAliveInterval);
+		//iRet = WlPppLogin((uchar *)pstWlPara->szAPN, (uchar *)pstWlPara->szUID, (uchar *)pstWlPara->szPwd, 0xFF, iTimeOut*1000, iAliveInterval);
+		iRet = WlPppLoginEx("*99***1#", (uchar *)pstWlPara->szAPN, (uchar *)pstWlPara->szUID, (uchar *)pstWlPara->szPwd, 0xFF, iTimeOut * 1000, iAliveInterval);
 		if (iRet != 0)
 		{
 			DelayMs(100);
@@ -576,7 +576,7 @@ _RETRY_SECOND_IP:
         }
         else
 		{
-			logd(("Valid IP, connecting straight"));
+			logd(("Valid IP, connecting straight, IP: %s, Port: %s", pstWlPara->stHost1.szIP, pstWlPara->stHost1.szPort));
 			iRet = SxxTcpConnect(pstWlPara->stHost1.szIP, (short)atoi((char *)pstWlPara->stHost1.szPort), bSSL, ucDialMode, 8);
 		}
 	}

@@ -13,6 +13,7 @@ int repushTransactions(char silent);
 
 int dailySummary();
 int weeklySummary();
+int monthlySummary();
 int yearlySummary();
 
 

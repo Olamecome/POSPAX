@@ -142,6 +142,10 @@ static void loadDefaultPosParams() {
 
 	//strncpy(glPosParams.switchIp.szIP, "196.6.103.73", lengthOf(glPosParams.switchIp.szIP));
 	//strncpy(glPosParams.switchIp.szPort, "5043", lengthOf(glPosParams.switchIp.szPort));
+	strncpy(glPosParams.supervisorPin, "1234", 4);
+	strncpy(glPosParams.operatorPin, "1234", 4);
+	strncpy(glPosParams.adminPass, "6798", 4);
+
 	strncpy(glPosParams.switchHostName, "ctms.nibss-plc.com", lengthOf(glPosParams.switchHostName));
 	strncpy(glPosParams.hostZMK, "DBEECACCB4210977ACE73A1D873CA59F", ASCII_KEY_SIZE);
 	glPosParams.requestTimeOutSec = 60;
@@ -150,8 +154,8 @@ static void loadDefaultPosParams() {
 	PutEnv("E_SSL", "1");
 	glPosParams.batchNo = 1;
 	glPosParams.sequenceNo = 1;
-	glPosParams.receipCount = 2;
-
+	glPosParams.approvedReceiptCount = 2;
+	glPosParams.declinedReceiptCount = 2;
 
 
 	glPosParams.commConfig.ucCommType = CT_GPRS;

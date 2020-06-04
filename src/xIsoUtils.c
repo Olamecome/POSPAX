@@ -32,6 +32,7 @@ int getProcessingCode(int isoRequestType, AccountType accountType, char* process
 	case COLLECTIONS:
 	case PHED:
 	case GATEWAY:
+	case PAYATTITUDE:
 		isoCode = PURCHASE_ISO_CODE;
 		break;
 	case PURCHASE_WITH_CASH_BACK:
@@ -460,6 +461,7 @@ const char* getMTI(int transType) {
 	case PHED:
 	case GATEWAY:
 	case CASH_MOP_UP:
+	case PAYATTITUDE:
 		return TRANSACTION_REQUEST_MTI;
 	case POS_PRE_AUTH_COMPLETION:
 		return TRANSACTION_ADVISE_MTI;

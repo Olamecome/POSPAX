@@ -575,7 +575,7 @@ typedef struct _tagTERM_ERR_MSG
 #define	MAX_GET_DESC		4
 typedef struct _tagTRAN_LOG
 {
-	uchar	ucTranType;					    // current transaction type
+	short	ucTranType;					    // current transaction type
 	uchar	ucOrgTranType;				// original transaction type
 	uchar   ucAccountType;
 	uchar	szPan[19+1];				        // card NO.
@@ -689,6 +689,7 @@ typedef struct _tagSYS_PROC_INFO
 	uchar		sResponseIcc[255];
 	int			uiResponseIccLen;
 	uchar		szAdditionalAmtF54[120 + 1];
+	char szPaymentInformation[999 + 1];
 }SYS_PROC_INFO;
 
 // reverse data
@@ -850,6 +851,9 @@ typedef struct PosParams {
 	char password[30];
 	char institutionCode[30];
 	char consultantCode[20 + 1];
+	char operatorPin[10 + 1];
+	char supervisorPin[10 + 1];
+	char adminPass[10 + 1];
 	CURRENCY_CONFIG currency;
 
 	IP_ADDR tmsIp;
@@ -865,7 +869,8 @@ typedef struct PosParams {
 	bool switchPortFlag;
 	unsigned short requestTimeOutSec;
 	unsigned short callHomeTimeMinutes;
-	char receipCount;
+	char approvedReceiptCount;
+	char declinedReceiptCount;
 
 	unsigned long sequenceNo;
 	unsigned long batchNo;

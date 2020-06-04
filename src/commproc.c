@@ -1,6 +1,6 @@
 
 #include "global.h"
-
+#include "xui.h"
 /********************** Internal macros declaration ************************/
 /********************** Internal structure declaration *********************/
 /********************** Internal functions declaration *********************/
@@ -14,6 +14,8 @@ int DispCommErrMsg(int iErrCode);
 /********************** external reference declaration *********************/
 
 /******************>>>>>>>>>>>>>Implementations<<<<<<<<<<<<*****************/
+
+void(*receiveDisplay)();
 
 // 交易处理
 // process transaction
@@ -260,6 +262,7 @@ int DispCommErrMsg(int iErrCode)
 int sendSocketRequest(char* dataIn, int inlen, char* dataOut, int* outlen) {
 	logTrace(__func__);
 	int iRet = -1;
+	int haltMode = FALSE;
 
 	DispDial();
 	iRet = CommDial(DM_DIAL);
@@ -270,7 +273,7 @@ int sendSocketRequest(char* dataIn, int inlen, char* dataOut, int* outlen) {
 		if (0 !=(iRet = CommDial(DM_DIAL))) {
 			DispCommErrMsg(iRet);
 			logTrace("CommDial failed");
-			CommOnHook(FALSE);
+			CommOnHook(haltMode);
 			return iRet;
 		}
 	}
@@ -285,11 +288,17 @@ int sendSocketRequest(char* dataIn, int inlen, char* dataOut, int* outlen) {
 	if (iRet != 0)
 	{
 		DispCommErrMsg(iRet);
-		CommOnHook(FALSE);
+		CommOnHook(haltMode);
 		return ERR_NO_DISP;
 	}
 
-	DispReceive();
+	if (receiveDisplay) {
+		receiveDisplay();
+	}
+	else {
+		DispReceive();
+	}
+	
 
 	ushort uiTimeOut;
 	//Added by Kim_LinHB 2014-6-6 v1.01.0000
@@ -317,7 +326,7 @@ int sendSocketRequest(char* dataIn, int inlen, char* dataOut, int* outlen) {
 	if (iRet != 0)
 	{
 		DispCommErrMsg(iRet);
-		CommOnHook(FALSE);
+		CommOnHook(haltMode);
 		return ERR_NO_DISP;
 	}
 
@@ -335,7 +344,7 @@ int sendSocketRequest(char* dataIn, int inlen, char* dataOut, int* outlen) {
 	//PubDebugOutput("ISO RESP:", dataOut, *outlen, DEVICE_COM1, HEX_MODE);
 #endif
 
-	CommOnHook(FALSE);
+	CommOnHook(haltMode);
 	return 0;
 }
 

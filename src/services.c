@@ -174,7 +174,7 @@ static void summaryReport() {
 	}
 
 	Prompt prompt = { 0 };
-	getListItemPrompt(&prompt, "SUMMARY REPORT", "Daily|Weekly|Yearly");
+	getListItemPrompt(&prompt, "SUMMARY REPORT", "Daily|Weekly|Monthly|Yearly");
 
 	while (1) {
 		prompt.selectionOption = 0;
@@ -199,6 +199,9 @@ static void summaryReport() {
 			weeklySummary();
 			break;
 		case 2:
+			monthlySummary();
+			break;
+		case 3:
 			yearlySummary();
 			break;
 		}
@@ -216,7 +219,9 @@ static void endOfDay() {
 	getListItemPrompt(&prompt, "EOD", "Today|Yesterday|Enter Date|Close Batch");
 	prompt.selectionOption = 0;
 
-	repushTransactions(TRUE);
+	if (repushTransactions(TRUE) != 0) {
+		return;
+	}
 
 	while (1) {
 		if (showPrompt(&prompt) != 0) {

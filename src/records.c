@@ -173,14 +173,22 @@ int repushTransactions(char silent) {
 		DispMessage("Checking transactions");
 	}
 	
-	int count = 0;
+	//int count = 0;
 	TRAN_LOG trans = { 0 };
 	int i = 0;
 	for (; i < glPosParams.tranRecordCount; i++) {
 		LoadTranLog(&trans, i);
 		if (!trans.notified) {
-			count++;
+			//count++;
 			do {
+				kbflush(); 
+				if (!silent) {
+					DispMessage("Press Cancel to abort");
+				}
+				if (PubWaitKey(2) == KEYCANCEL) {
+					return -1;
+				}
+
 				if (!silent) {
 					DispMessage("Re-pushing notification");
 				}
@@ -312,6 +320,49 @@ int weeklySummary() {
 
 	DispPrinting();
 	printSummaryReport(&summary, "WEEKLY SUMMARY");
+
+
+	if (summary.data) {
+		free(summary.data);
+	}
+
+	return 0;
+}
+
+int monthlySummary() {
+	if (glPosParams.tranRecordCount <= 0) {
+		showErrorDialog("No transaction found", USER_OPER_TIMEOUT);
+		return -1;
+	}
+
+	char date[15 + 1] = { 0 };
+	GetDateTime(date);
+
+	DispMessage("Checking transactions");
+
+	SummaryReport summary = { 0 };
+	TRAN_LOG trans = { 0 };
+	int i = 0;
+	for (; i < glPosParams.tranRecordCount; i++) {
+		LoadTranLog(&trans, i);
+		if (isEqual(trans.szDateTime, date, 6)) {
+			summary.data = realloc(summary.data, sizeof(ReportData) * (summary.reportCount + 1));
+			memset(summary.data + summary.reportCount, 0, sizeof(ReportData));
+
+			ReportData* current = summary.data + summary.reportCount;
+			tranLogToReportData(&trans, &summary, summary.reportCount);
+
+			summary.reportCount++;
+		}
+	}
+
+	if (summary.reportCount <= 0) {
+		showErrorDialog("No transaction found", 30);
+		return -1;
+	}
+
+	DispPrinting();
+	printSummaryReport(&summary, "MONTHLY SUMMARY");
 
 
 	if (summary.data) {

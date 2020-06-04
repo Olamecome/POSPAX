@@ -306,21 +306,7 @@ int showPromptInputDialog(Prompt* prompt) {
  * @li APP_SUCC    	Success
  */
 int showAmountDialog(Prompt* prompt) {
-	clearScreen();
-
-	GUI_INPUTBOX_ATTR inputAttr = { 0 };
-	inputAttr.bSensitive = false;
-	inputAttr.nMaxLen = prompt->maxLength;
-	inputAttr.nMinLen = prompt->minLength;
-	inputAttr.eType = GUI_INPUT_NUM;
-
-	clearScreen();
-	int ret = Gui_ShowInputBox(prompt->title, gl_stTitleAttr, prompt->hint, gl_stLeftAttr, 
-		prompt->value, gl_stCenterAttr, &inputAttr, prompt->timeOutInSeconds);
-	ASSERT_RETURNCODE(ret);
-	prompt->inputLength = strlen(prompt->value);
-
-	return GUI_OK;
+	return GetAmountNew(prompt->title, prompt->value, AMOUNT);
 }
 
 /**
@@ -425,7 +411,17 @@ int showSelectDialog(Prompt* prompt) {
 
 	clearScreen();
 	SetCurrTitle(prompt->title);
-	int ret = Gui_ShowMenuList(&menu, GUI_MENU_DIRECT_RETURN, prompt->timeOutInSeconds, &prompt->selectionOption);
+
+	int ret = -1;
+	char termInfo[32] = { 0 };
+	GetTermInfo(termInfo);
+
+	if (termInfo[19] & 0x02) {
+		ret = Gui_ShowMenuList(&menu, GUI_MENU_DIRECT_RETURN, prompt->timeOutInSeconds, &prompt->selectionOption);
+	}
+	else {
+		ret = Gui_ShowMenuListWithoutButtons(&menu, GUI_MENU_DIRECT_RETURN, prompt->timeOutInSeconds, &prompt->selectionOption);
+	}
 
 	free(menuItems);
 	deepFreeArray((void**)tokens, token_count);
