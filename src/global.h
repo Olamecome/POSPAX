@@ -83,7 +83,7 @@ Set to correct macro before compile
 #define ALLOW_NO_TMS		// allow init default, without TMS. but TMS still available
 #define ENABLE_EMV			// Link EMV lib into the application.
 #define EMV_TEST_VERSION	// use hard coded emv parameters for EMV test. Valid only when ENABLE_EMV defined
-#define APP_DEBUG			// debug mode
+//#define APP_DEBUG			// debug mode
 //#define FUN2_READ_ONLY	// Allow operator to modify FUNCTION 2.
 #define ENABLE_CONTLESS   // Contactless card support (CLSS)
 

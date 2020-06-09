@@ -64,7 +64,7 @@ int statusReceiptAndNotification() {
 				
 				if (count > 1) {
 					Gui_ClearScr();
-					Gui_DrawText("Printing merchant copy", gl_stCenterAttr, 0, 30);
+					Gui_DrawText("Merchant Copy", gl_stCenterAttr, 0, 30);
 					Gui_DrawText("Press any key", gl_stCenterAttr, 0, 50);
 					PubWaitKey(5);
 				}

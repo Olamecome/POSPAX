@@ -269,13 +269,21 @@ int sendSocketRequest(char* dataIn, int inlen, char* dataOut, int* outlen) {
 	if (iRet != 0)
 	{
 		//Retry
-		DispDial();
-		if (0 !=(iRet = CommDial(DM_DIAL))) {
-			DispCommErrMsg(iRet);
-			logTrace("CommDial failed");
+		if (iRet == -5) {
+			DispDial();
+			DelayMs(200);
+			if (0 != (iRet = CommDial(DM_DIAL))) {
+				DispCommErrMsg(iRet);
+				logTrace("CommDial failed");
+				CommOnHook(haltMode);
+				return iRet;
+			}
+		}
+		else {
 			CommOnHook(haltMode);
 			return iRet;
 		}
+
 	}
 
 	logTrace("Host connected");

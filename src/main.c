@@ -109,7 +109,7 @@ int showMainMenu(int* selItem) {
 		{ "Purchase", PURCHASE, true, NULL },
 		{ "Pre-Authorisation", POS_PRE_AUTHORIZATION, true, NULL },
 		{ "Sales Completion", POS_PRE_AUTH_COMPLETION, true, NULL },
-		{ "Pay With Phone Number", PAYATTITUDE, true, NULL },
+		//{ "Pay With Phone Number", PAYATTITUDE, true, NULL },
 		{ "Services", REPORTING, true, NULL },
 		{ "\0", -1, false, NULL }
 	};
