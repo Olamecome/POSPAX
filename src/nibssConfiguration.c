@@ -436,7 +436,7 @@ int downloadNibssTerminalParameters() {
 
 int doNibssCallHome() {
 	char temp[0x1000];
-
+	SetCurrTitle("CALL HOME");
 	logTrace("Starting call home");
 	showNonModalDialog("CALL HOME", "Calling Home...\nPlease wait");
 	CommDial(DM_PREDIAL);
@@ -451,7 +451,7 @@ int doNibssCallHome() {
 
 int doNibssEod() {
 	char temp[0x1000];
-
+	SetCurrTitle("EOD");
 	logTrace("Starting E0D");
 	showNonModalDialog("EOD", "Printing Report...\nPlease wait");
 	CommDial(DM_PREDIAL);

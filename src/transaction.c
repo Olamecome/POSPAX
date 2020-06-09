@@ -140,7 +140,7 @@ ENTER_AMT:
 
 
 	//Start Transaction
-	startEmvTransaction(CARD_SWIPED | CARD_INSERTED | CARD_TAPPED, tranType, glProcInfo.stTranLog.szAmount, glProcInfo.stTranLog.szOtherAmount);
+	startEmvTransaction(/*CARD_SWIPED |*/ CARD_INSERTED | CARD_TAPPED, tranType, glProcInfo.stTranLog.szAmount, glProcInfo.stTranLog.szOtherAmount);
 
 	return 0;
 }

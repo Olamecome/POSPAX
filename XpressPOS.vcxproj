@@ -52,6 +52,7 @@
     <ClCompile Include="src\parson.c" />
     <ClCompile Include="src\parsonHelper.c" />
     <ClCompile Include="src\password.c" />
+    <ClCompile Include="src\payattitude.c" />
     <ClCompile Include="src\print.c" />
     <ClCompile Include="src\printHelper.c" />
     <ClCompile Include="src\ProcTrans.c" />
@@ -263,6 +264,7 @@
     <Library Include="lib\VC_QPBOC_LIB_v351.lib" />
     <Library Include="lib\VC_WAVE_LIB_v353_01.lib" />
     <Library Include="lib\win_http.lib" />
+    <Library Include="lib\Wlext_1.4(bcm).lib" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{817bc2bc-faed-4238-a0a9-63bda08740db}</ProjectGuid>

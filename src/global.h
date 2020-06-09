@@ -82,7 +82,7 @@ Set to correct macro before compile
 //#define APP_MANAGER_VER	// When build this app as manager, should enable this macro
 #define ALLOW_NO_TMS		// allow init default, without TMS. but TMS still available
 #define ENABLE_EMV			// Link EMV lib into the application.
-//#define EMV_TEST_VERSION	// use hard coded emv parameters for EMV test. Valid only when ENABLE_EMV defined
+#define EMV_TEST_VERSION	// use hard coded emv parameters for EMV test. Valid only when ENABLE_EMV defined
 //#define APP_DEBUG			// debug mode
 //#define FUN2_READ_ONLY	// Allow operator to modify FUNCTION 2.
 #define ENABLE_CONTLESS   // Contactless card support (CLSS)
@@ -575,7 +575,7 @@ typedef struct _tagTERM_ERR_MSG
 #define	MAX_GET_DESC		4
 typedef struct _tagTRAN_LOG
 {
-	uchar	ucTranType;					    // current transaction type
+	short	ucTranType;					    // current transaction type
 	uchar	ucOrgTranType;				// original transaction type
 	uchar   ucAccountType;
 	uchar	szPan[19+1];				        // card NO.
@@ -689,6 +689,7 @@ typedef struct _tagSYS_PROC_INFO
 	uchar		sResponseIcc[255];
 	int			uiResponseIccLen;
 	uchar		szAdditionalAmtF54[120 + 1];
+	char szPaymentInformation[999 + 1];
 }SYS_PROC_INFO;
 
 // reverse data
@@ -850,6 +851,9 @@ typedef struct PosParams {
 	char password[30];
 	char institutionCode[30];
 	char consultantCode[20 + 1];
+	char operatorPin[10 + 1];
+	char supervisorPin[10 + 1];
+	char adminPass[10 + 1];
 	CURRENCY_CONFIG currency;
 
 	IP_ADDR tmsIp;
@@ -865,7 +869,8 @@ typedef struct PosParams {
 	bool switchPortFlag;
 	unsigned short requestTimeOutSec;
 	unsigned short callHomeTimeMinutes;
-	char receipCount;
+	char approvedReceiptCount;
+	char declinedReceiptCount;
 
 	unsigned long sequenceNo;
 	unsigned long batchNo;

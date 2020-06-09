@@ -164,13 +164,13 @@ int printTransactionReceipt(TRAN_LOG* transData, int copy, uchar reprint) {
 
 	prnHeader(transData->szDateTime);
 
-	PrnDoubleHeight(1, 1);
+	//PrnDoubleHeight(1, 1);
 	prnCenter(getTransactionTitle(transData->ucTranType));
 	resetPrnFormat();
 	prnFullLenChar('-');
 	
 	char* copyString = copy == CUSTOMER_COPY ? "***CUSTOMER COPY***" : "***MERCHANT COPY***";
-	PrnDoubleHeight(1, 1);
+	//PrnDoubleHeight(1, 1);
 	prnCenter(copyString);
 
 	if (reprint) {
@@ -180,11 +180,17 @@ int printTransactionReceipt(TRAN_LOG* transData, int copy, uchar reprint) {
 	resetPrnFormat();
 	prnFullLenChar('-');
 
-	char maskedPan[21] = "\0";
-	maskPan(maskedPan, transData->szPan, '*');
-	prnDoubleStr("PAN", maskedPan);
-	prnDoubleStr("EXPIRY", transData->szExpDate);
-	prnDoubleStr("NAME", transData->szHolderName);
+	if (transData->ucTranType == PAYATTITUDE) {
+		prnDoubleStr("PHONE", transData->szHolderName);
+	}
+	else {
+		char maskedPan[21] = "\0";
+		maskPan(maskedPan, transData->szPan, '*');
+		prnDoubleStr("PAN", maskedPan);
+		prnDoubleStr("EXPIRY", transData->szExpDate);
+		prnDoubleStr("NAME", transData->szHolderName);
+	}
+
 
 	char temp[50] = "\0";
 	sprintf(temp, "%06ld", glPosParams.batchNo);
@@ -205,12 +211,15 @@ int printTransactionReceipt(TRAN_LOG* transData, int copy, uchar reprint) {
 	GetDispAmount(transData->szAmount, temp);
 	prnDoubleStr("AMOUNT", temp);
 
-	if (atol(transData->szOtherAmount) > 0) {
+	if (atol(transData->szOtherAmount) > 0 && transData->ucTranType == CASH_ADVANCE) {
 		GetDispAmount(transData->szOtherAmount, temp);
 		prnDoubleStr("OTHER AMOUNT", temp);
 	}
 
-	prnDoubleStr("ACCOUNT", getAccountTypeString(transData->ucAccountType));
+	if (transData->ucTranType != PAYATTITUDE) {
+		prnDoubleStr("ACCOUNT", getAccountTypeString(transData->ucAccountType));
+	}
+	
 
 	if (strlen(transData->szOrgRRN) > 0) {
 		prnDoubleStr("ORIGINAL RRN", transData->szOrgRRN);
@@ -228,24 +237,25 @@ int printTransactionReceipt(TRAN_LOG* transData, int copy, uchar reprint) {
 	}
 
 	prnFullLenChar('-');
+	if (transData->sAppCrypto[0]) {
+		CLEAR_STRING(temp, lengthOf(temp));
+		PubBcd2Asc0(transData->sAID, transData->ucAidLen, temp);
+		prnDoubleStr("AID", temp);
 
-	CLEAR_STRING(temp, lengthOf(temp));
-	PubBcd2Asc0(transData->sAID, transData->ucAidLen, temp);
-	prnDoubleStr("AID", temp);
+		prnDoubleStr("CARD", strlen(transData->szAppPreferName) > 0 ? transData->szAppPreferName : transData->szAppLabel);
 
-	prnDoubleStr("CARD",   strlen(transData->szAppPreferName) > 0 ? transData->szAppPreferName : transData->szAppLabel);
+		CLEAR_STRING(temp, lengthOf(temp));
+		PubBcd2Asc0(transData->sAppCrypto, lengthOf(transData->sAppCrypto), temp);
+		prnDoubleStr("AC", temp);
 
-	CLEAR_STRING(temp, lengthOf(temp));
-	PubBcd2Asc0(transData->sAppCrypto, lengthOf(transData->sAppCrypto), temp);
-	prnDoubleStr("AC", temp);
-	
-	CLEAR_STRING(temp, lengthOf(temp));
-	PubBcd2Asc0(transData->sTVR, lengthOf(transData->sTVR), temp);
-	prnDoubleStr("TVR", temp);
+		CLEAR_STRING(temp, lengthOf(temp));
+		PubBcd2Asc0(transData->sTVR, lengthOf(transData->sTVR), temp);
+		prnDoubleStr("TVR", temp);
 
-	CLEAR_STRING(temp, lengthOf(temp));
-	PubBcd2Asc0(transData->sTSI, lengthOf(transData->sTSI), temp);
-	prnDoubleStr("TSI", temp);
+		CLEAR_STRING(temp, lengthOf(temp));
+		PubBcd2Asc0(transData->sTSI, lengthOf(transData->sTSI), temp);
+		prnDoubleStr("TSI", temp);
+	}
 
 	printFooter();
 
@@ -273,7 +283,7 @@ int printTerminalDetails() {
 	GetDateTime(dateTime);
 	prnHeader(dateTime);
 
-	PrnDoubleHeight(1, 1);
+	//PrnDoubleHeight(1, 1);
 	prnCenter("MENU DOWNLOAD");
 	resetPrnFormat();
 	prnFullLenChar('-');
@@ -357,7 +367,8 @@ static int printSummaryData(SummaryReport* report) {
 		GetDispAmount(current.amount, amount);
 		prnDoubleStr("AMOUNT", amount);
 
-		if (current.otherAmount != NULL && strlen(current.otherAmount) > 0) {
+		
+		if (current.otherAmount != NULL && (strlen(current.otherAmount) > 0) &&  current.tranType == CASH_ADVANCE) {
 			char otherAmount[100] = "\0";
 			GetDispAmount(current.otherAmount, otherAmount);
 			prnDoubleStr("OTHER AMOUNT", otherAmount);
@@ -390,7 +401,7 @@ int printSummaryReport(SummaryReport* summary, char* title) {
 	GetDateTime(dateTime);
 	prnHeader(dateTime);
 
-	PrnDoubleHeight(1, 1);
+	//PrnDoubleHeight(1, 1);
 	prnCenter(title);
 	resetPrnFormat();
 	prnFullLenChar('-');
@@ -456,7 +467,7 @@ int printEODReport(SummaryReport* summaryReport, char* title, int type) {
 	GetDateTime(dateTime);
 	prnHeader(dateTime);
 
-	PrnDoubleHeight(1, 1);
+	//PrnDoubleHeight(1, 1);
 	prnCenter(title);
 	resetPrnFormat();
 	prnFullLenChar('-');

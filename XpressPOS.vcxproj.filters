@@ -227,6 +227,9 @@
     <ClCompile Include="src\twister.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\payattitude.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Logger.h">
@@ -778,6 +781,9 @@
       <Filter>paxlib</Filter>
     </Library>
     <Library Include="lib\VC_WAVE_LIB_v353_01.lib">
+      <Filter>paxlib</Filter>
+    </Library>
+    <Library Include="lib\Wlext_1.4(bcm).lib">
       <Filter>paxlib</Filter>
     </Library>
   </ItemGroup>

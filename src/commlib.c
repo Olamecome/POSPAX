@@ -348,6 +348,9 @@ int CommInitModule(COMM_CONFIG *pstCfg)
 	case CT_GPRS:
 	case CT_CDMA:
 	case CT_WCDMA:   // added by Gillian 2015/11/23
+		iRet = WlOpenPort();
+		iRet = WlSendCmd("AT+LBSSTART\r", NULL, 0, 3000, 100);
+		WlClosePort();
 		for (ii=0; ii<3; ii++)
 		{
 			iRet = CommInitGprsCdma(pstCfg);

@@ -194,15 +194,14 @@ void generateSequence(int count, char* output) {
 
 	srand(DEVICE_GetTickCount());
 	seedMT(DEVICE_GetTickCount() + rand());
-	unsigned long seed = mix(DEVICE_GetTickCount(), randomMT(), rand());
-	srand(seed);
+	seedMT(mix(DEVICE_GetTickCount(), randomMT(), rand()));
+	srand(randomMT());
 
 	int i;
 	for (i = 0; i < count; i++) {
-		output[i] = '0' + (
-			rand()
-			% 9);
+		output[i] = '0' + (abs(rand() % 10));
 	}
+
 
 }
 
@@ -223,8 +222,8 @@ unsigned long mix(unsigned long a, unsigned long b, unsigned long c)
 int getIntRand() {
 	srand(DEVICE_GetTickCount());
 	seedMT(DEVICE_GetTickCount() + rand());
-	unsigned long seed = mix(DEVICE_GetTickCount(), randomMT(), rand());
-	srand(seed);
+	seedMT(mix(DEVICE_GetTickCount(), randomMT(), rand()));
+	srand(randomMT());
 
 	return rand();
 }
@@ -232,8 +231,7 @@ int getIntRand() {
 long getLongRand() {
 	srand(DEVICE_GetTickCount());
 	seedMT(DEVICE_GetTickCount() + rand());
-	unsigned long seed = mix(DEVICE_GetTickCount(), randomMT(), rand());
-	seedMT(seed);
+	seedMT(mix(DEVICE_GetTickCount(), randomMT(), rand()));
 	
 	return randomMT();
 }

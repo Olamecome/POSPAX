@@ -294,3 +294,74 @@ void downloadMenu() {
 	printTerminalDetails();
 	showInfo("Menu Download", 10, 1, "Download Successful");
 }
+
+
+void changeSupervisorPin() {
+	SetCurrTitle("UPDATE SUPERVISOR PIN");
+
+	int len = 0;
+	char pin[10 + 1];
+
+	int ret = -1;
+	if ( (ret = requestSupervisorPassword(60)) != 0) {
+
+		if (ret == APP_FAIL) {
+			showErrorDialog("Incorrect Supervisor Pin", 10);
+		}
+		
+		return;
+	}
+
+	
+	if (requestPassword(GetCurrTitle(), "Enter new pin", 60, pin, &len) == 0) {
+		CLEAR_STRING(glPosParams.supervisorPin, lengthOf(glPosParams.supervisorPin));
+		strmcpy(glPosParams.supervisorPin, pin, lengthOf(glPosParams.supervisorPin));
+		SavePosParams();
+		showMessageDialog(GetCurrTitle(), "Supervisor pin updated", 1, 60);
+	}
+
+
+
+	return ;
+}
+
+void updateReceiptCountMenu() {
+	Prompt prompt;
+
+	while (true) {
+		SetCurrTitle("Count Of Receipt");
+		getListItemPrompt(&prompt, GetCurrTitle(), "Approved Count|Declined Count");
+
+		if (showPrompt(&prompt) != APP_SUCC) {
+			return -1;
+		}
+
+		int type = prompt.selectionOption;
+		SetCurrTitle(type ? "Declined Count" : "Approved Count");
+		getNumberPrompt(&prompt, GetCurrTitle(), "count");
+		prompt.maxLength = 1;
+		prompt.minLength = 1;
+		strcpy(prompt.hint, "Count of receipt(1-9)");
+		sprintf(prompt.value, "%d", type ? glPosParams.declinedReceiptCount : glPosParams.approvedReceiptCount);
+		
+		while (1) {
+			if (showPrompt(&prompt) != 0) {
+				break;
+			}
+
+			if (atol(prompt.value) == 0) {
+				continue;
+			}
+
+			if (type) {
+				glPosParams.declinedReceiptCount = atoi(prompt.value);
+			}
+			else {
+				glPosParams.approvedReceiptCount = atoi(prompt.value);
+			}
+			SavePosParams();
+			break;
+		}
+	}
+
+}

@@ -3,6 +3,7 @@
 
 extern int transaction(uchar tranType);
 extern int servicesMenu();
+extern int payAttitudeMenu();
 
 int route(int selection) {
 	switch (selection) {
@@ -19,6 +20,8 @@ int route(int selection) {
 	case VOID:
 		return transaction(selection);
 		break;
+	case PAYATTITUDE:
+		return payAttitudeMenu();
 	case REPORTING:
 		return servicesMenu();
 		break;

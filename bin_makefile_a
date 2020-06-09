@@ -83,11 +83,12 @@ OBJ       = $(LOCOBJ)\init.o \
             $(LOCOBJ)\util.o \
             $(LOCOBJ)\utils.o \
             $(LOCOBJ)\xCommon.o \
-            $(LOCOBJ)\twister.o
+            $(LOCOBJ)\twister.o \
+            $(LOCOBJ)\payattitude.o
 
 #  ADS-ROM version
 $(NAME).elf: $(OBJ) C:\PAXPAY~2\myapp\XPRESS~1\BIN_MA~1
-    $(LINK) -o $(LOCOBJ)\$(NAME).elf $(OBJ) --start-group "C:\PaxPayPro2017\myapp\XpressPOS\lib\B_DEVICE_LIB_v608_01.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\F_DPAS_LIB_v151_01.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\F_EMV_LIB_v653.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\F_ENTRY_LIB_v553_02.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\F_JCB_LIB_v150.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\F_MC_LIB_v553.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\F_PUBLIC_LIB_v108.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\F_PURE_LIB_v102.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\F_QPBOC_LIB_v351.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\F_WAVE_LIB_v353_01.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\libClAERSFMSF_v203.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\libhttpSxx_V1.0.3_Release.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\libPaxSSL_V3.0.7-190129-Sxx.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\libCrypto_V3.0.7-190129-Sxx.a"  -l$(POSLIB) -lc -lgcc --end-group
+    $(LINK) -o $(LOCOBJ)\$(NAME).elf $(OBJ) --start-group "C:\PaxPayPro2017\myapp\XpressPOS\lib\B_DEVICE_LIB_v608_01.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\F_DPAS_LIB_v151_01.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\F_EMV_LIB_v653.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\F_ENTRY_LIB_v553_02.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\F_JCB_LIB_v150.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\F_MC_LIB_v553.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\F_PUBLIC_LIB_v108.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\F_PURE_LIB_v102.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\F_QPBOC_LIB_v351.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\F_WAVE_LIB_v353_01.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\libClAERSFMSF_v203.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\libhttpSxx_V1.0.3_Release.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\libPaxSSL_V3.0.7-190129-Sxx.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\libCrypto_V3.0.7-190129-Sxx.a" "C:\PaxPayPro2017\myapp\XpressPOS\lib\Wlext_1.4(bcm).a"  -l$(POSLIB) -lc -lgcc --end-group
 	arm-elf-readelf -a $(LOCOBJ)\$(NAME).elf > $(LOCOBJ)\$(NAME).sys
 	arm-elf-objdump -D -S $(LOCOBJ)\$(NAME).elf > $(LOCOBJ)\$(NAME).dasm
     elftobin $(LOCOBJ)\$(NAME).elf $(LOCOBJ)\$(NAME)($(VERSION)).bin PAX-S80-SAPP
@@ -235,6 +236,8 @@ $(LOCOBJ)\xCommon.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\xCommon.c"
         $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\xCommon.c" -o "$(LOCOBJ)\xCommon.o"
 $(LOCOBJ)\twister.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\twister.c"
         $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\twister.c" -o "$(LOCOBJ)\twister.o"
+$(LOCOBJ)\payattitude.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\payattitude.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\payattitude.c" -o "$(LOCOBJ)\payattitude.o"
 
 		
 clean:

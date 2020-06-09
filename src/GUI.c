@@ -739,7 +739,10 @@ int Gui_ShowMenuListWithoutButtons(const GUI_MENU *pstMenu, enum MENUSTYLE eMode
 	if (piSelValue && (*piSelValue > (int)pstMenu->nSize || *piSelValue < 0))
 		*piSelValue = 0;
 
-	iRet = GetMenuItem(pstMenu, eMode, sgMenuListArea, NULL, 0, NULL, timeoutSec, piSelValue);
+	Rect temp = sgMenuListArea;
+	temp.bottom = sg_nScrHeight - 1;
+
+	iRet = GetMenuItem(pstMenu, eMode, temp, NULL, 0, NULL, timeoutSec, piSelValue);
 	sg_isCalled = 0;
 	return iRet;
 }

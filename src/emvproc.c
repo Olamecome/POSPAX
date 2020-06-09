@@ -270,15 +270,6 @@ int cEMVInputAmount(ulong *AuthAmt, ulong *CashBackAmt)
 		}
 	}
 
-	/*if (glProcInfo.stTranLog.szOtherAmount[0] != 0) {
-		memset(szBuff, 0, sizeof(szBuff));
-		PubAsc2Bcd(glProcInfo.stTranLog.szOtherAmount, 12, szBuff);
-		EMVSetTLVData(0x9F03, (uchar *)szBuff, 6);
-	}
-	else {
-		EMVSetTLVData(0x9F03, (uchar *)"\x00\x00\x00\x00\x00\x00", 6);
-	}*/
-
 	if (glProcInfo.stTranLog.ucTranType == CASH)
 	{
 		if (CashBackAmt == NULL)

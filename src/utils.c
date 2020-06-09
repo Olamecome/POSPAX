@@ -325,21 +325,24 @@ void showCommError(int ret) {
 void getRRN(char rrn[12 + 1]) {
 	CLEAR_STRING(rrn, 12 + 1);
 	char temp[12 + 1] = "\0";
+	char tempRrn[12 + 1] = "\0";
 	uchar tempTime[6] = { 0 };
-	long sequence = glProcInfo.stTranLog.ulSTAN;
+	unsigned long sequence = glProcInfo.stTranLog.ulSTAN + glPosParams.batchNo;
 
 	GetTime(tempTime);
 	PubBcd2Asc0(tempTime, 6, temp);
 	sequence += PubTime2Long(temp);
 
-	sprintf(rrn, "%012ld", sequence);
-	logd(("Initial RRN: %s", rrn));
+	sprintf(tempRrn,"%012ld", sequence);
+	logd(("Initial RRN: %s", tempRrn));
 
 	CLEAR_STRING(temp, sizeof(temp));
 	generateSequence(12, temp);
 	logd(("Random temp: %s", temp));
 
-	PubAscAdd(rrn, temp, 12, rrn);
+	PubAscAdd(tempRrn, temp, 12, tempRrn);
+	
+	strncpy(rrn, tempRrn, 12);
 	logd(("Final RRN: %s", rrn));
 }
 
@@ -430,6 +433,8 @@ const char* getTransactionTitle(int tranType) {
 		return "PHED";
 	case GATEWAY:
 		return "OGUN COLLECTIONS";
+	case PAYATTITUDE:
+		return "PAY WITH PHONE NUMBER";
 	default:
 		return "\0";
 	}

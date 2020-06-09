@@ -6,3 +6,5 @@ void terminalInfoMenu();
 void tmsConfigMenu();
 void networkConfig();
 void downloadMenu();
+void changeSupervisorPin();
+void updateReceiptCountMenu();

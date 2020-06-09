@@ -85,7 +85,7 @@ void getDefaultAmountPrompt(Prompt* amount, char* title) {
 
 	amount->maxLength = 9;
 	amount->minLength = 1;
-	amount->shouldConfirm = true;
+	amount->shouldConfirm = false;
 	amount->shouldPrint = true;
 	amount->shouldValidate = false;
 }
@@ -187,15 +187,15 @@ void getPasswordPrompt(Prompt* prompt, const char* title, int length) {
 const char* getPassword(int passwordType) {
 	switch (passwordType) {
 	case SUPERVISOR_PIN:
-		return DEFAULT_SUPERVISOR_PASSWORD;
+		return glPosParams.supervisorPin;
 	case OPERATOR_PIN:
-		return DEFAULT_OPERATOR_PASSWORD;
+		return glPosParams.operatorPin;
 	case ADMIN_PIN:
-		return DEFAULT_XPRESS_PASSWORD;
+		return glPosParams.adminPass;
 	case DEV_PIN:
 		return DEV_PASS;
 	default:
-		return DEFAULT_XPRESS_PASSWORD;
+		return  glPosParams.adminPass;
 	}
 
 }

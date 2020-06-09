@@ -106,9 +106,9 @@ static int buildCardNotificationMessage(TRAN_LOG* data, char* message, int outle
 	WlInfo_T wlInfo = { 0 };	
 	if ((get_wl_info(&wlInfo) == 0) && wlInfo.CellInfo.gsm) {
 		WlGSMCellInfo_T* cInfo = wlInfo.CellInfo.gsm;
-		int signalStrength = -1;
-		WlGetSignal(&signalStrength);
-		//621,60,24892,1212, -23 mcc, mnc, lac, ci, ss
+		char signalDesc[30] = { 0 };
+		int signalStrength = GetSignal_Status(signalDesc);
+		//621,60,24892,1212, 80 => mcc, mnc, lac, ci, ss
 		snprintf(cellInfo, lengthOf(cellInfo),"%s,%s,%s,%s,%d", cInfo->mcc,
 			cInfo->mnc, cInfo->lac, cInfo->cell, signalStrength);
 	}
@@ -119,11 +119,22 @@ static int buildCardNotificationMessage(TRAN_LOG* data, char* message, int outle
 	const char* status = (isSuccessResponse(data->szRspCode)) ? "APPROVED" : "DECLINED";
 	logTrace("Status: %s", status);
 	char otherTerminalId[8 + 1] = "\0";
-	char* narration = "\0";
+	char narration[50] = "\0";
 	char* otherCustomerInfo = "\0";
 	char* revenueCode = "\0";
 
 	int POS_CHANNEL = 2;
+	int PAYMENT_METHOD = CARD;
+	switch (data->ucTranType)
+	{
+	case PAYATTITUDE:
+		PAYMENT_METHOD = WALLET;
+		snprintf(narration, sizeof(narration), "PayAttitude pay with phone number %s", data->szHolderName);
+		break;
+	default:
+		PAYMENT_METHOD = CARD;
+		break;
+	}
 
 	char stan[10 + 1] = "\0";
 	sprintf(stan, "%06d", data->ulSTAN);
@@ -155,7 +166,7 @@ static int buildCardNotificationMessage(TRAN_LOG* data, char* message, int outle
 		iccData, getEntryMode(data->uiEntryMode), "00", data->szEchoField59, data->szAuthCode, glPosParams.nibssParams.currencyCode, 
 		terminalId, date, time, data->szRspCode,
 		getTransactionTitle(data->ucTranType), batchNo, sequenceNo, status, data->szResponseReason, time, posDate, data->szRRN,
-		processingCode, data->ucTranType, data->ucAccountType, cellInfo, otherTerminalId, POS_CHANNEL, CARD, revenueCode, 
+		processingCode, data->ucTranType, data->ucAccountType, cellInfo, otherTerminalId, POS_CHANNEL, PAYMENT_METHOD, revenueCode, 
 		data->szHolderName, narration, otherCustomerInfo, data->szAuthCode, data->ucTranType);
 
 	logTrace("Notification data built");
