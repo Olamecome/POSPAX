@@ -83,7 +83,7 @@ Set to correct macro before compile
 #define ALLOW_NO_TMS		// allow init default, without TMS. but TMS still available
 #define ENABLE_EMV			// Link EMV lib into the application.
 #define EMV_TEST_VERSION	// use hard coded emv parameters for EMV test. Valid only when ENABLE_EMV defined
-//#define APP_DEBUG			// debug mode
+#define APP_DEBUG			// debug mode
 //#define FUN2_READ_ONLY	// Allow operator to modify FUNCTION 2.
 #define ENABLE_CONTLESS   // Contactless card support (CLSS)
 
@@ -91,12 +91,12 @@ Set to correct macro before compile
 Application attribute
 *********************************************************************************/
 #define APP_NAME		"XPRESSPOS"
-#define EDCAPP_AID		"XPRESSPOS_200"
+#define EDCAPP_AID		"PGERMER01"
 // Modified by Kim_LinHB 2014-4-4
-#define EDC_VER_PUB		    "2.0.0"			// Public version number
-#define EDC_VER_INTERN	    "2.00.00"		// Extend version number. should be same as EDC_VER_INTERN's heading.
+#define EDC_VER_PUB		    "2.0"			// Public version number
+//#define EDC_VER_INTERN	    "2.0"		// Extend version number. should be same as EDC_VER_INTERN's heading.
 // Added by Kim 20150120
-#define EDC_BASE_VER_INTERN     "2.00.00"   // EDC version, please do not modify
+//#define EDC_BASE_VER_INTERN     "2.00.00"   // EDC version, please do not modify
 
 /*********************************************************************************
 Features of specific area

@@ -2,6 +2,9 @@
 #include "xui.h"
 
 
+
+int httpTimeOutSec = 90;
+
 /**
 * @param httpMethod
 * @param hostURL
@@ -54,8 +57,10 @@ int sendHttpRequest(uchar httpMethod, const char* hostURL, const char* postData,
 	HttpParaCtl(sockfd, HTTP_CMD_SET_PROTO, params, 1);
 
 	memset(params, 0, lengthOf(params));
-	strcat(params, "90"); //1.5 minutes	
+	sprintf(params, "%d", httpTimeOutSec);
+	//strcat(params, "90"); //1.5 minutes	
 	HttpParaCtl(sockfd, HTTP_CMD_SET_TIMEOUT, params, strlen(params));
+	httpTimeOutSec = 90; //reset time for latter use.
 
 	memset(params, 0, lengthOf(params));
 	params[0] = CERT_ISSUER;
@@ -81,6 +86,7 @@ int sendHttpRequest(uchar httpMethod, const char* hostURL, const char* postData,
 	if (httpMethod == HTTP_GET) {
 		sl = HttpGet(sockfd, hostURL);
 	} else {
+
 		memset(params, 0, sizeof(params));
 		strcpy(params, "application/json");
 		HttpParaCtl(sockfd, HTTP_CMD_SET_CONTENT_TYPE, params, strlen(params));
@@ -95,7 +101,14 @@ int sendHttpRequest(uchar httpMethod, const char* hostURL, const char* postData,
 		CommOnHook(FALSE);
 		return -1;
 	} else {
-		logd(("HTTP Send GET status = %d", sl));
+		logd(("HTTP Send status = %d", sl));
+
+		if (sl > 400) {
+			showErrorDialog("404 - Not found", 30);
+			HttpClose(sockfd);
+			CommOnHook(FALSE);
+			return -1;
+		}
 	}
 
 

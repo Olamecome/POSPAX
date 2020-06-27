@@ -434,7 +434,7 @@ const char* getTransactionTitle(int tranType) {
 	case GATEWAY:
 		return "OGUN COLLECTIONS";
 	case PAYATTITUDE:
-		return "PAY WITH PHONE NUMBER";
+		return "PAYATTITUDE";
 	default:
 		return "\0";
 	}
@@ -538,4 +538,22 @@ int dayOfWeek(int year, int month, int day) {
 
 	int val = (23 * month / 9) + day + 4 + year / 4 - year / 100 + year / 400;
 	return val % 7;
+}
+
+int resetCommCfg() {
+	char param[2] = { 0 };
+	param[0] = '0' + glPosParams.switchPortFlag;
+	PutEnv("E_SSL", param);
+	CommSetCfgParam(&glCommCfg);
+	return 0;
+}
+
+int strstrpos(char* haystack, char* needle) {
+	char* nextStr = strstr(haystack, needle);
+
+	if (nextStr) {
+		return nextStr - haystack;
+	}
+
+	return -1;
 }

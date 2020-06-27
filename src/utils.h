@@ -143,3 +143,7 @@ bool stringEqualExt(const char* first, const char* second, bool ignore_case);
 @return day of week 0 <= result <= 6
 */
 int dayOfWeek(int year, int month, int day);
+
+int resetCommCfg();
+
+int strstrpos(char* haystack, char* needle);

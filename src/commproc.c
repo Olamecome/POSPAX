@@ -251,21 +251,9 @@ int DispCommErrMsg(int iErrCode)
 }
 
 
-/**
-*
-* @param dataIn
-* @param inlen
-* @param dataOut
-* @param outlen
-* @return
-*/
-int sendSocketRequest(char* dataIn, int inlen, char* dataOut, int* outlen) {
-	logTrace(__func__);
-	int iRet = -1;
+int dialHost() {
 	int haltMode = FALSE;
-
-	DispDial();
-	iRet = CommDial(DM_DIAL);
+	int iRet = CommDial(DM_DIAL);
 	if (iRet != 0)
 	{
 		//Retry
@@ -283,7 +271,30 @@ int sendSocketRequest(char* dataIn, int inlen, char* dataOut, int* outlen) {
 			CommOnHook(haltMode);
 			return iRet;
 		}
+	}
 
+	return iRet;
+}
+
+
+/**
+*
+* @param dataIn
+* @param inlen
+* @param dataOut
+* @param outlen
+* @return
+*/
+int sendSocketRequest(char* dataIn, int inlen, char* dataOut, int* outlen) {
+	logTrace(__func__);
+	int iRet = -1;
+	int haltMode = FALSE;
+
+	DispDial();
+	iRet = dialHost();
+	if (iRet != 0)
+	{
+		return iRet;
 	}
 
 	logTrace("Host connected");
@@ -329,8 +340,9 @@ int sendSocketRequest(char* dataIn, int inlen, char* dataOut, int* outlen) {
 		break;
 	}
 
-	memset(dataOut, 0, LEN_MAX_COMM_DATA);
-	iRet = CommRxd(dataOut, LEN_MAX_COMM_DATA, uiTimeOut, outlen);
+	*outlen = MAX(*outlen, LEN_MAX_COMM_DATA);
+	memset(dataOut, 0, *outlen);
+	iRet = CommRxd(dataOut, *outlen, uiTimeOut, outlen);
 	if (iRet != 0)
 	{
 		DispCommErrMsg(iRet);

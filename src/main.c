@@ -29,12 +29,15 @@ extern void prepTerminal(void);
 extern void FirstRunProc();
 extern int doNibssCallHome();
 extern int repushTransactions(char silent);
+extern int startUpNewUpdateCheckAndInstall();
+extern int doXpressCallHomeAndUpdateCheck();
+extern void doRemoteDownload();
 
 const APPINFO AppInfo =
 {
 	APP_NAME,
 	EDCAPP_AID,
-	EDC_VER_INTERN _TERMTYPE_,
+	EDC_VER_PUB,
 	"XPRESS PAYMENTS",
 	"XPRESSPOS",
 	"",
@@ -67,6 +70,8 @@ int main(void)
 		repushTransactions(TRUE);
 	}
 
+	startUpNewUpdateCheckAndInstall();
+
 	int res = -1;
 	int selItem = 0;
 	while (1)
@@ -89,9 +94,10 @@ int main(void)
 		logTrace("Call home timercheck: %d", res);
 		if (!res) {
 			logTrace("Calling home");
-			doNibssCallHome();
 			DispMessage("Checking notifications");
 			repushTransactions(TRUE);
+			doXpressCallHomeAndUpdateCheck();
+			doNibssCallHome();
 			resetCallHomeTimer();
 		}
 
@@ -109,7 +115,7 @@ int showMainMenu(int* selItem) {
 		{ "Purchase", PURCHASE, true, NULL },
 		{ "Pre-Authorisation", POS_PRE_AUTHORIZATION, true, NULL },
 		{ "Sales Completion", POS_PRE_AUTH_COMPLETION, true, NULL },
-		//{ "Pay With Phone Number", PAYATTITUDE, true, NULL },
+		{ "PayAttitude", PAYATTITUDE, true, NULL },
 		{ "Services", REPORTING, true, NULL },
 		{ "\0", -1, false, NULL }
 	};
@@ -137,6 +143,7 @@ void  adminMenu(void) {
 		{ "Print Terminal Config", COM_PARAM_PRINT, true, printTerminalDetails },
 		{ "Count Of Receipt", COUNT_OF_RECEIPT, true, updateReceiptCountMenu },
 		{ "Update Supervisor Pin", SUPERVISOR_PIN_UPDATE, true, changeSupervisorPin },
+		{ "Remote Download", TERMINAL_REMOTE_DOWNLOAD, true, doRemoteDownload },
 		{ "\0", -1, false, NULL }
 	};
 

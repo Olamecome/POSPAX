@@ -25,7 +25,7 @@ int payAttitudeMenu() {
 	char amount[12 + 1] = { 0 };
 	char phoneNumber[20] = { 0 };
 
-	SetCurrTitle("PAY WITH PHONE NO");
+	SetCurrTitle(getTransactionTitle(PAYATTITUDE));
 
 	adjustPayAttitudeComms();
 	CommDial(DM_PREDIAL);
@@ -79,11 +79,7 @@ int payAttitudeMenu() {
 
 	}
 
-	char param[2] = { 0 };
-	param[0] = '0' + glPosParams.switchPortFlag;
-	PutEnv("E_SSL", param);
-	CommSetCfgParam(&glCommCfg);
-	return 0;
+	resetCommCfg();
 }
 
 void adjustPayAttitudeComms() {
