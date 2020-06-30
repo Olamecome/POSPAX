@@ -198,7 +198,7 @@ int downloadBinaryWithSocket() {
 		logTrace("Total data len: %d, Content len: %d\n", total_read, content_len);
 		processDownloadedFile(recvData, content_len);
 		if (ret == 0) {
-			showMessageDialog("Remote Download", "Reboot required", 1, 10);
+			showMessageDialog("Remote Download", "Reboot required", 1, 1);
 			Reboot();
 		}
 	}

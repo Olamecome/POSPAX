@@ -84,7 +84,9 @@ OBJ       = $(LOCOBJ)\init.o \
             $(LOCOBJ)\utils.o \
             $(LOCOBJ)\xCommon.o \
             $(LOCOBJ)\twister.o \
-            $(LOCOBJ)\payattitude.o
+            $(LOCOBJ)\payattitude.o \
+            $(LOCOBJ)\remoteDownload.o \
+            $(LOCOBJ)\remoteSocketDownload.o
 
 #  ADS-ROM version
 $(NAME).elf: $(OBJ) C:\PAXPAY~2\myapp\XPRESS~1\BIN_MA~1
@@ -238,6 +240,10 @@ $(LOCOBJ)\twister.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\twister.c"
         $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\twister.c" -o "$(LOCOBJ)\twister.o"
 $(LOCOBJ)\payattitude.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\payattitude.c"
         $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\payattitude.c" -o "$(LOCOBJ)\payattitude.o"
+$(LOCOBJ)\remoteDownload.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\remoteDownload.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\remoteDownload.c" -o "$(LOCOBJ)\remoteDownload.o"
+$(LOCOBJ)\remoteSocketDownload.o: "C:\PaxPayPro2017\myapp\XpressPOS\src\remoteSocketDownload.c"
+        $(GCC) "C:\PaxPayPro2017\myapp\XpressPOS\src\remoteSocketDownload.c" -o "$(LOCOBJ)\remoteSocketDownload.o"
 
 		
 clean:

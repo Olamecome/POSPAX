@@ -56,6 +56,8 @@
     <ClCompile Include="src\print.c" />
     <ClCompile Include="src\printHelper.c" />
     <ClCompile Include="src\ProcTrans.c" />
+    <ClCompile Include="src\remoteDownload.c" />
+    <ClCompile Include="src\remoteSocketDownload.c" />
     <ClCompile Include="src\transaction.c" />
     <ClCompile Include="src\records.c" />
     <ClCompile Include="src\router.c" />

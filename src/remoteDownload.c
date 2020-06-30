@@ -308,11 +308,6 @@ int downloadBinary() {
 		return -1;
 	}
 
-	if (showConfirmDialog(NULL, "Remote Download", "Delete all App data?", 1, 10) == 0) {
-		appCleared = true;
-		deleteApp();
-	}
-
 	ret = processDownloadedFile(chunk.memory, chunk.size);
 	free(chunk.memory);
 

@@ -230,6 +230,12 @@
     <ClCompile Include="src\payattitude.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\remoteDownload.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\remoteSocketDownload.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Logger.h">
