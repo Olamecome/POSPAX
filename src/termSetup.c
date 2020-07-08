@@ -254,6 +254,12 @@ int initializeComms(ushort uiShowSetup) {
 	
 	logTrace("uiShowSetup: %d", uiShowSetup);
 	showNonModalDialog(GetCurrTitle(), "INITIALIZING COMMS");
+	//Fix to enable CLOC info
+	WlSelSim(0);
+	ret = WlOpenPort();
+	ret = WlSendCmd("AT+LBSSTART\r", NULL, 0, 3000, 100);
+	WlClosePort();
+
 	ret = SetNetworkCommDetails(&glPosParams.commConfig.ucCommType, uiShowSetup);
 	if (ret != 0)
 	{

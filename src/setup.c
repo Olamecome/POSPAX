@@ -452,7 +452,7 @@ void SetSysCommParam(uchar ucPermission)
 			break;
 		}
 
-		if (SetCommDetails(0, &glSysParam.stTxnCommCfg.ucCommType))
+		if (SetCommDetails(0, &glPosParams.commConfig.ucCommType))
 		{
 			break;
 		}
@@ -462,7 +462,7 @@ void SetSysCommParam(uchar ucPermission)
 			break;
 		}
 
-		if (SetCommDetails(1, &glSysParam.stTxnCommCfg.ucCommTypeBak))
+		if (SetCommDetails(1, &glPosParams.commConfig.ucCommTypeBak))
 		{
 			break;
 		}
@@ -486,34 +486,34 @@ int SetCommDetails(uchar mode, uchar *pucCommType)
 	switch( *pucCommType )
 	{
 	case CT_RS232:
-	    iRet = SetRs232Param(&glSysParam._TxnRS232Para);
+	    iRet = SetRs232Param(&glPosParams.commConfig.stRS232Para);
 		break;
 		
 	 case CT_BLTH:
-		iRet = SetBTParam(&glSysParam._TxnBlueToothPara.stConfig);
+		iRet = SetBTParam(&glPosParams.commConfig.stBlueToothPara.stConfig);
 		if(iRet != 0)
 			break;
-		SyncBTParam(&glSysParam._TmsBlueToothPara.stConfig, &glSysParam._TxnBlueToothPara.stConfig);
+		SyncBTParam(&glSysParam._TmsBlueToothPara.stConfig, &glPosParams.commConfig.stBlueToothPara.stConfig);
 		CommOnHook(TRUE);
 		DispWait();
-		iRet = CommInitModule(&glSysParam.stTxnCommCfg);
+		iRet = CommInitModule(&glPosParams.commConfig);
 		break;
 		
 	case CT_WIFI:
-		iRet = SetWiFiApp(&glSysParam._TxnWifiPara);
+		iRet = SetWiFiApp(&glPosParams.commConfig.stWifiPara);
 		if(iRet != 0)
 		{
 			DispWifiErrorMsg(iRet);
 			break;
 		}
 		DispWait();
-		iRet = CommInitModule(&glSysParam.stTxnCommCfg);
+		iRet = CommInitModule(&glPosParams.commConfig);
 		if(iRet != 0){
 			DispWifiErrorMsg(iRet);
 			break;
 		}
 		//SetTcpIpSharedPara(&glSysParam.stTxnCommCfg);
-		SyncWifiParam(&glSysParam._TmsWifiPara, &glSysParam._TxnWifiPara);
+		SyncWifiParam(&glSysParam._TmsWifiPara, &glPosParams.commConfig.stWifiPara);
 	    break;
 
 	case CT_MODEM:
@@ -522,21 +522,21 @@ int SetCommDetails(uchar mode, uchar *pucCommType)
 
 	case CT_TCPIP:
 		//SetTcpIpSharedPara(&glSysParam.stTxnCommCfg);
-		SetTcpIpParam(&glSysParam._TxnTcpIpPara);
-		SyncTcpIpParam(&glSysParam._TmsTcpIpPara, &glSysParam._TxnTcpIpPara);
+		SetTcpIpParam(&glPosParams.commConfig.stTcpIpPara);
+		SyncTcpIpParam(&glSysParam._TmsTcpIpPara, &glPosParams.commConfig.stTcpIpPara);
 		DispWait();
-		CommInitModule(&glSysParam.stTxnCommCfg);
+		CommInitModule(&glPosParams.commConfig);
 	    break;
 
 	case CT_GPRS:
 	case CT_CDMA: 
 	case CT_WCDMA:
 		//SetTcpIpSharedPara(&glSysParam.stTxnCommCfg);
-		SetWirelessParam(&glSysParam._TxnWirlessPara);
-		SyncWirelessParam(&glSysParam._TmsWirlessPara, &glSysParam._TxnWirlessPara);
+		SetWirelessParam(&glPosParams.commConfig.stWirlessPara);
+		SyncWirelessParam(&glSysParam._TmsWirlessPara, &glPosParams.commConfig.stWirlessPara);
 		CommOnHook(TRUE);
 		DispWait();
-		iRet = CommInitModule(&glSysParam.stTxnCommCfg);
+		iRet = CommInitModule(&glPosParams.commConfig);
 		break;
 
 	case CT_DEMO:
@@ -3074,7 +3074,7 @@ int SetNetworkCommDetails(uchar *pucCommType, uchar ucAllowOptions)
 
 	//sprintf((char *)szDispBuff, "SETUP ");
 	//GetCommName(*pucCommType, szDispBuff + strlen((char *)szDispBuff));
-	SetCurrTitle("COMM INIT");// (szDispBuff);
+	SetCurrTitle("SETUP COMMS");// (szDispBuff);
 
 	iRet = 0;
 	switch (*pucCommType)

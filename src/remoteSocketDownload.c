@@ -35,6 +35,8 @@ int downloadBinaryWithSocket() {
 	const char* REQUEST_PATH = "/RemoteDownload";  //"/posbridge/post";
 	const char* httpMethod = "POST";
 
+	char message[31 + 1] = { 0 };
+
 	char* primaryHeaders[5] = {
 		"Cache-Control: no-cache",
 		"User-Agent: Terminal",
@@ -169,6 +171,10 @@ int downloadBinaryWithSocket() {
 
 	DispMessage("Downloading update");
 	while (total_read < content_len) {
+
+		CLEAR_STRING(message, sizeof(message));
+		snprintf(message, sizeof(message), "Downloading %d%%", (total_read * 100)/content_len );
+		DispMessage(message);
 		ret = CommRxd(buffer, sizeof(buffer), glPosParams.requestTimeOutSec, &recvlen);
 		// logTrace("RES::%d\n", res);
 		if (ret < 0) {

@@ -254,12 +254,13 @@ int DispCommErrMsg(int iErrCode)
 int dialHost() {
 	int haltMode = FALSE;
 	int iRet = CommDial(DM_DIAL);
+	logTrace("Initial CommDial::iRet=%d", iRet);
 	if (iRet != 0)
 	{
 		//Retry
 		if (iRet == -5) {
 			DispDial();
-			DelayMs(200);
+			DelayMs(2000);
 			if (0 != (iRet = CommDial(DM_DIAL))) {
 				DispCommErrMsg(iRet);
 				logTrace("CommDial failed");

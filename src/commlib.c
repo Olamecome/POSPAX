@@ -527,7 +527,9 @@ int CommDial(uchar ucDialMode)
 	case CT_CDMA:
 	case CT_GPRS:
 		RouteSetDefault(11);
-		iRet = SXXWlDial(&sg_stCurCfg.stWirlessPara, 60, 3600, ucDialMode);
+		iRet = SXXWlDial(&sg_stCurCfg.stWirlessPara, 60, 
+			10,//3600, 
+			ucDialMode);
 		break;
 
 	case CT_DEMO:

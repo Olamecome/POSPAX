@@ -888,6 +888,13 @@ typedef struct PosParams {
 
 	uchar	ucPedMode;				// Current using PED (SxxPED/PP/ExtSxxPED)
 	uchar	ucIsPrepped;
+
+	//PayAttitude Cofing
+	IP_ADDR payAttitudeIp;
+	char payAttitudeZmk[32 + 1];
+	char payAttitudeSessionKey[32 + 1];
+	bool payAttitudeProtocolFlag;
+	bool isPayAttitudeEnabled;
 } PosParams;
 
 

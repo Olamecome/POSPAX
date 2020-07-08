@@ -3839,11 +3839,16 @@ int get_wl_info(WlInfo_T *wl_info)
 	memset(wl_info, 0, sizeof(WlInfo_T));
 	WlInit(NULL);
 
-	key = RSSI_KEY | ISP_KEY | CELLINFO_KEY;
-	//ret = WlGetInfo(key, wl_info);
+	ret = WlOpenPort();
+	//if (ret != 0) return -1; 
+	//WlUsePaxBaseSo(NONUSE_PAX_BASESO);
+
+	key = /*RSSI_KEY | ISP_KEY |*/ CELLINFO_KEY;
+	ret = WlGetInfo(key, wl_info);
 	//wl_info_ok = ret;
 
-	logd(("WlGetInfo============================>ret=%d", ret));
+	logTrace("WlGetInfo============================>ret=%d", ret);
+	WlClosePort();
 
 	return ret;
 }

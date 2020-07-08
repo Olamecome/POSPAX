@@ -262,6 +262,13 @@ void downloadMenu() {
 	getJsonString(json, "receiptHeader", glPosParams.slipHeader, lengthOf(glPosParams.slipHeader));
 	getJsonString(json, "receiptFooter", glPosParams.slipFooter, lengthOf(glPosParams.slipFooter));
 
+	glPosParams.isPayAttitudeEnabled =  getJsonBoolean(json, "EnablePayAttitude");
+	getDotJsonString(json, "PayAttitudeConfig.BaseKey", glPosParams.payAttitudeZmk, sizeof(glPosParams.payAttitudeZmk));
+	memset(&glPosParams.payAttitudeIp, 0, sizeof(IP_ADDR));
+	getDotJsonString(json, "PayAttitudeConfig.IpAddress", glPosParams.payAttitudeIp.szIP, sizeof(glPosParams.payAttitudeIp.szIP));
+	getDotJsonString(json, "PayAttitudeConfig.Port", glPosParams.payAttitudeIp.szPort, sizeof(glPosParams.payAttitudeIp.szPort));
+	
+
 	if (json_object_has_value(json, "logo")) {
 		const char* logo = json_object_get_string(json, "logo");
 

@@ -71,15 +71,18 @@ int xpressCallHome() {
 
 	char cellInfo[30] = { 0 };
 	WlInfo_T wlInfo = { 0 };
+	char signalDesc[30] = { 0 };
+	int signalStrength = GetSignal_Status(signalDesc);
 	if ((get_wl_info(&wlInfo) == 0) && wlInfo.CellInfo.gsm) {
 		WlGSMCellInfo_T* cInfo = wlInfo.CellInfo.gsm;
-		char signalDesc[30] = { 0 };
-		int signalStrength = GetSignal_Status(signalDesc);
 		//621,60,24892,1212, 80 => mcc, mnc, lac, ci, ss
 		snprintf(cellInfo, lengthOf(cellInfo), "%s,%s,%s,%s,%d", cInfo->mcc,
 			cInfo->mnc, cInfo->lac, cInfo->cell, signalStrength);
 	}
-	logd(("CELL INFO: %s", cellInfo));
+	else {
+		sprintf(cellInfo, "0,0,0,0,%d", signalStrength);
+	}
+	logTrace("CELL INFO: %s", cellInfo);
 
 
 	char *powerStatus = NULL;
