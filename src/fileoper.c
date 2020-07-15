@@ -1,5 +1,6 @@
 
 #include "global.h"
+#include "file_handler.h"
 
 /********************** Internal macros declaration ************************/
 /********************** Internal structure declaration *********************/
@@ -76,24 +77,27 @@ int InitTranLogFile(void)
 
 int LoadPosParams(void)
 {
-	int		iRet;
+	//int		iRet;
 
-	iRet = PubFileRead(FILE_POS_PARAMS, 0L, &glPosParams, sizeof(PosParams));
-	if (iRet != 0)
-	{
-		PubTRACE0("LoadPosParams()");
-		SysHalt();
-		return ERR_FILEOPER;
-	}
+	//iRet = PubFileRead(FILE_POS_PARAMS, 0L, &glPosParams, sizeof(PosParams));
+	//if (iRet != 0)
+	//{
+	//	PubTRACE0("LoadPosParams()");
+	//	SysHalt();
+	//	return ERR_FILEOPER;
+	//}
 
-	return 0;
+	//return 0;
+
+	memset(&glPosParams, 0, sizeof(PosParams));
+	return loadFileData(FILE_POS_PARAMS, &glPosParams, sizeof(PosParams));
 }
 
 // 保存系统参数
 // save system parameters
 int SavePosParams(void)
 {
-	int		iRet;
+	/*int		iRet;
 
 	iRet = PubFileWrite(FILE_POS_PARAMS, 0L, &glPosParams, sizeof(PosParams));
 	if (iRet != 0)
@@ -103,7 +107,9 @@ int SavePosParams(void)
 		return ERR_FILEOPER;
 	}
 
-	return 0;
+	return 0;*/
+
+	return saveFileData(FILE_POS_PARAMS, &glPosParams, sizeof(PosParams));
 }
 
 // 读取系统参数
@@ -206,11 +212,11 @@ int ExistSysFiles(void)
 // verify if sizes of the system files are correct or not
 int ValidSysFiles(void)
 {
-	if ((fexist((char *)FILE_POS_PARAMS)<0) ||
+	/*if ((fexist((char *)FILE_POS_PARAMS)<0) ||
 		(filesize((char *)FILE_POS_PARAMS) != sizeof(PosParams)))
 	{
 		return FALSE;
-	}
+	}*/
 	/*if ((fexist((char *)FILE_SYS_PARAM)<0) ||
 		(filesize((char *)FILE_SYS_PARAM)!=sizeof(SYS_PARAM)) )
 	{

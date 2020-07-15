@@ -16,16 +16,7 @@ COMM_DATA		glSendData, glRecvData;			// communication data
 STISO8583		glSendPack;						// transaction sending package
 STISO8583		glRecvPack;						// transaction receiving package 
 
-STTMS8583		glTMSSend;						// TMS sending package
-STTMS8583		glTMSRecv;						// TMS receiving package
-
 COMM_CONFIG		glCommCfg;						// current communication config
-
-TOTAL_INFO		glAcqTotal[MAX_ACQ];			// transaction totals of all acquirers
-TOTAL_INFO		glIssuerTotal[MAX_ISSUER];		// transaction totals of all issuers
-TOTAL_INFO		glEdcTotal;						// transaction totals of this terminal 
-TOTAL_INFO		glTransTotal;					// transaction totals of this terminal for display
-TOTAL_INFO		glPrnTotal;						// transaction totals of this terminal for printing
 
 #ifdef ENABLE_EMV
 EMV_PARAM		glEmvParam;

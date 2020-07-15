@@ -155,7 +155,7 @@ static void loadDefaultPosParams() {
 	glPosParams.batchNo = 1;
 	glPosParams.sequenceNo = 1;
 	glPosParams.approvedReceiptCount = 2;
-	glPosParams.declinedReceiptCount = 2;
+	glPosParams.declinedReceiptCount = 1;
 
 
 	glPosParams.commConfig.ucCommType = CT_GPRS;

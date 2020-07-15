@@ -3,7 +3,7 @@
 
 
 
-int httpTimeOutSec = 90;
+int httpTimeOutSec = 60;
 
 static int dialOnly() {
 

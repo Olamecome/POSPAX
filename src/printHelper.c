@@ -137,7 +137,11 @@ static void prnHeader(char* dateTime) {
 static void printFooter() {
 	resetPrnFormat();
 	PrnStr("\n");
-	prnCenter(glPosParams.slipFooter);
+	logd(("Footer: %s", glPosParams.slipFooter));
+	if (strlen(glPosParams.slipFooter) > 0) {
+		prnCenter(glPosParams.slipFooter);
+	}
+
 	prnFullLenChar('*');
 
 	char versionInfo[50] = "\0";

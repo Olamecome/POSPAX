@@ -236,6 +236,9 @@
     <ClCompile Include="src\remoteSocketDownload.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Device.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Logger.h">

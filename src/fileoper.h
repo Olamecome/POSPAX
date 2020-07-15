@@ -41,7 +41,6 @@ int RecoverTranLog(void);
 ushort GetTranLogNum(uchar ucAcqKey);
 uchar AllowDuplicateTran(void);
 int GetRecord(uint uiStatus, void *pstOutTranLog);
-void CalcTotal(uchar ucAcqKey);
 int SaveEmvStatus(void);
 int LoadEmvStatus(void);
 int SaveEmvErrLog(void);

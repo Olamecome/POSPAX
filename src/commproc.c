@@ -259,8 +259,9 @@ int dialHost() {
 	{
 		//Retry
 		if (iRet == -5) {
+			//CommOnHook(true);
+			CommOnHook(haltMode);
 			DispDial();
-			DelayMs(2000);
 			if (0 != (iRet = CommDial(DM_DIAL))) {
 				DispCommErrMsg(iRet);
 				logTrace("CommDial failed");

@@ -18,6 +18,7 @@
     <ClCompile Include="src\cpinpad.c" />
     <ClCompile Include="src\debug.c" />
     <ClCompile Include="src\Des.c" />
+    <ClCompile Include="src\Device.c" />
     <ClCompile Include="src\dl_iso8583.c" />
     <ClCompile Include="src\dl_iso8583_common.c" />
     <ClCompile Include="src\dl_iso8583_defs_1987.c" />

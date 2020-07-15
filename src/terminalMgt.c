@@ -304,7 +304,7 @@ void downloadMenu() {
 
 
 void changeSupervisorPin() {
-	SetCurrTitle("UPDATE SUPERVISOR PIN");
+	SetCurrTitle("SUPERVISOR PIN");
 
 	int len = 0;
 	char pin[10 + 1];
@@ -331,6 +331,19 @@ void changeSupervisorPin() {
 
 	return ;
 }
+
+void toggleAccountSelection() {
+	//SetCurrTitle("ACCOUNT SELECTION");
+	
+	int selection = glPosParams.isAccountSelectionEnabled;
+	Gui_ClearScr();
+	if (0 == Gui_ShowAlternative("ACCOUNT SELECTION", gl_stTitleAttr,
+		"Enable Acct Selection", gl_stLeftAttr, "Disable", false, "Enable", true, DEFAULT_REQUEST_TIMEOUT, &selection)) {
+		glPosParams.isAccountSelectionEnabled = (bool)selection;
+		SavePosParams();
+	}
+}
+
 
 void updateReceiptCountMenu() {
 	Prompt prompt;

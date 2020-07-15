@@ -178,8 +178,7 @@ int DoClear(void)
 // View total. (glTransTotal)
 int ViewTotal(void)
 {
-	CalcTotal(ACQ_ALL);
-	DispTransTotal(TRUE);
+	
 	return 0;
 }
 

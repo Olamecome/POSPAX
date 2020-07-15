@@ -117,8 +117,6 @@ int  GetStateText(ushort ucStatus, uchar *pszStaText); // Modified by Kim_LinHB 
 void DispOperOk(const void *pszMsg);
 int  SelectAcq(uchar bAllowSelAll, const uchar *pszTitle, uchar *pucAcqIndex);
 int  SelectIssuer(uchar *pucIssuerIndex);
-void ClearTotalInfo(void *pstTotalInfo);
-int  DispTransTotal(uchar bShowVoidTrans);
 //void AdjustLcd(void);
 uchar IsNumStr(const char *pszStr);
 //void GetEngTranLabel(uchar *pszTranTitle, uchar *pszEngLabel);

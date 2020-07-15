@@ -3030,70 +3030,12 @@ int SelectIssuer(uchar *pucIssuerIndex)
 	return ERR_USERCANCEL;
 }
 
-// 清除汇总信息
-void ClearTotalInfo(void *pstTotalInfo)
-{
-	memset(pstTotalInfo, 0, sizeof(TOTAL_INFO));
-
-	memset(((TOTAL_INFO *)pstTotalInfo)->szSaleAmt, '0', 12);
-	memset(((TOTAL_INFO *)pstTotalInfo)->szTipAmt, '0', 12);
-	memset(((TOTAL_INFO *)pstTotalInfo)->szRefundAmt, '0', 12);
-	memset(((TOTAL_INFO *)pstTotalInfo)->szVoidSaleAmt, '0', 12);
-	memset(((TOTAL_INFO *)pstTotalInfo)->szVoidRefundAmt, '0', 12);
-}
 
 // 显示交易汇总信息(glTransTotal)
 // Modified by Kim_LinHB 2014/9/16 v1.01.0009 bug509
 int DispTransTotal(uchar bShowVoidTrans)
 {
-	int iRet;
-	uchar	szDispAmt[50];
-	GUI_PAGELINE stBuff[12];
-	GUI_PAGE stInfoPage;
-	uchar	ucCnt = 0;
-	GUI_TEXT_ATTR st_Small_Left = gl_stLeftAttr;
-#ifndef _Dxxx_
-	st_Small_Left.eFontSize = GUI_FONT_SMALL;  // Modified by Kim_LinHB 2014/9/16 v1.01.0009 bug509
-#endif
-
-	sprintf((char *)stBuff[ucCnt].szLine, "%s%12d", _T("SALE"), glTransTotal.uiSaleCnt);
-	stBuff[ucCnt++].stLineAttr = gl_stLeftAttr;
-	GetDispAmount(glTransTotal.szSaleAmt, stBuff[ucCnt].szLine);
-	stBuff[ucCnt++].stLineAttr = st_Small_Left;
-
-	sprintf((char *)stBuff[ucCnt].szLine, "%s%10d", _T("REFUND"), glTransTotal.uiRefundCnt);
-	stBuff[ucCnt++].stLineAttr = gl_stLeftAttr;
-
-	sprintf((char *)szDispAmt, "%.12s", glTransTotal.szRefundAmt);
-	szDispAmt[0] = 'D';
-	GetDispAmount(szDispAmt, stBuff[ucCnt].szLine);
-	stBuff[ucCnt++].stLineAttr = st_Small_Left;
-
-	if (bShowVoidTrans)
-	{
-		sprintf((char *)stBuff[ucCnt].szLine, "%s%5d", _T("VOIDED SALE"), glTransTotal.uiVoidSaleCnt);
-		stBuff[ucCnt++].stLineAttr = gl_stLeftAttr;
-
-		sprintf((char *)szDispAmt, "%.12s", glTransTotal.szVoidSaleAmt);
-		szDispAmt[0] = 'D';
-		GetDispAmount(szDispAmt, stBuff[ucCnt].szLine);
-		stBuff[ucCnt++].stLineAttr = st_Small_Left;
-
-		sprintf((char *)stBuff[ucCnt].szLine, "%s%5d", _T("VOIDED REFD"), glTransTotal.uiVoidRefundCnt);
-		stBuff[ucCnt++].stLineAttr = gl_stLeftAttr;
-		GetDispAmount(glTransTotal.szVoidRefundAmt, stBuff[ucCnt].szLine);
-		stBuff[ucCnt++].stLineAttr = st_Small_Left;
-	}
-
-	Gui_CreateInfoPage(NULL, gl_stTitleAttr, stBuff, ucCnt, &stInfoPage);
-
-	Gui_ClearScr();
-
-	iRet = Gui_ShowInfoPage(&stInfoPage, FALSE, USER_OPER_TIMEOUT);
-	if (GUI_OK == iRet)
-	{
-		return 0;
-	}
+	
 
 	return ERR_USERCANCEL;
 }

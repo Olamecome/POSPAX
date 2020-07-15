@@ -8,3 +8,4 @@ void networkConfig();
 void downloadMenu();
 void changeSupervisorPin();
 void updateReceiptCountMenu();
+void toggleAccountSelection();

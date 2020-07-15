@@ -142,6 +142,7 @@ void  adminMenu(void) {
 		{ "Prep Terminal", TERMINAL_NIBSS_KEY_EXCHANGE, true, prepTerminal },
 		{ "Print Terminal Config", COM_PARAM_PRINT, true, printTerminalDetails },
 		{ "Count Of Receipt", COUNT_OF_RECEIPT, true, updateReceiptCountMenu },
+		{ "Account Selection", ACCT_SELECT_OPTION, true, toggleAccountSelection },
 		{ "Update Supervisor Pin", SUPERVISOR_PIN_UPDATE, true, changeSupervisorPin },
 		{ "Remote Download", TERMINAL_REMOTE_DOWNLOAD, true, doRemoteDownload },
 		{ "\0", -1, false, NULL }

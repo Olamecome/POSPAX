@@ -895,6 +895,7 @@ typedef struct PosParams {
 	char payAttitudeSessionKey[32 + 1];
 	bool payAttitudeProtocolFlag;
 	bool isPayAttitudeEnabled;
+	bool isAccountSelectionEnabled;
 } PosParams;
 
 
@@ -911,17 +912,7 @@ extern COMM_DATA		glSendData, glRecvData;		// communication data
 extern STISO8583		glSendPack;		// transaction sending package
 extern STISO8583		glRecvPack;		// transaction receiving package 
 
-extern STTMS8583		glTMSSend;		// TMS sending package
-extern STTMS8583		glTMSRecv;		// TMS receiving package
-
-
 extern COMM_CONFIG		glCommCfg;		// current communication config
-
-extern TOTAL_INFO		glAcqTotal[MAX_ACQ];		// transaction totals of all acquirers
-extern TOTAL_INFO		glIssuerTotal[MAX_ISSUER];	// transaction totals of all issuers
-extern TOTAL_INFO		glEdcTotal;		// transaction totals of this terminal 
-extern TOTAL_INFO		glTransTotal;	// transaction totals of this terminal for display
-extern TOTAL_INFO		glPrnTotal;		// transaction totals of this terminal for printing
 
 #ifdef ENABLE_EMV
 extern EMV_PARAM		glEmvParam;
@@ -969,6 +960,9 @@ extern int startEmvTransaction(ushort ucEntryMode, int ucTranType, char amount[1
 extern void showCommError(int ret);
 extern void* notificationHandler(void* arg);
 extern void resetCallHomeTimer();
+
+//extern int readDevice(Device* device);
+//extern int saveDevice(Device* device);
 
 
 enum {
