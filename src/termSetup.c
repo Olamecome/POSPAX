@@ -269,6 +269,7 @@ int initializeComms(ushort uiShowSetup) {
 
 	DispDial();
 	ret = CommDial(DM_PREDIAL);
+	//DelayMs(2000);//give comms time to start up
 	logTrace("CommDial ret::%d", ret);
 	if (0 != ret) {
 		showCommError(ret);

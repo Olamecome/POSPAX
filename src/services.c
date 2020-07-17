@@ -20,7 +20,7 @@ static void checkConnection() {
 		showMessageDialog("Check Connection", "Connection OK", 1, 10);
 	}
 	else {
-		DispErrMsg("Check Connection", "Connection Error", 10, DERR_BEEP);
+		DispErrMsg("Connection Error", NULL, 10, DERR_BEEP);
 	}
 
 

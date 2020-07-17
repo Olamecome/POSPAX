@@ -6,7 +6,7 @@
 int httpTimeOutSec = 60;
 
 static int dialOnly() {
-
+	//logTrace(__func__);
 	if (glPosParams.commConfig.ucCommType == CT_GPRS || glPosParams.commConfig.ucCommType == CT_CDMA
 		|| glPosParams.commConfig.ucCommType == CT_WCDMA) {
 
@@ -19,8 +19,14 @@ static int dialOnly() {
 			glPosParams.commConfig.stWirlessPara.szPwd,
 			0xFF, 1000 * 60, 10);
 
+		//logTrace("ret::%d", ret);
 		if (ret != 0) {
-			return CommDial(DM_PREDIAL);
+			if (ret == -226 /*Dialing*/) {
+				return dialOnly();//
+			}
+			else {
+				return CommDial(DM_PREDIAL);
+			}
 		}
 	}
 	else {

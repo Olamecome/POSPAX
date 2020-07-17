@@ -83,8 +83,11 @@ int main(void)
 
 		if (KEYMENU == res || FNKEYMENU == res) {
 			logTrace("should show admin menu");
-			if (requestAdminPassword(USER_OPER_TIMEOUT) == 0) {
+			if ((res = requestAdminPassword(USER_OPER_TIMEOUT)) == 0) {
 				adminMenu();
+			}
+			else if (res == APP_FAIL){
+				DispErrMsg( "Authentication Failed", NULL,10, 0);
 			}
 			
 			continue;
