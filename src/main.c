@@ -31,7 +31,6 @@ extern int doNibssCallHome();
 extern int repushTransactions(char silent);
 extern int startUpNewUpdateCheckAndInstall();
 extern int doXpressCallHomeAndUpdateCheck();
-extern void doRemoteDownload();
 
 const APPINFO AppInfo =
 {
@@ -147,7 +146,6 @@ void  adminMenu(void) {
 		{ "Count Of Receipt", COUNT_OF_RECEIPT, true, updateReceiptCountMenu },
 		{ "Account Selection", ACCT_SELECT_OPTION, true, toggleAccountSelection },
 		{ "Update Supervisor Pin", SUPERVISOR_PIN_UPDATE, true, changeSupervisorPin },
-		{ "Remote Download", TERMINAL_REMOTE_DOWNLOAD, true, doRemoteDownload },
 		{ "\0", -1, false, NULL }
 	};
 

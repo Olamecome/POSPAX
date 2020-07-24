@@ -150,14 +150,13 @@ static void loadDefaultPosParams() {
 	strncpy(glPosParams.hostZMK, "DBEECACCB4210977ACE73A1D873CA59F", ASCII_KEY_SIZE);
 	glPosParams.requestTimeOutSec = 60;
 	glPosParams.callHomeTimeMinutes = 60;
-	glPosParams.switchPortFlag = 1;
-	PutEnv("E_SSL", "1");
 	glPosParams.batchNo = 1;
 	glPosParams.sequenceNo = 1;
 	glPosParams.approvedReceiptCount = 2;
 	glPosParams.declinedReceiptCount = 1;
 
 
+	glPosParams.commConfig.ucPortMode = 1;
 	glPosParams.commConfig.ucCommType = CT_GPRS;
 	glPosParams.commConfig.ucCommTypeBak = CT_NONE;
 	glPosParams.commConfig.pfUpdWaitUI = DispWaitRspStatus;

@@ -93,7 +93,7 @@ Application attribute
 #define APP_NAME		"XPRESSPOS"
 #define EDCAPP_AID		"PGERMER01"
 // Modified by Kim_LinHB 2014-4-4
-#define EDC_VER_PUB		    "2.0"			// Public version number
+#define EDC_VER_PUB		    "2.1"			// Public version number
 //#define EDC_VER_INTERN	    "2.0"		// Extend version number. should be same as EDC_VER_INTERN's heading.
 // Added by Kim 20150120
 //#define EDC_BASE_VER_INTERN     "2.00.00"   // EDC version, please do not modify
@@ -866,7 +866,6 @@ typedef struct PosParams {
 	char hostZMK[ASCII_KEY_SIZE + 1];
 	char hostSessionKey[ASCII_KEY_SIZE + 1];
 	NibssTerminalParameter nibssParams;
-	bool switchPortFlag;
 	unsigned short requestTimeOutSec;
 	unsigned short callHomeTimeMinutes;
 	char approvedReceiptCount;
@@ -896,6 +895,7 @@ typedef struct PosParams {
 	bool payAttitudeProtocolFlag;
 	bool isPayAttitudeEnabled;
 	bool isAccountSelectionEnabled;
+	char temp[100];
 } PosParams;
 
 

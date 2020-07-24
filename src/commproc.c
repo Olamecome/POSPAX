@@ -263,7 +263,7 @@ int dialHost() {
 			CommOnHook(haltMode);
 			DispDial();
 			if (0 != (iRet = CommDial(DM_DIAL))) {
-				DispCommErrMsg(iRet);
+				//DispCommErrMsg(iRet);
 				logTrace("CommDial failed");
 				CommOnHook(haltMode);
 				return iRet;

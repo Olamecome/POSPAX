@@ -1333,10 +1333,8 @@ int ConfirmPanInfo(void)
 	uchar bSSL = 0;
 	uchar szSSL[120];
 
-	if (0 == GetEnv("E_SSL", szSSL))
-	{
-		bSSL = atoi(szSSL);
-	}
+	bSSL = glCommCfg.ucPortMode;
+	logTrace("Is ssl: %d", bSSL);
 
 #ifdef _Sxx_  //fixed by Kim bug 813 815
 	stLeftAttr.eFontSize = GUI_FONT_SMALL;
@@ -1776,10 +1774,8 @@ int GetAmount(void)
 	uchar bSSL = 0;
 	uchar szSSL[120];
 
-	if (0 == GetEnv("E_SSL", szSSL))
-	{
-		bSSL = atoi(szSSL);
-	}
+	bSSL = glCommCfg.ucPortMode;
+	logTrace("Is ssl: %d", bSSL);
 
 	if (glProcInfo.stTranLog.szAmount[0] != 0)
 	{

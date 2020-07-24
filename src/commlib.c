@@ -558,12 +558,8 @@ int CommTxd(const uchar *psTxdData, ushort uiDataLen, ushort uiTimeOutSec)
 		return ERR_COMM_INV_PARAM;
 	}
 
-	
-    if(0 == GetEnv("E_SSL", szSSL))
-    {
-        bSSL = atoi(szSSL);
-		logTrace("Is ssl: %d", bSSL);
-    }
+    bSSL = sg_stCurCfg.ucPortMode;
+	//logTrace("Is ssl: %d", bSSL);
 	
 	switch( sg_stCurCfg.ucCommType )
 	{
@@ -619,10 +615,8 @@ int CommRxd(uchar *psRxdData, ushort uiExpLen, ushort uiTimeOutSec, ushort *puiO
 		return ERR_COMM_INV_PARAM;
 	}
 	
-    if(0 == GetEnv("E_SSL", szSSL))
-    {
-        bSSL = atoi(szSSL);
-    }
+	bSSL = sg_stCurCfg.ucPortMode;
+	//logTrace("Is ssl: %d", bSSL);
 
 	switch( sg_stCurCfg.ucCommType )
 	{
@@ -675,10 +669,8 @@ int CommOnHook(uchar bReleaseAll)
 	uchar bSSL = 0;
     uchar szSSL[120];
 	
-	if(0 == GetEnv("E_SSL", szSSL))
-    {
-        bSSL = atoi(szSSL);
-    }
+	bSSL = sg_stCurCfg.ucPortMode;
+	logTrace("Is ssl: %d", bSSL);
 	
 	switch( sg_stCurCfg.ucCommType )
 	{
@@ -1186,10 +1178,8 @@ static int WIFIDial(uchar ucDialMode)
 	uchar bSSL = 0;
     uchar szSSL[120];
 	
-	if(0 == GetEnv("E_SSL", szSSL))
-    {
-        bSSL = atoi(szSSL);
-    }
+	bSSL = sg_stCurCfg.ucPortMode;
+	logTrace("Is ssl: %d", bSSL);
 
 	// Added by Kim_LinHB 2014-08-22 v1.01.0004
 	if(WifiCheck(NULL) <= 0)

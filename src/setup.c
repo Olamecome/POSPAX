@@ -853,15 +853,11 @@ int SetSSLFlag()
 	uchar szCliKey[20] = {'\0'};
 	uchar szTemp[20] =  {'\0'};
 	
-	int iValue = 0;
+	uchar iValue = 0;
 	
 	//Set SSL Flag
-	if(GetEnv("E_SSL", szTemp) == 0)
-	{
-		sprintf((char *)szSLL, "%s", szTemp);
-		iValue = szSLL[0] - '0';
-	};
-	
+	iValue = glPosParams.commConfig.ucPortMode;
+
 	Gui_ClearScr();
 	
 	if(GUI_OK != Gui_ShowAlternative(GetCurrTitle(), gl_stTitleAttr, "E_SSL", gl_stLeftAttr,
@@ -870,9 +866,8 @@ int SetSSLFlag()
 		return ERR_USERCANCEL;
 	}
 
-	szSLL[0] = (uchar)(iValue + '0');
-
-	PutEnv("E_SSL", szSLL);
+	glPosParams.commConfig.ucPortMode = iValue;
+	SavePosParams();
 	
 	if(atoi(szSLL) != 0)
 	{

@@ -315,10 +315,8 @@ int SxxLANTcpDial(const TCPIP_PARA *pstTcpPara, uchar ucDialMode)
 	uchar bSSL = 0;
     uchar szSSL[120];
 
-	if(0 == GetEnv("E_SSL", szSSL))
-    {
-        bSSL = atoi(szSSL);
-    }
+	bSSL = glCommCfg.ucPortMode;
+	logTrace("Is ssl: %d", bSSL);
 	
 	//Modify by Kevin_Wu, for supporting SSL none block mode 20160913
 	if(!(bSSL && (SxxSSLGetSocket() >=0)))
@@ -451,11 +449,8 @@ int SXXWlDial(const WIRELESS_PARAM *pstWlPara, int iTimeOut, int iAliveInterval,
 	uchar bSSL = 0;
     uchar szSSL[120];
 
-	if(0 == GetEnv("E_SSL", szSSL))
-    {
-        bSSL = atoi(szSSL);
-		logd(("IS SSL: %d", bSSL));
-    }
+	bSSL = glCommCfg.ucPortMode;
+	logTrace("Is ssl: %d", bSSL);
 	
 	//Modify by Kevin_Wu, for supporting SSL none block mode 20160913
 	if(!(bSSL && (SxxSSLGetSocket() >=0)))

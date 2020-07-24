@@ -4,6 +4,7 @@
 #include "http_handler.h"
 
 extern int doNibssEod();
+extern void doRemoteDownload();
 
 static void checkConnection() {
 	char* url = "http://www.google.com";
@@ -253,7 +254,7 @@ static void endOfDay() {
 int servicesMenu() {
 
 	Prompt prompt = { 0 };
-	getListItemPrompt(&prompt, "SERVICES", "Check Connection|Reprint|Summary Report|End of Day|Repush Transactions");
+	getListItemPrompt(&prompt, "SERVICES", "Check Connection|Reprint|Summary Report|End of Day|Remote Download|Repush Transactions");
 	prompt.selectionOption = 0;
 
 	while (1) {
@@ -275,6 +276,9 @@ int servicesMenu() {
 			endOfDay();
 			break;
 		case 4:
+			doRemoteDownload();
+			break;
+		case 5:
 			repushTransactions(FALSE);
 			break;
 		}
