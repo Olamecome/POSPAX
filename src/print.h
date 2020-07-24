@@ -33,18 +33,9 @@ MODIFICATION SHEET:
 extern "C" {
 #endif /* __cplusplus */
 
-int PrnCurAcqTransList(void);
-int PrnAllList(void);
 void  PrnSetSmall(void);
 void  PrnSetNormal(void);
 void  PrnSetBig(void);
-int  PrintReceipt(uchar ucPrnFlag);
-int  PrnTotalIssuer(uchar ucIssuerKey);
-int  PrnTotalAcq(void);
-int  PrintSettle(uchar ucPrnFlag);
-int  PrintParam(void);
-int  StartPrinter(void);
-void PrintEmvErrLogSub(void);
 
 int  DispPrnError(int iErrCode);
 

@@ -128,8 +128,8 @@ static void loadDefaultPosParams() {
 
 
 	memset(&glPosParams.currency, 0, sizeof(CURRENCY_CONFIG));
-	CURRENCY_CONFIG currency = { "NGN", "\x05\x66", "\x05\x66", 2, 0 };
-	glPosParams.currency = currency;
+	glPosParams.currency = glCurrency[0];
+	glPosParams.stLangCfg = glLangList[0];
 
 #ifdef APP_DEBUG
 	strncpy(glPosParams.tmsIp.szIP, "80.88.8.245", lengthOf(glPosParams.tmsIp.szIP));
@@ -208,17 +208,12 @@ void FirstRunProc()
 			if (ValidSysFiles())
 			{
 				logTrace("System files are valid");
-				LoadSysParam();
 				LoadSysCtrlAll();
 				LoadPosParams();
 				if (!glPosParams.commConfig.pfUpdWaitUI) {
 					glPosParams.commConfig.pfUpdWaitUI = DispWaitRspStatus;
 					SavePosParams();
 				}
-
-				//glPosParams.commConfig = glPosParams.commConfig;
-				//SaveSysParam();
-
 				bFirstRun = 0;
 
 				initializeEMV();

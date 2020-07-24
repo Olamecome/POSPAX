@@ -93,7 +93,7 @@ Application attribute
 #define APP_NAME		"XPRESSPOS"
 #define EDCAPP_AID		"PGERMER01"
 // Modified by Kim_LinHB 2014-4-4
-#define EDC_VER_PUB		    "2.1"			// Public version number
+#define EDC_VER_PUB		    "2.0"			// Public version number
 //#define EDC_VER_INTERN	    "2.0"		// Extend version number. should be same as EDC_VER_INTERN's heading.
 // Added by Kim 20150120
 //#define EDC_BASE_VER_INTERN     "2.00.00"   // EDC version, please do not modify
@@ -166,8 +166,6 @@ Warning: DO NOT manually enable/disable below macros. they're determined automat
 #include "checkopt.h"
 #include "commproc.h"
 #include "print.h"
-#include "password.h"
-#include "manage.h"
 #include "pedpinpad.h"
 #include "cpinpad.h"
 #include "MultiApp.h"
@@ -736,7 +734,7 @@ typedef struct _tagREPRN_STL_INFO
 }REPRN_STL_INFO;
 
 // system config information, update when downloading or modifying parameters.
-typedef struct _tagSYS_PARAM
+/*typedef struct _tagSYS_PARAM
 {
 #define LOGON_MODE		0x01
 #define CHANGE_MODE 	0x02
@@ -796,7 +794,7 @@ typedef struct _tagSYS_PARAM
 #define APMODE_MAJOR		1		// Current app is major sub-app. 当前应用为主要子应用(EDC for VISA MASTERCARD)
 #define APMODE_MINOR		2		// Current app is minor sub-app. 当前应用为次要子应用(EDC for AE, DINERS, JCB)
 	uchar				ucRunMode;
-}SYS_PARAM;
+}SYS_PARAM;*/
 
 // RFU for HK
 typedef struct _tagEMV_FIELD56
@@ -855,6 +853,7 @@ typedef struct PosParams {
 	char supervisorPin[10 + 1];
 	char adminPass[10 + 1];
 	CURRENCY_CONFIG currency;
+	LANG_CONFIG	stLangCfg;
 
 	IP_ADDR tmsIp;
 	char tmsUrl[100];
@@ -895,7 +894,6 @@ typedef struct PosParams {
 	bool payAttitudeProtocolFlag;
 	bool isPayAttitudeEnabled;
 	bool isAccountSelectionEnabled;
-	char temp[100];
 } PosParams;
 
 
@@ -904,7 +902,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 extern PosParams		glPosParams;
-extern SYS_PARAM		glSysParam, glSysParamBak;		// sys config parameters
+//extern SYS_PARAM		glSysParam, glSysParamBak;		// sys config parameters
 extern SYS_CONTROL		glSysCtrl;		// sys control parameters
 extern SYS_PROC_INFO	glProcInfo;		// transaction processing information
 

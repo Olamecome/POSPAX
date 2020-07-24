@@ -42,7 +42,6 @@
     <ClCompile Include="src\lng.c" />
     <ClCompile Include="src\Logger.c" />
     <ClCompile Include="src\main.c" />
-    <ClCompile Include="src\manage.c" />
     <ClCompile Include="src\mlogo.c" />
     <ClCompile Include="src\MultiApp.c" />
     <ClCompile Include="src\nibssConfiguration.c" />
@@ -51,7 +50,6 @@
     <ClCompile Include="src\pack8583.c" />
     <ClCompile Include="src\parson.c" />
     <ClCompile Include="src\parsonHelper.c" />
-    <ClCompile Include="src\password.c" />
     <ClCompile Include="src\payattitude.c" />
     <ClCompile Include="src\print.c" />
     <ClCompile Include="src\printHelper.c" />
@@ -132,7 +130,6 @@
     <ClInclude Include="src\L2_Device.h" />
     <ClInclude Include="src\lng.h" />
     <ClInclude Include="src\Logger.h" />
-    <ClInclude Include="src\manage.h" />
     <ClInclude Include="src\mlogo.h" />
     <ClInclude Include="src\MultiApp.h" />
     <ClInclude Include="src\openssl\aes.h" />
@@ -221,7 +218,6 @@
     <ClInclude Include="src\pack8583.h" />
     <ClInclude Include="src\parson.h" />
     <ClInclude Include="src\parsonHelper.h" />
-    <ClInclude Include="src\password.h" />
     <ClInclude Include="src\PEDPINPAD.h" />
     <ClInclude Include="src\print.h" />
     <ClInclude Include="src\printHelper.h" />
