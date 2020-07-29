@@ -71,9 +71,6 @@
     <ClCompile Include="src\lng.c">
       <Filter>Source Files\pax</Filter>
     </ClCompile>
-    <ClCompile Include="src\manage.c">
-      <Filter>Source Files\pax</Filter>
-    </ClCompile>
     <ClCompile Include="src\mlogo.c">
       <Filter>Source Files\pax</Filter>
     </ClCompile>
@@ -81,9 +78,6 @@
       <Filter>Source Files\pax</Filter>
     </ClCompile>
     <ClCompile Include="src\pack8583.c">
-      <Filter>Source Files\pax</Filter>
-    </ClCompile>
-    <ClCompile Include="src\password.c">
       <Filter>Source Files\pax</Filter>
     </ClCompile>
     <ClCompile Include="src\print.c">
@@ -230,6 +224,12 @@
     <ClCompile Include="src\payattitude.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\remoteDownload.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\remoteSocketDownload.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Logger.h">
@@ -313,9 +313,6 @@
     <ClInclude Include="src\lng.h">
       <Filter>Header Files\pax</Filter>
     </ClInclude>
-    <ClInclude Include="src\manage.h">
-      <Filter>Header Files\pax</Filter>
-    </ClInclude>
     <ClInclude Include="src\mlogo.h">
       <Filter>Header Files\pax</Filter>
     </ClInclude>
@@ -323,9 +320,6 @@
       <Filter>Header Files\pax</Filter>
     </ClInclude>
     <ClInclude Include="src\pack8583.h">
-      <Filter>Header Files\pax</Filter>
-    </ClInclude>
-    <ClInclude Include="src\password.h">
       <Filter>Header Files\pax</Filter>
     </ClInclude>
     <ClInclude Include="src\PEDPINPAD.h">

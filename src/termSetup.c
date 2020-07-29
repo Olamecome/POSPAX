@@ -128,8 +128,8 @@ static void loadDefaultPosParams() {
 
 
 	memset(&glPosParams.currency, 0, sizeof(CURRENCY_CONFIG));
-	CURRENCY_CONFIG currency = { "NGN", "\x05\x66", "\x05\x66", 2, 0 };
-	glPosParams.currency = currency;
+	glPosParams.currency = glCurrency[0];
+	glPosParams.stLangCfg = glLangList[0];
 
 #ifdef APP_DEBUG
 	strncpy(glPosParams.tmsIp.szIP, "80.88.8.245", lengthOf(glPosParams.tmsIp.szIP));
@@ -150,14 +150,13 @@ static void loadDefaultPosParams() {
 	strncpy(glPosParams.hostZMK, "DBEECACCB4210977ACE73A1D873CA59F", ASCII_KEY_SIZE);
 	glPosParams.requestTimeOutSec = 60;
 	glPosParams.callHomeTimeMinutes = 60;
-	glPosParams.switchPortFlag = 1;
-	PutEnv("E_SSL", "1");
 	glPosParams.batchNo = 1;
 	glPosParams.sequenceNo = 1;
 	glPosParams.approvedReceiptCount = 2;
-	glPosParams.declinedReceiptCount = 2;
+	glPosParams.declinedReceiptCount = 1;
 
 
+	glPosParams.commConfig.ucPortMode = 1;
 	glPosParams.commConfig.ucCommType = CT_GPRS;
 	glPosParams.commConfig.ucCommTypeBak = CT_NONE;
 	glPosParams.commConfig.pfUpdWaitUI = DispWaitRspStatus;
@@ -209,17 +208,12 @@ void FirstRunProc()
 			if (ValidSysFiles())
 			{
 				logTrace("System files are valid");
-				LoadSysParam();
 				LoadSysCtrlAll();
 				LoadPosParams();
 				if (!glPosParams.commConfig.pfUpdWaitUI) {
 					glPosParams.commConfig.pfUpdWaitUI = DispWaitRspStatus;
 					SavePosParams();
 				}
-
-				//glPosParams.commConfig = glPosParams.commConfig;
-				//SaveSysParam();
-
 				bFirstRun = 0;
 
 				initializeEMV();
@@ -254,6 +248,12 @@ int initializeComms(ushort uiShowSetup) {
 	
 	logTrace("uiShowSetup: %d", uiShowSetup);
 	showNonModalDialog(GetCurrTitle(), "INITIALIZING COMMS");
+	//Fix to enable CLOC info
+	WlSelSim(0);
+	ret = WlOpenPort();
+	ret = WlSendCmd("AT+LBSSTART\r", NULL, 0, 3000, 100);
+	WlClosePort();
+
 	ret = SetNetworkCommDetails(&glPosParams.commConfig.ucCommType, uiShowSetup);
 	if (ret != 0)
 	{
@@ -263,6 +263,7 @@ int initializeComms(ushort uiShowSetup) {
 
 	DispDial();
 	ret = CommDial(DM_PREDIAL);
+	//DelayMs(2000);//give comms time to start up
 	logTrace("CommDial ret::%d", ret);
 	if (0 != ret) {
 		showCommError(ret);

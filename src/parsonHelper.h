@@ -18,6 +18,8 @@ typedef JSON_Value* JsonValue;
 typedef JSON_Array* JsonArray;
 
 
+#define jsonPutString json_object_set_string
+
 
 const char* getJsonError();
 

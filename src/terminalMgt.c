@@ -89,12 +89,12 @@ ENTER_PORT:
 
 
 		clearScreen();
-		selected = glPosParams.switchPortFlag;
+		selected = glPosParams.commConfig.ucPortMode;
 		if (GUI_OK != Gui_ShowAlternative("Connection Type", gl_stTitleAttr,
 			"Select Connection Type", gl_stLeftAttr, "Open", 0, "SSL", 1, 30, &selected)) {
 			goto ENTER_PORT;
 		}
-		glPosParams.switchPortFlag = selected;
+		glPosParams.commConfig.ucPortMode = selected;
 
 		memset(param, 0, lengthOf(param));
 		sprintf(param, "%d", glPosParams.requestTimeOutSec);
@@ -119,10 +119,6 @@ ENTER_PORT:
 
 		break;
 	}
-
-	memset(param, 0, lengthOf(param));
-	sprintf(param, "%d", glPosParams.switchPortFlag);
-	PutEnv("E_SSL", param);
 
 	SavePosParams();
 	glCommCfg = glPosParams.commConfig;
@@ -250,9 +246,8 @@ void downloadMenu() {
 	glPosParams.commConfig.stTcpIpPara.stHost1 = ipInfo;
 	glPosParams.commConfig.stWifiPara.stHost1 = ipInfo;
 	glPosParams.commConfig.stWirlessPara.stHost1 = ipInfo;
+	glPosParams.commConfig.ucPortMode = 1;
 
-	glPosParams.switchPortFlag = 1;
-	PutEnv("E_SSL", "1");
 
 	getJsonString(json, "Username", glPosParams.username, lengthOf(glPosParams.username));
 	getJsonString(json, "Password", glPosParams.password, lengthOf(glPosParams.password));
@@ -261,6 +256,13 @@ void downloadMenu() {
 	getJsonString(json, "ConsultantCode", glPosParams.consultantCode, lengthOf(glPosParams.consultantCode));
 	getJsonString(json, "receiptHeader", glPosParams.slipHeader, lengthOf(glPosParams.slipHeader));
 	getJsonString(json, "receiptFooter", glPosParams.slipFooter, lengthOf(glPosParams.slipFooter));
+
+	glPosParams.isPayAttitudeEnabled =  getJsonBoolean(json, "EnablePayAttitude");
+	getDotJsonString(json, "PayAttitudeConfig.BaseKey", glPosParams.payAttitudeZmk, sizeof(glPosParams.payAttitudeZmk));
+	memset(&glPosParams.payAttitudeIp, 0, sizeof(IP_ADDR));
+	getDotJsonString(json, "PayAttitudeConfig.IpAddress", glPosParams.payAttitudeIp.szIP, sizeof(glPosParams.payAttitudeIp.szIP));
+	getDotJsonString(json, "PayAttitudeConfig.Port", glPosParams.payAttitudeIp.szPort, sizeof(glPosParams.payAttitudeIp.szPort));
+	
 
 	if (json_object_has_value(json, "logo")) {
 		const char* logo = json_object_get_string(json, "logo");
@@ -297,7 +299,7 @@ void downloadMenu() {
 
 
 void changeSupervisorPin() {
-	SetCurrTitle("UPDATE SUPERVISOR PIN");
+	SetCurrTitle("SUPERVISOR PIN");
 
 	int len = 0;
 	char pin[10 + 1];
@@ -324,6 +326,19 @@ void changeSupervisorPin() {
 
 	return ;
 }
+
+void toggleAccountSelection() {
+	//SetCurrTitle("ACCOUNT SELECTION");
+	
+	int selection = glPosParams.isAccountSelectionEnabled;
+	Gui_ClearScr();
+	if (0 == Gui_ShowAlternative("ACCOUNT SELECTION", gl_stTitleAttr,
+		"Enable Acct Selection", gl_stLeftAttr, "Disable", false, "Enable", true, DEFAULT_REQUEST_TIMEOUT, &selection)) {
+		glPosParams.isAccountSelectionEnabled = (bool)selection;
+		SavePosParams();
+	}
+}
+
 
 void updateReceiptCountMenu() {
 	Prompt prompt;

@@ -132,12 +132,11 @@ ENTER_AMT:
 		sprintf((char *)glProcInfo.stTranLog.szOtherAmount, "%012ld", 0L);
 	}
 
-#ifdef ENABLE_ACCT_SEL
-	if (GUI_OK != GetAccountType("Account Type", &glProcInfo.stTranLog.ucAccountType)) {
-		goto ENTER_AMT;
+	if (glPosParams.isAccountSelectionEnabled) {
+		if (GUI_OK != GetAccountType("Account Type", &glProcInfo.stTranLog.ucAccountType)) {
+			goto ENTER_AMT;
+		}
 	}
-#endif // ENABLE_ACCT_SEL
-
 
 	//Start Transaction
 	startEmvTransaction(/*CARD_SWIPED |*/ CARD_INSERTED | CARD_TAPPED, tranType, glProcInfo.stTranLog.szAmount, glProcInfo.stTranLog.szOtherAmount);

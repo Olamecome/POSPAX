@@ -34,6 +34,8 @@ int ReferralDial(const uchar *pszPhoneNo);
 */
 int sendSocketRequest(char* dataIn, int inlen, char* dataOut, int* outlen);
 
+int dialHost();
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

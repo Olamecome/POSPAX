@@ -29,12 +29,14 @@ extern void prepTerminal(void);
 extern void FirstRunProc();
 extern int doNibssCallHome();
 extern int repushTransactions(char silent);
+extern int startUpNewUpdateCheckAndInstall();
+extern int doXpressCallHomeAndUpdateCheck();
 
 const APPINFO AppInfo =
 {
 	APP_NAME,
 	EDCAPP_AID,
-	EDC_VER_INTERN _TERMTYPE_,
+	EDC_VER_PUB,
 	"XPRESS PAYMENTS",
 	"XPRESSPOS",
 	"",
@@ -67,6 +69,8 @@ int main(void)
 		repushTransactions(TRUE);
 	}
 
+	startUpNewUpdateCheckAndInstall();
+
 	int res = -1;
 	int selItem = 0;
 	while (1)
@@ -78,8 +82,11 @@ int main(void)
 
 		if (KEYMENU == res || FNKEYMENU == res) {
 			logTrace("should show admin menu");
-			if (requestAdminPassword(USER_OPER_TIMEOUT) == 0) {
+			if ((res = requestAdminPassword(USER_OPER_TIMEOUT)) == 0) {
 				adminMenu();
+			}
+			else if (res == APP_FAIL){
+				DispErrMsg( "Authentication Failed", NULL,10, 0);
 			}
 			
 			continue;
@@ -89,9 +96,10 @@ int main(void)
 		logTrace("Call home timercheck: %d", res);
 		if (!res) {
 			logTrace("Calling home");
-			doNibssCallHome();
 			DispMessage("Checking notifications");
 			repushTransactions(TRUE);
+			doXpressCallHomeAndUpdateCheck();
+			doNibssCallHome();
 			resetCallHomeTimer();
 		}
 
@@ -109,7 +117,7 @@ int showMainMenu(int* selItem) {
 		{ "Purchase", PURCHASE, true, NULL },
 		{ "Pre-Authorisation", POS_PRE_AUTHORIZATION, true, NULL },
 		{ "Sales Completion", POS_PRE_AUTH_COMPLETION, true, NULL },
-		//{ "Pay With Phone Number", PAYATTITUDE, true, NULL },
+		{ "PayAttitude", PAYATTITUDE, true, NULL },
 		{ "Services", REPORTING, true, NULL },
 		{ "\0", -1, false, NULL }
 	};
@@ -136,6 +144,7 @@ void  adminMenu(void) {
 		{ "Prep Terminal", TERMINAL_NIBSS_KEY_EXCHANGE, true, prepTerminal },
 		{ "Print Terminal Config", COM_PARAM_PRINT, true, printTerminalDetails },
 		{ "Count Of Receipt", COUNT_OF_RECEIPT, true, updateReceiptCountMenu },
+		{ "Account Selection", ACCT_SELECT_OPTION, true, toggleAccountSelection },
 		{ "Update Supervisor Pin", SUPERVISOR_PIN_UPDATE, true, changeSupervisorPin },
 		{ "\0", -1, false, NULL }
 	};

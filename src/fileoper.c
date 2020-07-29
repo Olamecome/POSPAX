@@ -1,5 +1,6 @@
 
 #include "global.h"
+#include "file_handler.h"
 
 /********************** Internal macros declaration ************************/
 /********************** Internal structure declaration *********************/
@@ -76,24 +77,27 @@ int InitTranLogFile(void)
 
 int LoadPosParams(void)
 {
-	int		iRet;
+	//int		iRet;
 
-	iRet = PubFileRead(FILE_POS_PARAMS, 0L, &glPosParams, sizeof(PosParams));
-	if (iRet != 0)
-	{
-		PubTRACE0("LoadPosParams()");
-		SysHalt();
-		return ERR_FILEOPER;
-	}
+	//iRet = PubFileRead(FILE_POS_PARAMS, 0L, &glPosParams, sizeof(PosParams));
+	//if (iRet != 0)
+	//{
+	//	PubTRACE0("LoadPosParams()");
+	//	SysHalt();
+	//	return ERR_FILEOPER;
+	//}
 
-	return 0;
+	//return 0;
+
+	memset(&glPosParams, 0, sizeof(PosParams));
+	return loadFileData(FILE_POS_PARAMS, &glPosParams, sizeof(PosParams));
 }
 
 // 保存系统参数
 // save system parameters
 int SavePosParams(void)
 {
-	int		iRet;
+	/*int		iRet;
 
 	iRet = PubFileWrite(FILE_POS_PARAMS, 0L, &glPosParams, sizeof(PosParams));
 	if (iRet != 0)
@@ -103,84 +107,9 @@ int SavePosParams(void)
 		return ERR_FILEOPER;
 	}
 
-	return 0;
-}
+	return 0;*/
 
-// 读取系统参数
-// load system parameters
-int LoadSysParam(void)
-{
-	int		iRet;
-
-	iRet = PubFileRead(FILE_SYS_PARAM, 0L, &glSysParam, sizeof(SYS_PARAM));
-	if (iRet != 0)
-	{
-		PubTRACE0("LoadSysParam()");
-		SysHalt();
-		return ERR_FILEOPER;
-	}
-
-	return 0;
-}
-
-
-
-
-// 保存系统参数
-// save system parameters
-int SaveSysParam(void)
-{
-	int		iRet;
-
-	iRet = PubFileWrite(FILE_SYS_PARAM, 0L, &glSysParam, sizeof(SYS_PARAM));
-	if( iRet!=0 )
-	{
-		PubTRACE0("SaveSysParam");
-		SysHalt();
-		return ERR_FILEOPER;
-	}
-
-	return 0;
-}
-
-// 保存EDC参数
-// save EDC parameters
-int SaveEdcParam(void)
-{
-	int		iRet;
-
-	iRet = PubFileWrite(FILE_SYS_PARAM,
-						OFFSET(SYS_PARAM, stEdcInfo),
-						&glSysParam.stEdcInfo,
-						sizeof(glSysParam.stEdcInfo));
-	if( iRet!=0 )
-	{
-		PubTRACE0("SaveSysParam");
-		SysHalt();
-		return ERR_FILEOPER;
-	}
-
-	return 0;
-}
-
-// 保存系统密码
-// save passwords
-int SavePassword(void)
-{
-	int		iRet;
-
-	iRet = PubFileWrite(FILE_SYS_PARAM,
-						OFFSET(SYS_PARAM, sPassword),
-						glSysParam.sPassword,
-						sizeof(glSysParam.sPassword));
-	if( iRet!=0 )
-	{
-		PubTRACE0("SavePassword");
-		SysHalt();
-		return ERR_FILEOPER;
-	}
-
-	return SyncPassword();
+	return saveFileData(FILE_POS_PARAMS, &glPosParams, sizeof(PosParams));
 }
 
 // 判断系统参数文件是否存在
@@ -189,8 +118,6 @@ int ExistSysFiles(void)
 {
 	if ((fexist((char *)FILE_POS_PARAMS)<0) 
 		||
-		/*(fexist((char *)FILE_SYS_PARAM)<0) ||
-		(fexist((char *)FILE_SYS_CTRL)<0) ||*/
 		(fexist((char *)FILE_TRAN_LOG)<0)) 
 		
 	{
@@ -206,21 +133,12 @@ int ExistSysFiles(void)
 // verify if sizes of the system files are correct or not
 int ValidSysFiles(void)
 {
-	if ((fexist((char *)FILE_POS_PARAMS)<0) ||
+	/*if ((fexist((char *)FILE_POS_PARAMS)<0) ||
 		(filesize((char *)FILE_POS_PARAMS) != sizeof(PosParams)))
 	{
 		return FALSE;
-	}
-	/*if ((fexist((char *)FILE_SYS_PARAM)<0) ||
-		(filesize((char *)FILE_SYS_PARAM)!=sizeof(SYS_PARAM)) )
-	{
-		return FALSE;
-	}
-	if ((fexist((char *)FILE_SYS_CTRL)<0) ||
-		(filesize((char *)FILE_SYS_CTRL)!=sizeof(SYS_CONTROL)) )
-	{
-		return FALSE;
 	}*/
+
 	if ((fexist((char *)FILE_TRAN_LOG)<0) ||
 		(filesize((char *)FILE_TRAN_LOG)!=MAX_TRANLOG*sizeof(TRAN_LOG)) )
 	{
@@ -684,22 +602,6 @@ int LoadErrLog(ushort uiRecNo, void *pOutErrLog)
 }
 #endif
 
-// 同步密码文件到manager和EPS
-// Sync password to manager application. usually for HongKong
-int SyncPassword(void)
-{
-	int		iRet;
-
-	iRet = PubFileWrite(FILE_PASSWORD, 0L, glSysParam.sPassword, sizeof(glSysParam.sPassword));
-	if( iRet!=0 )
-	{
-		PubTRACE0("SyncPassword");
-		SysHalt();
-		return ERR_FILEOPER;
-	}
-
-	return 0;
-}
 
 // for BEA fallback process
 int LastRecordIsFallback(void)

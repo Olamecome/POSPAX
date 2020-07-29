@@ -14,10 +14,71 @@ static DL_ISO8583_MSG isoMsg;
 
 extern void(*receiveDisplay)();
 extern int statusReceiptAndNotification();
+extern int buildNibssKeyRequestNew(int nibssKeyType, char* downloadedKey);
 
 static int processPayAttitudeTransaction(char* phoneNumber, char* amount);
 static int setFields();
 static void adjustPayAttitudeComms();
+
+int downloadPayAttitudeKeys() {
+	
+	if (!glPosParams.isPayAttitudeEnabled) {
+		return 0;
+	}
+
+	adjustPayAttitudeComms();
+	
+	char masterKeyData[ASCII_KEY_SIZE + ASCII_KCV_SIZE + 1] = "\0";
+	char sessionKeyData[ASCII_KEY_SIZE + ASCII_KCV_SIZE + 1] = "\0";
+
+	uchar masterKey[BYTE_KEY_SIZE] = { 0 };
+	uchar sessionKey[BYTE_KEY_SIZE] = { 0 };
+
+	uchar zmk[BYTE_KEY_SIZE] = { 0 };
+	uchar clrMK[BYTE_KEY_SIZE] = { 0 };
+	uchar clrSK[BYTE_KEY_SIZE] = { 0 };
+
+	DispMessage("Configuring PayAttitude");
+	DelayMs(1000);
+
+	if (0 != buildNibssKeyRequestNew(TYPE_MASTER_KEY, masterKeyData)) {
+		return -1;
+	}
+	showInfo(NULL, 1, 1, "MASTER KEY Ok");
+	logTrace("Masterkey: %s: ", masterKeyData);
+
+	if (0 != buildNibssKeyRequestNew(TYPE_SESSION_KEY, sessionKeyData)) {
+		return -1;
+	}
+	logTrace("Sessionkey: %s: ", sessionKeyData);
+	showInfo(NULL, 1, 1, "SESSION KEY Ok");
+	
+
+	PubAsc2Bcd(masterKeyData, ASCII_KEY_SIZE, masterKey);
+
+	PubAsc2Bcd(glPosParams.payAttitudeZmk, ASCII_KEY_SIZE, zmk);
+	des3EcbDecrypt(zmk, masterKey, BYTE_KEY_SIZE, clrMK);
+
+	logHexString("ZMK ", zmk, BYTE_KEY_SIZE);
+	logHexString("ENC MK ", masterKey, BYTE_KEY_SIZE);
+	logHexString("CLEAR MK ", clrMK, BYTE_KEY_SIZE);
+
+	PubAsc2Bcd(sessionKeyData, ASCII_KEY_SIZE, sessionKey);
+	des3EcbDecrypt(clrMK, sessionKey, BYTE_KEY_SIZE, clrSK);
+
+	memset(glPosParams.payAttitudeSessionKey, 0, sizeof(glPosParams.payAttitudeSessionKey));
+	PubBcd2Asc0(clrSK, BYTE_KEY_SIZE, glPosParams.payAttitudeSessionKey);
+	logHexString("ENC SK ", sessionKey, BYTE_KEY_SIZE);
+	logHexString("CLEAR SK ", clrSK, BYTE_KEY_SIZE);
+	logd(("Clear Session Key text: %s", glPosParams.payAttitudeSessionKey));
+	
+	SavePosParams();
+
+	resetCommCfg();
+	//CommDial(DM_PREDIAL);
+
+	return 0;
+}
 
 int payAttitudeMenu() {
 
@@ -25,7 +86,18 @@ int payAttitudeMenu() {
 	char amount[12 + 1] = { 0 };
 	char phoneNumber[20] = { 0 };
 
-	SetCurrTitle("PAY WITH PHONE NO");
+
+	if (!glPosParams.isPayAttitudeEnabled) {
+		showErrorDialog("Function not enabled", 10);
+		return -1;
+	}
+
+	if (!glPosParams.ucIsPrepped) {
+		showErrorDialog("Terminal not prepped", 10);
+		return -1;
+	}
+
+	SetCurrTitle(getTransactionTitle(PAYATTITUDE));
 
 	adjustPayAttitudeComms();
 	CommDial(DM_PREDIAL);
@@ -79,32 +151,22 @@ int payAttitudeMenu() {
 
 	}
 
-	char param[2] = { 0 };
-	param[0] = '0' + glPosParams.switchPortFlag;
-	PutEnv("E_SSL", param);
-	CommSetCfgParam(&glCommCfg);
-	return 0;
+	resetCommCfg();
 }
 
 void adjustPayAttitudeComms() {
-	COMM_CONFIG config = glCommCfg;
-	IP_ADDR ipAddr = { 0 };
+	COMM_CONFIG config = glPosParams.commConfig;
 
-#ifdef APP_DEBUG
-	strcpy(ipAddr.szIP, "196.46.20.30");
-	strcpy(ipAddr.szPort, "5334");
-#else
-	strcpy(ipAddr.szIP, "196.46.20.30");
-	strcpy(ipAddr.szPort, "5334");
-#endif
+	logTrace("PayAttitude IP: %s, PORT: %s", glPosParams.payAttitudeIp.szIP, glPosParams.payAttitudeIp.szPort);
 
-	config.stWirlessPara.stHost1 = ipAddr;
-	config.stWirlessPara.stHost2 = ipAddr;
+	config.stWirlessPara.stHost1 = glPosParams.payAttitudeIp;
+	config.stWirlessPara.stHost2 = glPosParams.payAttitudeIp;
 
-	config.stWifiPara.stHost1 = ipAddr;
-	config.stWifiPara.stHost2 = ipAddr;
+	config.stWifiPara.stHost1 = glPosParams.payAttitudeIp;
+	config.stWifiPara.stHost2 = glPosParams.payAttitudeIp;
+	config.ucPortMode = glPosParams.payAttitudeProtocolFlag;
 
-	PutEnv("E_SSL", "0");
+	glCommCfg = config;
 	CommSetCfgParam(&config);
 }
 
@@ -161,7 +223,7 @@ int processPayAttitudeTransaction(char* phoneNumber, char* amount) {
 	PubTrimStr(packBuf + 2);
 
 	char hash[64 + 1] = "\0";
-	calculateSHA256DigestWithKeyBytes(packBuf + 2, glPosParams.hostSessionKey, hash);
+	calculateSHA256Digest(packBuf + 2, glPosParams.payAttitudeSessionKey, hash);
 
 	(void)DL_ISO8583_MSG_SetField_Str(SECONDARY_MESSAGE_HASH_VALUE_128, hash, &isoMsg);
 	DL_ISO8583_MSG_Dump(NULL, NULL, &isoHandler, &isoMsg);

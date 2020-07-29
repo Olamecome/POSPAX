@@ -129,7 +129,7 @@ static int buildCardNotificationMessage(TRAN_LOG* data, char* message, int outle
 	{
 	case PAYATTITUDE:
 		PAYMENT_METHOD = WALLET;
-		snprintf(narration, sizeof(narration), "PayAttitude pay with phone number %s", data->szHolderName);
+		snprintf(narration, sizeof(narration), "PayAttitude with phone number %s", data->szHolderName);
 		break;
 	default:
 		PAYMENT_METHOD = CARD;

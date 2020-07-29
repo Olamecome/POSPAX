@@ -101,8 +101,6 @@ uchar ConfirmAmount(const char *pszDesignation, uchar *pszAmount);
 void GetDispAmount(uchar *pszAmount, uchar *pszDispBuff);
 int  GetManualPanFromMsg(const void *pszUsrMsg);
 int  ManualInputPan(uchar ucInitChar);
-int  GetDescriptor(void);
-int  GetAddlPrompt(void);
 #define GETPIN_EMV		0x80
 #define GETPIN_RETRY	0x01
 int  GetPIN(uchar ucFlag);
@@ -117,8 +115,6 @@ int  GetStateText(ushort ucStatus, uchar *pszStaText); // Modified by Kim_LinHB 
 void DispOperOk(const void *pszMsg);
 int  SelectAcq(uchar bAllowSelAll, const uchar *pszTitle, uchar *pucAcqIndex);
 int  SelectIssuer(uchar *pucIssuerIndex);
-void ClearTotalInfo(void *pstTotalInfo);
-int  DispTransTotal(uchar bShowVoidTrans);
 //void AdjustLcd(void);
 uchar IsNumStr(const char *pszStr);
 //void GetEngTranLabel(uchar *pszTranTitle, uchar *pszEngLabel);
@@ -130,7 +126,6 @@ void UpdateEMVTranType(void);
 int FindCurrency(const uchar *pszCurrencyNameCode, CURRENCY_CONFIG *pstCurrency);
 void SyncEmvCurrency(const uchar *psCountryCode, const uchar *psCurrencyCode, uchar ucDecimal);
 
-int  UpdateTermInfo(void);
 int  CheckSysFont(void);
 int  EnumSysFonts(void);
 int  SxxWriteKey(uchar ucSrcKeyIdx, const uchar *psKeyBCD, uchar ucKeyLen, uchar ucDstKeyId, uchar ucDstKeyType, const uchar *psKCV);

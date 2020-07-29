@@ -31,7 +31,7 @@ int PreDial(void)
 {
 	int		iRet;
 
-	if( !glSysParam.stEdcInfo.bPreDial )
+	if( !glCommCfg.bPreDial )
 	{
 		return 0;
 	}
@@ -67,8 +67,8 @@ int ConnectHost(void)
 				(glCommCfg.ucCommType!=glCommCfg.ucCommTypeBak))		// switch to next connection
 			{
 				// switch to the backup communication type if the premier comm type is not existed
-				glCommCfg.ucCommType = glSysParam.stTxnCommCfg.ucCommTypeBak;
-				CommSwitchType(glSysParam.stTxnCommCfg.ucCommTypeBak);
+				glCommCfg.ucCommType = glCommCfg.ucCommTypeBak;
+				CommSwitchType(glCommCfg.ucCommTypeBak);
 				continue;
 			}
 
@@ -184,7 +184,7 @@ int ReferralDial(const uchar *pszPhoneNo)
 		return ERR_NO_DISP;
 	}
 
-	sprintf((char*)szTelNo, "%s%s.", glSysParam.stEdcInfo.szPabx, pszPhoneNo);
+	sprintf((char*)szTelNo, "%s%s.", glCommCfg.szPabx, pszPhoneNo);
 	
 	Gui_ClearScr();
 	while( 1 )
@@ -251,6 +251,34 @@ int DispCommErrMsg(int iErrCode)
 }
 
 
+int dialHost() {
+	int haltMode = FALSE;
+	int iRet = CommDial(DM_DIAL);
+	logTrace("Initial CommDial::iRet=%d", iRet);
+	if (iRet != 0)
+	{
+		//Retry
+		if (iRet == -5) {
+			//CommOnHook(true);
+			CommOnHook(haltMode);
+			DispDial();
+			if (0 != (iRet = CommDial(DM_DIAL))) {
+				//DispCommErrMsg(iRet);
+				logTrace("CommDial failed");
+				CommOnHook(haltMode);
+				return iRet;
+			}
+		}
+		else {
+			CommOnHook(haltMode);
+			return iRet;
+		}
+	}
+
+	return iRet;
+}
+
+
 /**
 *
 * @param dataIn
@@ -265,25 +293,10 @@ int sendSocketRequest(char* dataIn, int inlen, char* dataOut, int* outlen) {
 	int haltMode = FALSE;
 
 	DispDial();
-	iRet = CommDial(DM_DIAL);
+	iRet = dialHost();
 	if (iRet != 0)
 	{
-		//Retry
-		if (iRet == -5) {
-			DispDial();
-			DelayMs(200);
-			if (0 != (iRet = CommDial(DM_DIAL))) {
-				DispCommErrMsg(iRet);
-				logTrace("CommDial failed");
-				CommOnHook(haltMode);
-				return iRet;
-			}
-		}
-		else {
-			CommOnHook(haltMode);
-			return iRet;
-		}
-
+		return iRet;
 	}
 
 	logTrace("Host connected");
@@ -329,8 +342,9 @@ int sendSocketRequest(char* dataIn, int inlen, char* dataOut, int* outlen) {
 		break;
 	}
 
-	memset(dataOut, 0, LEN_MAX_COMM_DATA);
-	iRet = CommRxd(dataOut, LEN_MAX_COMM_DATA, uiTimeOut, outlen);
+	*outlen = MAX(*outlen, LEN_MAX_COMM_DATA);
+	memset(dataOut, 0, *outlen);
+	iRet = CommRxd(dataOut, *outlen, uiTimeOut, outlen);
 	if (iRet != 0)
 	{
 		DispCommErrMsg(iRet);

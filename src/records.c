@@ -165,7 +165,9 @@ int reprintAll() {
 
 int repushTransactions(char silent) {
 	if (glPosParams.tranRecordCount <= 0) {
-		//showErrorDialog("No transaction found", USER_OPER_TIMEOUT);
+		if (!silent) {
+			showErrorDialog("No transaction found", USER_OPER_TIMEOUT);
+		}
 		return 0;
 	}
 

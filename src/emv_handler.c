@@ -54,7 +54,7 @@ int statusReceiptAndNotification() {
 		int count = isSuccessResponse(glProcInfo.stTranLog.szRspCode) ? glPosParams.approvedReceiptCount : glPosParams.declinedReceiptCount;
 		logTrace("Receipt count: %d", count);
 		int i = 1;
-		for (; i < count; i++) {
+		for (; i <= count; i++) {
 			logTrace("I = %d", i);
 			if (1 == i) {
 				logTrace("Customer copy");
@@ -68,6 +68,8 @@ int statusReceiptAndNotification() {
 					Gui_DrawText("Press any key", gl_stCenterAttr, 0, 50);
 					PubWaitKey(5);
 				}
+
+				continue;
 			}
 			
 			logTrace("Merchant copy");

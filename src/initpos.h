@@ -379,13 +379,9 @@ extern "C" {
 
 void LoadEdcDefault(void);
 void LoadEmvDefault(void);
-void LoadDefCommPara(void);
-void ResetAllPara(uchar bFirstTime);
-int  NewTmsDownLoad(uchar ucCommType);
 //void UpdateCommType(void);
 void LoadEdcLang(void);
 void LoadDefaultLang(void);
-void NoDownloadInit(void);
 
 
 #ifdef __cplusplus

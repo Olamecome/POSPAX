@@ -2,6 +2,41 @@
 #include "xui.h"
 
 
+
+int httpTimeOutSec = 60;
+
+static int dialOnly() {
+	//logTrace(__func__);
+	if (glPosParams.commConfig.ucCommType == CT_GPRS || glPosParams.commConfig.ucCommType == CT_CDMA
+		|| glPosParams.commConfig.ucCommType == CT_WCDMA) {
+
+		WlInit(NULL);
+		RouteSetDefault(11);
+
+		int ret = WlPppLoginEx("*99***1#",
+			glPosParams.commConfig.stWirlessPara.szAPN,
+			glPosParams.commConfig.stWirlessPara.szUID,
+			glPosParams.commConfig.stWirlessPara.szPwd,
+			0xFF, 1000 * 60, 10);
+
+		//logTrace("ret::%d", ret);
+		if (ret != 0) {
+			if (ret == -226 /*Dialing*/) {
+				return dialOnly();//
+			}
+			else {
+				return CommDial(DM_PREDIAL);
+			}
+		}
+	}
+	else {
+		return CommDial(DM_PREDIAL);
+	}
+
+	return 0;
+}
+
+
 /**
 * @param httpMethod
 * @param hostURL
@@ -27,7 +62,7 @@ int sendHttpRequest(uchar httpMethod, const char* hostURL, const char* postData,
 	
 	int dial_mode = DM_PREDIAL;
 	DispDial();
-	ret = CommDial(dial_mode);
+	ret = dialOnly(); 
 	if (ret != 0)
 	{
 		//Retry
@@ -54,8 +89,10 @@ int sendHttpRequest(uchar httpMethod, const char* hostURL, const char* postData,
 	HttpParaCtl(sockfd, HTTP_CMD_SET_PROTO, params, 1);
 
 	memset(params, 0, lengthOf(params));
-	strcat(params, "90"); //1.5 minutes	
+	sprintf(params, "%d", httpTimeOutSec);
+	//strcat(params, "90"); //1.5 minutes	
 	HttpParaCtl(sockfd, HTTP_CMD_SET_TIMEOUT, params, strlen(params));
+	httpTimeOutSec = 90; //reset time for latter use.
 
 	memset(params, 0, lengthOf(params));
 	params[0] = CERT_ISSUER;
@@ -81,6 +118,7 @@ int sendHttpRequest(uchar httpMethod, const char* hostURL, const char* postData,
 	if (httpMethod == HTTP_GET) {
 		sl = HttpGet(sockfd, hostURL);
 	} else {
+
 		memset(params, 0, sizeof(params));
 		strcpy(params, "application/json");
 		HttpParaCtl(sockfd, HTTP_CMD_SET_CONTENT_TYPE, params, strlen(params));
@@ -92,10 +130,16 @@ int sendHttpRequest(uchar httpMethod, const char* hostURL, const char* postData,
 		logd(("HTTP Send failed = %d", sl));
 		showCommError(sl);
 		HttpClose(sockfd);
-		CommOnHook(FALSE);
+		//WlPppLogout();
 		return -1;
 	} else {
-		logd(("HTTP Send GET status = %d", sl));
+		logd(("HTTP Send status = %d", sl));
+		if (sl >= 400) {
+			showErrorDialog("404 - Not found", 30);
+			HttpClose(sockfd);
+			//WlPppLogout();
+			return -1;
+		}
 	}
 
 
@@ -121,13 +165,13 @@ int sendHttpRequest(uchar httpMethod, const char* hostURL, const char* postData,
 			logd(("recv failed"));
 			DispErrMsg("Request Failed", "Receive Error", 10, DERR_BEEP);
 			HttpClose(sockfd);
-			CommOnHook(FALSE);
+			//WlPppLogout();
 			return -1;
 		}
 	}
 
 	HttpClose(sockfd);
-	CommOnHook(FALSE);
+	//WlPppLogout();
 	
 	return 0;
 }

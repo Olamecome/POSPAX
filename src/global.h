@@ -82,7 +82,7 @@ Set to correct macro before compile
 //#define APP_MANAGER_VER	// When build this app as manager, should enable this macro
 #define ALLOW_NO_TMS		// allow init default, without TMS. but TMS still available
 #define ENABLE_EMV			// Link EMV lib into the application.
-//#define EMV_TEST_VERSION	// use hard coded emv parameters for EMV test. Valid only when ENABLE_EMV defined
+#define EMV_TEST_VERSION	// use hard coded emv parameters for EMV test. Valid only when ENABLE_EMV defined
 //#define APP_DEBUG			// debug mode
 //#define FUN2_READ_ONLY	// Allow operator to modify FUNCTION 2.
 #define ENABLE_CONTLESS   // Contactless card support (CLSS)
@@ -91,12 +91,12 @@ Set to correct macro before compile
 Application attribute
 *********************************************************************************/
 #define APP_NAME		"XPRESSPOS"
-#define EDCAPP_AID		"XPRESSPOS_200"
+#define EDCAPP_AID		"PGENMER01"
 // Modified by Kim_LinHB 2014-4-4
-#define EDC_VER_PUB		    "2.0.0"			// Public version number
-#define EDC_VER_INTERN	    "2.00.00"		// Extend version number. should be same as EDC_VER_INTERN's heading.
+#define EDC_VER_PUB		    "2.0"			// Public version number
+//#define EDC_VER_INTERN	    "2.0"		// Extend version number. should be same as EDC_VER_INTERN's heading.
 // Added by Kim 20150120
-#define EDC_BASE_VER_INTERN     "2.00.00"   // EDC version, please do not modify
+//#define EDC_BASE_VER_INTERN     "2.00.00"   // EDC version, please do not modify
 
 /*********************************************************************************
 Features of specific area
@@ -166,8 +166,6 @@ Warning: DO NOT manually enable/disable below macros. they're determined automat
 #include "checkopt.h"
 #include "commproc.h"
 #include "print.h"
-#include "password.h"
-#include "manage.h"
 #include "pedpinpad.h"
 #include "cpinpad.h"
 #include "MultiApp.h"
@@ -735,69 +733,6 @@ typedef struct _tagREPRN_STL_INFO
 	TOTAL_INFO	stIssTotal[MAX_ACQ][MAX_ISSUER];
 }REPRN_STL_INFO;
 
-// system config information, update when downloading or modifying parameters.
-typedef struct _tagSYS_PARAM
-{
-#define LOGON_MODE		0x01
-#define CHANGE_MODE 	0x02
-#define TRANS_MODE		0x04
-#define INIT_MODE		0x08
-	uchar				ucTermStatus;		// terminal status
-
-#define _TxnPSTNPara	stTxnCommCfg.stPSTNPara
-#define _TxnModemPara	stTxnCommCfg.stPSTNPara.stPara
-#define _TxnRS232Para	stTxnCommCfg.stRS232Para
-#define _TxnTcpIpPara	stTxnCommCfg.stTcpIpPara
-#define _TxnWirlessPara	stTxnCommCfg.stWirlessPara
-#define _TxnWifiPara		stTxnCommCfg.stWifiPara			// hdadd
-#define _TxnBlueToothPara	stTxnCommCfg.stBlueToothPara	// hdadd
-
-	COMM_CONFIG			stTxnCommCfg;		// communication config
-
-#define _TmsPSTNPara	stTMSCommCfg.stPSTNPara
-#define _TmsModemPara	stTMSCommCfg.stPSTNPara.stPara
-#define _TmsRS232Para	stTMSCommCfg.stRS232Para
-#define _TmsTcpIpPara	stTMSCommCfg.stTcpIpPara
-#define _TmsWirlessPara	stTMSCommCfg.stWirlessPara
-
-#define _TmsWifiPara	stTMSCommCfg.stWifiPara     //hdadd
-#define _TmsBlueToothPara	stTMSCommCfg.stBlueToothPara//hdadd
-
-
-	COMM_CONFIG			stTMSCommCfg;		// TMS communication config
-	uchar				ucNewTMS;			// TMS file downloading protocol
-	uchar				ucTMSSyncDial;		// synchronous mode(just for Modem)
-
-	EDC_INFO			stEdcInfo;			// terminal parameters
-
-	uchar				ucCardNum;			// the quantity of cards in card table
-	CARD_TABLE			stCardTable[MAX_CARD];
-
-	uchar				ucDescNum;			// the quantity of goods descriptors
-	DESCRIPTOR			stDescList[MAX_DESCRIPTOR];
-
-	uchar				ucPlanNum;			// the quantity of installment plans
-	INSTALMENT_PLAN		stPlanList[MAX_PLAN];
-
-	uchar				sPassword[PWD_MAX][10];	// Password(clear text)
-//	ushort				uiCapkNum;				// CAPK quantity
-//	ushort				uiAidNum;				// AID	quantity
-
-	// for HK
-	ushort				uiIssuerNameNum;
-	ISSUER_NAME			stIssuerNameList[MAX_CARDBIN_ISSUER];
-	ushort				uiCardBinNum;
-	CARD_BIN			stCardBinTable[MAX_CARDBIN_NUM];
-	uchar				bTextAdData;		// False: bitmap TRUE: text
-	uchar				sAdData[LEN_MAX_AD_DATA];	// Ad
-
-	uchar				sTermInfo[HWCFG_END];	// Terminal hardware infomation. for GetTermInfo() use.
-#define APMODE_INDEPEND		0		// Current app is app manager.   当前应用为独立运行模式
-#define APMODE_MAJOR		1		// Current app is major sub-app. 当前应用为主要子应用(EDC for VISA MASTERCARD)
-#define APMODE_MINOR		2		// Current app is minor sub-app. 当前应用为次要子应用(EDC for AE, DINERS, JCB)
-	uchar				ucRunMode;
-}SYS_PARAM;
-
 // RFU for HK
 typedef struct _tagEMV_FIELD56
 {
@@ -855,6 +790,7 @@ typedef struct PosParams {
 	char supervisorPin[10 + 1];
 	char adminPass[10 + 1];
 	CURRENCY_CONFIG currency;
+	LANG_CONFIG	stLangCfg;
 
 	IP_ADDR tmsIp;
 	char tmsUrl[100];
@@ -866,7 +802,6 @@ typedef struct PosParams {
 	char hostZMK[ASCII_KEY_SIZE + 1];
 	char hostSessionKey[ASCII_KEY_SIZE + 1];
 	NibssTerminalParameter nibssParams;
-	bool switchPortFlag;
 	unsigned short requestTimeOutSec;
 	unsigned short callHomeTimeMinutes;
 	char approvedReceiptCount;
@@ -888,6 +823,14 @@ typedef struct PosParams {
 
 	uchar	ucPedMode;				// Current using PED (SxxPED/PP/ExtSxxPED)
 	uchar	ucIsPrepped;
+
+	//PayAttitude Cofing
+	IP_ADDR payAttitudeIp;
+	char payAttitudeZmk[32 + 1];
+	char payAttitudeSessionKey[32 + 1];
+	bool payAttitudeProtocolFlag;
+	bool isPayAttitudeEnabled;
+	bool isAccountSelectionEnabled;
 } PosParams;
 
 
@@ -896,7 +839,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 extern PosParams		glPosParams;
-extern SYS_PARAM		glSysParam, glSysParamBak;		// sys config parameters
+//extern SYS_PARAM		glSysParam, glSysParamBak;		// sys config parameters
 extern SYS_CONTROL		glSysCtrl;		// sys control parameters
 extern SYS_PROC_INFO	glProcInfo;		// transaction processing information
 
@@ -904,17 +847,7 @@ extern COMM_DATA		glSendData, glRecvData;		// communication data
 extern STISO8583		glSendPack;		// transaction sending package
 extern STISO8583		glRecvPack;		// transaction receiving package 
 
-extern STTMS8583		glTMSSend;		// TMS sending package
-extern STTMS8583		glTMSRecv;		// TMS receiving package
-
-
 extern COMM_CONFIG		glCommCfg;		// current communication config
-
-extern TOTAL_INFO		glAcqTotal[MAX_ACQ];		// transaction totals of all acquirers
-extern TOTAL_INFO		glIssuerTotal[MAX_ISSUER];	// transaction totals of all issuers
-extern TOTAL_INFO		glEdcTotal;		// transaction totals of this terminal 
-extern TOTAL_INFO		glTransTotal;	// transaction totals of this terminal for display
-extern TOTAL_INFO		glPrnTotal;		// transaction totals of this terminal for printing
 
 #ifdef ENABLE_EMV
 extern EMV_PARAM		glEmvParam;
@@ -962,6 +895,9 @@ extern int startEmvTransaction(ushort ucEntryMode, int ucTranType, char amount[1
 extern void showCommError(int ret);
 extern void* notificationHandler(void* arg);
 extern void resetCallHomeTimer();
+
+//extern int readDevice(Device* device);
+//extern int saveDevice(Device* device);
 
 
 enum {

@@ -8,6 +8,8 @@
 #include "converters.h"
 
 
+extern int downloadPayAttitudeKeys();
+
 static int getKeyProcessingCode(int keyType, char* processingCode) {
 
 	switch (keyType) {
@@ -67,7 +69,7 @@ int updateTerminalConfig(NibssTerminalParameter *parameter) {
 	return 0;
 }
 
-static int buildNibssKeyRequestNew(int nibssKeyType, char* downloadedKey) {
+int buildNibssKeyRequestNew(int nibssKeyType, char* downloadedKey) {
 
 	DL_ISO8583_HANDLER isoHandler;
 	DL_ISO8583_MSG     isoMsg;
@@ -140,9 +142,9 @@ static int buildNibssKeyRequestNew(int nibssKeyType, char* downloadedKey) {
 	DL_ISO8583_MSG_FIELD field39 = isoMsg.field[39];
 	DL_ISO8583_MSG_FIELD field53 = isoMsg.field[53];
 
-	if (!field39.ptr || !field53.ptr) {
+	if (!field39.ptr) {
 		DL_ISO8583_MSG_Free(&isoMsg);
-		DispErrMsg("Key Download Error", "Empty security info", DEFAULT_PASSWORD_TIMEOUT, DERR_BEEP);
+		DispErrMsg("Key Download Error", "Invalid response", DEFAULT_PASSWORD_TIMEOUT, DERR_BEEP);
 		return APP_FAIL;
 	}
 
@@ -150,12 +152,13 @@ static int buildNibssKeyRequestNew(int nibssKeyType, char* downloadedKey) {
 
 	if (!isSuccessResponse(field39.ptr)) {
 		DispErrMsg("Key Download Error", responseCodeToString(field39.ptr), DEFAULT_PASSWORD_TIMEOUT, DERR_BEEP);
+	} else 	if ( !field53.ptr) {
+		DispErrMsg("Key Download Error", "Empty security info", DEFAULT_PASSWORD_TIMEOUT, DERR_BEEP);
 	}
-	else {
-		if (field53.ptr) {
-			memcpy(downloadedKey, field53.ptr, ASCII_KEY_SIZE + ASCII_KCV_SIZE);
-			ret = APP_SUCC;
-		}
+
+	if (field53.ptr) {
+		memcpy(downloadedKey, field53.ptr, ASCII_KEY_SIZE + ASCII_KCV_SIZE);
+		ret = APP_SUCC;
 	}
 
 
@@ -480,6 +483,12 @@ void prepTerminal(void) {
 
 	DispMessage("Downloading Parameters");
 	ret = downloadNibssTerminalParameters();
+	if (ret != 0) {
+		DispErrMsg("Parameter download Failed", NULL, 10, DERR_BEEP);
+		return;
+	}
+
+	ret = downloadPayAttitudeKeys();
 	if (ret != 0) {
 		DispErrMsg("Parameter download Failed", NULL, 10, DERR_BEEP);
 		return;
