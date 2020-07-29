@@ -91,7 +91,7 @@ Set to correct macro before compile
 Application attribute
 *********************************************************************************/
 #define APP_NAME		"XPRESSPOS"
-#define EDCAPP_AID		"PGERMER01"
+#define EDCAPP_AID		"PGENMER01"
 // Modified by Kim_LinHB 2014-4-4
 #define EDC_VER_PUB		    "2.0"			// Public version number
 //#define EDC_VER_INTERN	    "2.0"		// Extend version number. should be same as EDC_VER_INTERN's heading.
@@ -732,69 +732,6 @@ typedef struct _tagREPRN_STL_INFO
 	TOTAL_INFO	stAcqTotal[MAX_ACQ];
 	TOTAL_INFO	stIssTotal[MAX_ACQ][MAX_ISSUER];
 }REPRN_STL_INFO;
-
-// system config information, update when downloading or modifying parameters.
-/*typedef struct _tagSYS_PARAM
-{
-#define LOGON_MODE		0x01
-#define CHANGE_MODE 	0x02
-#define TRANS_MODE		0x04
-#define INIT_MODE		0x08
-	uchar				ucTermStatus;		// terminal status
-
-#define _TxnPSTNPara	stTxnCommCfg.stPSTNPara
-#define _TxnModemPara	stTxnCommCfg.stPSTNPara.stPara
-#define _TxnRS232Para	stTxnCommCfg.stRS232Para
-#define _TxnTcpIpPara	stTxnCommCfg.stTcpIpPara
-#define _TxnWirlessPara	stTxnCommCfg.stWirlessPara
-#define _TxnWifiPara		stTxnCommCfg.stWifiPara			// hdadd
-#define _TxnBlueToothPara	stTxnCommCfg.stBlueToothPara	// hdadd
-
-	COMM_CONFIG			stTxnCommCfg;		// communication config
-
-#define _TmsPSTNPara	stTMSCommCfg.stPSTNPara
-#define _TmsModemPara	stTMSCommCfg.stPSTNPara.stPara
-#define _TmsRS232Para	stTMSCommCfg.stRS232Para
-#define _TmsTcpIpPara	stTMSCommCfg.stTcpIpPara
-#define _TmsWirlessPara	stTMSCommCfg.stWirlessPara
-
-#define _TmsWifiPara	stTMSCommCfg.stWifiPara     //hdadd
-#define _TmsBlueToothPara	stTMSCommCfg.stBlueToothPara//hdadd
-
-
-	COMM_CONFIG			stTMSCommCfg;		// TMS communication config
-	uchar				ucNewTMS;			// TMS file downloading protocol
-	uchar				ucTMSSyncDial;		// synchronous mode(just for Modem)
-
-	EDC_INFO			stEdcInfo;			// terminal parameters
-
-	uchar				ucCardNum;			// the quantity of cards in card table
-	CARD_TABLE			stCardTable[MAX_CARD];
-
-	uchar				ucDescNum;			// the quantity of goods descriptors
-	DESCRIPTOR			stDescList[MAX_DESCRIPTOR];
-
-	uchar				ucPlanNum;			// the quantity of installment plans
-	INSTALMENT_PLAN		stPlanList[MAX_PLAN];
-
-	uchar				sPassword[PWD_MAX][10];	// Password(clear text)
-//	ushort				uiCapkNum;				// CAPK quantity
-//	ushort				uiAidNum;				// AID	quantity
-
-	// for HK
-	ushort				uiIssuerNameNum;
-	ISSUER_NAME			stIssuerNameList[MAX_CARDBIN_ISSUER];
-	ushort				uiCardBinNum;
-	CARD_BIN			stCardBinTable[MAX_CARDBIN_NUM];
-	uchar				bTextAdData;		// False: bitmap TRUE: text
-	uchar				sAdData[LEN_MAX_AD_DATA];	// Ad
-
-	uchar				sTermInfo[HWCFG_END];	// Terminal hardware infomation. for GetTermInfo() use.
-#define APMODE_INDEPEND		0		// Current app is app manager.   当前应用为独立运行模式
-#define APMODE_MAJOR		1		// Current app is major sub-app. 当前应用为主要子应用(EDC for VISA MASTERCARD)
-#define APMODE_MINOR		2		// Current app is minor sub-app. 当前应用为次要子应用(EDC for AE, DINERS, JCB)
-	uchar				ucRunMode;
-}SYS_PARAM;*/
 
 // RFU for HK
 typedef struct _tagEMV_FIELD56

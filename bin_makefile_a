@@ -1,7 +1,7 @@
 #created by gcc template
 path=C:\PAXPAY~2\build\gcc410\bin
 
-NAME      = XpressPOS(v2.0)
+NAME      = XpressPOS(v2.1)
 VERSION   = "v1.0"
 GCCDIR    = C:\PAXPAY~2\build\gcc410
 GCCBIN    = $(GCCDIR)\bin

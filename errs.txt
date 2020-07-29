@@ -625,7 +625,7 @@ In file included from C:\PaxPayPro2017\myapp\XpressPOS\src\main.c:3:
 C:\PaxPayPro2017\myapp\XpressPOS\src\/terminalMgt.h:11:31: warning: no newline at end of file
 C:\PaxPayPro2017\myapp\XpressPOS\src\main.c:12:1: warning: "TIMER_CALLHOME" redefined
 In file included from C:\PaxPayPro2017\myapp\XpressPOS\src\main.c:2:
-C:\PaxPayPro2017\myapp\XpressPOS\src\/global.h:972:1: warning: this is the location of the previous definition
+C:\PaxPayPro2017\myapp\XpressPOS\src\/global.h:910:1: warning: this is the location of the previous definition
 C:\PaxPayPro2017\myapp\XpressPOS\src\main.c: In function 'adminMenu':
 C:\PaxPayPro2017\myapp\XpressPOS\src\main.c:145: warning: initialization from incompatible pointer type
 C:\PaxPayPro2017\myapp\XpressPOS\src\main.c: In function 'ChkIdleTimer':
@@ -1019,9 +1019,9 @@ C:\PaxPayPro2017\myapp\XpressPOS\src\remoteSocketDownload.c: In function 'downlo
 C:\PaxPayPro2017\myapp\XpressPOS\src\remoteSocketDownload.c:136: warning: passing argument 4 of 'CommRxd' from incompatible pointer type
 C:\PaxPayPro2017\myapp\XpressPOS\src\remoteSocketDownload.c:160: warning: incompatible implicit declaration of built-in function 'snprintf'
 C:\PaxPayPro2017\myapp\XpressPOS\src\remoteSocketDownload.c:163: warning: incompatible implicit declaration of built-in function 'snprintf'
-C:\PaxPayPro2017\myapp\XpressPOS\src\remoteSocketDownload.c:216: warning: incompatible implicit declaration of built-in function 'snprintf'
-C:\PaxPayPro2017\myapp\XpressPOS\src\remoteSocketDownload.c:220: warning: passing argument 4 of 'CommRxd' from incompatible pointer type
-C:\PaxPayPro2017\myapp\XpressPOS\src\remoteSocketDownload.c:263:2: warning: no newline at end of file
+C:\PaxPayPro2017\myapp\XpressPOS\src\remoteSocketDownload.c:221: warning: incompatible implicit declaration of built-in function 'snprintf'
+C:\PaxPayPro2017\myapp\XpressPOS\src\remoteSocketDownload.c:225: warning: passing argument 4 of 'CommRxd' from incompatible pointer type
+C:\PaxPayPro2017\myapp\XpressPOS\src\remoteSocketDownload.c:268:2: warning: no newline at end of file
 In file included from C:\PaxPayPro2017\myapp\XpressPOS\src\/global.h:140,
                  from C:\PaxPayPro2017\myapp\XpressPOS\src\transaction.c:1:
 C:/PAXPAY~2/include/Stdarg.h:151:22: warning: no newline at end of file

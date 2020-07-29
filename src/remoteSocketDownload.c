@@ -210,10 +210,15 @@ int downloadBinaryWithSocket() {
 	i = 0;
 	total_read = 0;
 
+
+	char termInfo[32] = { 0 };
+	GetTermInfo(termInfo);
+	uchar isColourScreen = termInfo[19] & 0x02;
+
 	while (total_read < content_len) {
 
 		CLEAR_STRING(message, sizeof(message));
-		snprintf(message, sizeof(message), "Downloading %d%s", (total_read * 100)/content_len, "%%%");
+		snprintf(message, sizeof(message), "Downloading %d%s", (total_read * 100)/content_len, !isColourScreen ? "%" : "%%%");
 		Gui_ClearScr();
 		Gui_DrawText(message, gl_stCenterAttr, 0, 40);
 

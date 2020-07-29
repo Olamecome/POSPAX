@@ -415,8 +415,8 @@ int showSelectDialog(Prompt* prompt) {
 	int ret = -1;
 	char termInfo[32] = { 0 };
 	GetTermInfo(termInfo);
-
-	if (termInfo[19] & 0x02) {
+	uchar isColourScreen = termInfo[19] & 0x02;
+	if (isColourScreen) {
 		ret = Gui_ShowMenuList(&menu, GUI_MENU_DIRECT_RETURN, prompt->timeOutInSeconds, &prompt->selectionOption);
 	}
 	else {
