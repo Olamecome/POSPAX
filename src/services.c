@@ -254,7 +254,7 @@ static void endOfDay() {
 int servicesMenu() {
 
 	Prompt prompt = { 0 };
-	getListItemPrompt(&prompt, "SERVICES", "Check Connection|Reprint|Summary Report|End of Day|Remote Download|Repush Transactions");
+	getListItemPrompt(&prompt, "SERVICES", "Check Connection|Reprint|Summary Report|End of Day|Repush Transactions|Remote Download");
 	prompt.selectionOption = 0;
 
 	while (1) {
@@ -276,10 +276,10 @@ int servicesMenu() {
 			endOfDay();
 			break;
 		case 4:
-			doRemoteDownload();
+			repushTransactions(FALSE);
 			break;
 		case 5:
-			repushTransactions(FALSE);
+			doRemoteDownload();
 			break;
 		}
 

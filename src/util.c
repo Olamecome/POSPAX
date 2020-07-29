@@ -9,7 +9,6 @@
 
 /********************** Internal functions declaration *********************/
 static uchar ChkAcqRestrictForCard(const uchar *pszPan);
-static int  MatchCardTableForInstalment(uchar acq_index);
 static void GetHolderNameFromTrack1(uchar *pszHolderName);
 static void ConvertHolderName(const uchar *pszOrgName, uchar *pszNormalName);
 static int  GetEmvTrackData(void);
@@ -814,16 +813,6 @@ int ValidCard(void)
 {
 	int		iRet;
 
-	/*iRet = MatchCardTable(glProcInfo.stTranLog.szPan);
-	if( iRet!=0 )
-	{
-	Gui_ClearScr();
-	PubBeepErr();
-	Gui_ShowMsgBox(GetCurrTitle(), gl_stTitleAttr, _T("UNSUPPORTED\nCARD"), gl_stCenterAttr, GUI_BUTTON_CANCEL, 3, NULL);
-	return ERR_NO_DISP;
-	}*/
-
-
 	iRet = ValidPanNo(glProcInfo.stTranLog.szPan);
 	if (iRet != 0)
 	{
@@ -954,53 +943,7 @@ void ConvertHolderName(const uchar *pszOrgName, uchar *pszNormalName)
 	sprintf(pszTemp, "%.*s", (int)(pszMidName - (char *)pszOrgName), pszOrgName);
 }
 
-// check whether really match to specific acquirer, due to customized conditions
-uchar ChkAcqRestrictForCard(const uchar *pszPan)
-{
-	//if (ChkIfxxx())
 
-	//...
-
-	return TRUE;
-}
-
-// 根据卡号匹配卡表,并最终确定收单行(glCurAca)和发卡行(glCurIssuer)
-// determine glCurAcq and glCurIssuer, due to ACQ-ISS-CARD matching table.
-int MatchCardTable(const uchar *pszPAN)
-{
-	int			iRet;
-	uchar		ucCnt, ucPanLen, ucAcqNum, ucLastAcqIdx;
-	uchar		sPanHeader[5], sCardIndex[MAX_ACQ], sAcqMatchFlag[MAX_ACQ];
-	CARD_TABLE	*pstCardTbl;
-
-	memset(sCardIndex, 0, sizeof(sCardIndex));
-	memset(sAcqMatchFlag, 0, sizeof(sAcqMatchFlag));
-
-	// 建立收单行列表
-	// create a list of matched acquirer.
-	ucPanLen = strlen((char *)pszPAN);
-	PubAsc2Bcd(pszPAN, 10, sPanHeader);
-
-	return 0;
-}
-
-int MatchCardTableForInstalment(uchar ucIndex)
-{
-	uchar		ucCnt, ucPanLen;
-	uchar		sPanHeader[5], sCardIndex[MAX_ACQ], sAcqMatchFlag[MAX_ACQ];
-	CARD_TABLE	*pstCardTbl;
-
-	memset(sCardIndex, 0, sizeof(sCardIndex));
-	memset(sAcqMatchFlag, 0, sizeof(sAcqMatchFlag));
-
-	// 建立收单行列表
-	// create a list of matched acquirer.
-	ucPanLen = strlen((char *)glProcInfo.stTranLog.szPan);
-	PubAsc2Bcd(glProcInfo.stTranLog.szPan, 10, sPanHeader);
-
-
-	return 0; // ERR_UNSUPPORT_CARD;
-}
 
 
 /************************************************************************
@@ -2194,15 +2137,6 @@ int VerifyManualPan(void)
 	int		iRet;
 
 	glProcInfo.stTranLog.uiEntryMode = MODE_MANUAL_INPUT;
-
-	iRet = MatchCardTable(glProcInfo.stTranLog.szPan);
-	if (iRet != 0)
-	{
-		Gui_ClearScr();
-		PubBeepErr();
-		Gui_ShowMsgBox(GetCurrTitle(), gl_stTitleAttr, _T("UNSUPPORT CARD"), gl_stCenterAttr, GUI_BUTTON_CANCEL, 3, NULL);
-		return ERR_NO_DISP;
-	}
 
 	if (!ChkIssuerOption(ISSUER_EN_MANUAL))
 	{
