@@ -283,10 +283,7 @@ uchar ChkIfBatchEmpty(void)
 	int	ii;
 	for (ii=0; ii<MAX_TRANLOG; ii++)
 	{
-		if (glSysCtrl.sAcqKeyList[ii] != INV_ACQ_KEY)
-		{
-			return FALSE;
-		}
+		return FALSE;
 	}
 	return TRUE;
 }
@@ -316,7 +313,7 @@ uchar ChkIfNeedTip(void)
 
 uchar ChkIfAcqAvail(uchar ucIndex)
 {
-	return (glSysCtrl.sAcqStatus[ucIndex]!=S_RESET);
+	return FALSE;
 }
 
 uchar ChkIfDccBOC(void)	// BOC DCC acquirer

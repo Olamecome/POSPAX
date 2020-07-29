@@ -22,6 +22,8 @@ enum{
 /********************** Internal variables declaration *********************/
 /********************** external reference declaration *********************/
 
+static int  PrnFontSetNew(uchar ucEnType, uchar ucSQType);
+
 /******************>>>>>>>>>>>>>Implementations<<<<<<<<<<<<*****************/
 
 // For thermal, small={8x16,16x16}
@@ -180,6 +182,103 @@ int DispPrnError(int iErrCode)
 		break;
 	}
 	return Gui_ShowMsgBox(GetCurrTitle(), gl_stTitleAttr, szBuff, gl_stCenterAttr, GUI_BUTTON_CANCEL, 3, NULL);
+}
+
+
+
+int PrnFontSetNew(uchar ucEnType, uchar ucSQType)
+{
+#if defined(_Sxx_) || defined(_Sxxx_)
+	int	iRet;
+	ST_FONT font1, font2;
+
+	font1.CharSet = CHARSET_WEST;
+	font1.Width = 8;
+	font1.Height = 16;
+	font1.Bold = 0;
+	font1.Italic = 0;
+
+	font2.CharSet = glPosParams.stLangCfg.ucCharSet;
+	font2.Width = 16;
+	font2.Height = 16;
+	font2.Bold = 0;
+	font2.Italic = 0;
+
+	if (ucEnType == PRN_6x8)
+	{
+		font1.Width = 6;
+		font1.Height = 8;
+	}
+	if (ucEnType == PRN_6x12)
+	{
+		font1.Width = 6;
+		font1.Height = 12;
+	}
+	if (ucEnType == PRN_12x24)
+	{
+		font1.Width = 12;
+		font1.Height = 24;
+	}
+
+	if (ucSQType == PRN_12x12)
+	{
+		font2.Width = 12;
+		font2.Height = 12;
+	}
+	if (ucSQType == PRN_24x24)
+	{
+		font2.Width = 24;
+		font2.Height = 24;
+	}
+
+	// in WIN32 do not allow NULL
+#ifndef WIN32
+	if (font1.CharSet == font2.CharSet)
+	{
+		iRet = PrnSelectFont(&font1, NULL);
+	}
+	else
+#endif
+	{
+		iRet = PrnSelectFont(&font1, NULL);
+		if (0 == iRet)
+			iRet = PrnSelectFont(NULL, &font2);
+	}
+	PrnDoubleWidth(0, 0);
+	PrnDoubleHeight(0, 0);
+
+	if ((iRet != 0) && (font1.Width >= 12) && (font2.Width >= 12))
+	{
+		font1.Width /= 2;
+		font1.Height /= 2;
+		font2.Width /= 2;
+		font2.Height /= 2;
+		iRet = PrnSelectFont(&font1, NULL);
+		if (0 == iRet)
+			iRet = PrnSelectFont(NULL, &font2);
+
+		if (iRet == 0)
+		{
+			PrnDoubleWidth(1, 1);
+			PrnDoubleHeight(1, 1);
+		}
+	}
+
+	return iRet;
+
+#else
+	if (ucEnType == PRN_6x8)
+	{
+		PrnFontSet(0, 0);
+	}
+	else
+	{
+		PrnFontSet(1, 1);
+	}
+
+	return 0;
+
+#endif
 }
 
 

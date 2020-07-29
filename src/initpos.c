@@ -52,18 +52,7 @@ void LoadEdcDefault(void)
 
 	glSysCtrl.uiLastRecNo = 0xFFFF;
 	glSysCtrl.uiErrLogNo  = 0;
-	for(iCnt=0; iCnt<MAX_ACQ; iCnt++)
-	{
-		glSysCtrl.sAcqStatus[iCnt]		   = S_RESET;
-		glSysCtrl.stField56[iCnt].uiLength = 0;
-		glSysCtrl.uiLastRecNoList[iCnt]    = 0xFFFF;
-	}
 
-	for(iCnt=0; iCnt<MAX_TRANLOG; iCnt++)
-	{
-		glSysCtrl.sAcqKeyList[iCnt]    = INV_ACQ_KEY;		// set to invalid acquirer key
-		glSysCtrl.sIssuerKeyList[iCnt] = INV_ISSUER_KEY;	// set to invalid issuer key
-	}
 	glSysCtrl.stWriteInfo.bNeedSave = SAVE_NONEED;
 
 	SaveSysCtrlAll();

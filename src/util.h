@@ -70,7 +70,6 @@ int  FunctionInput(void);
 void SysHalt(void);
 void SysHaltInfo(const void *pszDispInfo, ...);
 void DispMagReadErr(void);
-int  MatchCardTable(const uchar *pszPAN);
 int  SelectTransCurrency(void);
 int  ReadMagCardInfo(void);
 void DispAccepted(void);

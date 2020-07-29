@@ -394,10 +394,9 @@ uchar AllowDuplicateTran(void)
 	{
 		return TRUE;
 	}
-	if( glSysCtrl.sAcqKeyList[glSysCtrl.uiLastRecNo]==INV_ACQ_KEY )
-	{
-		return TRUE;
-	}
+	
+	return TRUE;
+	
 
 	memset(&stTranLog, 0, sizeof(TRAN_LOG));
 	LoadTranLog(&stTranLog, glSysCtrl.uiLastRecNo);
@@ -443,11 +442,6 @@ int GetRecord(uint uiStatus, void *pstOutTranLog)
 
 		for(uiCnt=0; uiCnt<MAX_TRANLOG; uiCnt++)
 		{
-			if( glSysCtrl.sAcqKeyList[uiCnt]==INV_ACQ_KEY )
-			{
-				continue;
-			}
-
 			memset(pstLog, 0, sizeof(TRAN_LOG));
 			iRet = LoadTranLog(pstLog, uiCnt);
 			if( iRet!=0 )
