@@ -99,8 +99,13 @@ static int finishSwipeTransaction() {
 	return APP_CANCEL;
 
 	int ret = FinishSwipeTran();
+	
+	if (glProcInfo.stTranLog.ucTranType == KEDCO)
+	{
+		return ret;
+	}
 
-	if (0 == ret) {//Normal processing completed (approved or declined)
+	if (0 == ret){//Normal processing completed (approved or declined)
 		return statusReceiptAndNotification();
 	}
 
@@ -119,6 +124,11 @@ static int finishContactTransaction() {
 		resetFallbackInfo();
 		return startEmvTransaction(FALLBACK_SWIPE, glProcInfo.stTranLog.ucTranType, glProcInfo.stTranLog.szAmount, glProcInfo.stTranLog.szOtherAmount);
 	} 
+
+	if (glProcInfo.stTranLog.ucTranType == KEDCO)
+	{
+		return ret;
+	}
 
 	if (0 == ret) {//Normal processing completed (approved or declined)
 		return statusReceiptAndNotification();
@@ -139,6 +149,10 @@ int finishContactlessTransaction() {
 
 		return startEmvTransaction(CARD_INSERTED, glProcInfo.stTranLog.ucTranType, glProcInfo.stTranLog.szAmount, glProcInfo.stTranLog.szOtherAmount);
 	} else if (0 == ret) {//Normal processing completed (approved or declined)
+		if (glProcInfo.stTranLog.ucTranType == KEDCO)
+		{
+			return ret;
+		}
 		return statusReceiptAndNotification();
 	}
 	else {

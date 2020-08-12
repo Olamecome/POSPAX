@@ -239,6 +239,9 @@
     <ClCompile Include="src\Device.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\kedco.c">
+      <Filter>Header Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Logger.h">
@@ -747,6 +750,9 @@
     </ClInclude>
     <ClInclude Include="src\L2Api_PUB.h">
       <Filter>Header Files\pax</Filter>
+    </ClInclude>
+    <ClInclude Include="src\kedco.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
