@@ -620,14 +620,44 @@ In file included from C:\Users\anthony.asadu\Desktop\Repos\PAX\src\/kedco.h:10,
                  from C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c:1:
 C:\Users\anthony.asadu\Desktop\Repos\PAX\src\/utils.h:149:45: warning: no newline at end of file
 In file included from C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c:1:
-C:\Users\anthony.asadu\Desktop\Repos\PAX\src\/kedco.h:128:48: warning: no newline at end of file
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\/kedco.h:124:48: warning: no newline at end of file
 C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c: In function 'kedcoHandler':
-C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c:55: warning: incompatible implicit declaration of built-in function 'snprintf'
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c:19: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c:25: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c:32: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c:51: warning: incompatible implicit declaration of built-in function 'snprintf'
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c:52: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c:59: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c:67: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c: In function 'retreiveKedcoAmount':
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c:80: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c: In function 'selectKedcoPaymentOption':
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c:96: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c: In function 'retreiveKedcoPaymentNumber':
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c:135: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c:139: warning: incompatible implicit declaration of built-in function 'snprintf'
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c: In function 'selectKedcoPaymentChannel':
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c:156: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
 C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c: In function 'confirmKedcoResponse':
-C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c:175: warning: incompatible implicit declaration of built-in function 'snprintf'
-C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c: In function 'retrieveWalletInfo':
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c:183: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c:189: warning: incompatible implicit declaration of built-in function 'snprintf'
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c: In function 'kedcoWebResponseParser':
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c:211: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c: In function 'kedcoWebServiceHandler':
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c:300: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c:311: warning: incompatible implicit declaration of built-in function 'snprintf'
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c:313: warning: passing argument 5 of 'sendHttpRequest' from incompatible pointer type
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c:322: warning: passing argument 5 of 'sendHttpRequest' from incompatible pointer type
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c:329: warning: passing argument 5 of 'sendHttpRequest' from incompatible pointer type
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c: In function 'processKedcoReversal':
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c:357: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c: In function 'completeKedcoTransaction':
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c:373: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
 C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c:385: warning: incompatible implicit declaration of built-in function 'snprintf'
-C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c:395:2: warning: no newline at end of file
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c: In function 'retrieveWalletInfo':
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c:423: warning: passing argument 1 of 'logTrace' discards qualifiers from pointer target type
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c:430: warning: incompatible implicit declaration of built-in function 'snprintf'
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\kedco.c:440:2: warning: no newline at end of file
 In file included from C:/PAXPAY~1/include/stdlib.h:10,
                  from C:/PAXPAY~1/include/posapi.h:10,
                  from C:\Users\anthony.asadu\Desktop\Repos\PAX\src\lng.c:79:
@@ -1036,13 +1066,13 @@ In file included from C:\Users\anthony.asadu\Desktop\Repos\PAX\src\printHelper.c
 C:\Users\anthony.asadu\Desktop\Repos\PAX\src\/utils.h:149:45: warning: no newline at end of file
 C:\Users\anthony.asadu\Desktop\Repos\PAX\src\printHelper.c: In function 'printTransactionReceipt':
 C:\Users\anthony.asadu\Desktop\Repos\PAX\src\printHelper.c:172: warning: passing argument 1 of 'prnCenter' discards qualifiers from pointer target type
-C:\Users\anthony.asadu\Desktop\Repos\PAX\src\printHelper.c:224: warning: passing argument 2 of 'prnDoubleStr' discards qualifiers from pointer target type
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\printHelper.c:230: warning: passing argument 2 of 'prnDoubleStr' discards qualifiers from pointer target type
 C:\Users\anthony.asadu\Desktop\Repos\PAX\src\printHelper.c: In function 'printSummaryData':
-C:\Users\anthony.asadu\Desktop\Repos\PAX\src\printHelper.c:355: warning: passing argument 2 of 'prnDoubleStr' discards qualifiers from pointer target type
-C:\Users\anthony.asadu\Desktop\Repos\PAX\src\printHelper.c:363: warning: incompatible implicit declaration of built-in function 'snprintf'
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\printHelper.c:394: warning: passing argument 2 of 'prnDoubleStr' discards qualifiers from pointer target type
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\printHelper.c:402: warning: incompatible implicit declaration of built-in function 'snprintf'
 C:\Users\anthony.asadu\Desktop\Repos\PAX\src\printHelper.c: In function 'prnEODData':
-C:\Users\anthony.asadu\Desktop\Repos\PAX\src\printHelper.c:445: warning: incompatible implicit declaration of built-in function 'snprintf'
-C:\Users\anthony.asadu\Desktop\Repos\PAX\src\printHelper.c:515:2: warning: no newline at end of file
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\printHelper.c:484: warning: incompatible implicit declaration of built-in function 'snprintf'
+C:\Users\anthony.asadu\Desktop\Repos\PAX\src\printHelper.c:554:2: warning: no newline at end of file
 In file included from C:/PAXPAY~1/include/stdlib.h:10,
                  from C:/PAXPAY~1/include/posapi.h:10,
                  from C:\Users\anthony.asadu\Desktop\Repos\PAX\src\ProcTrans.c:1:

@@ -8,42 +8,38 @@ int kedcoHandler()
 	KedcoRequest request;
 	KedcoResponse response;
 
-	CLEAR(&request, 0);
-	CLEAR(&response, 0);
-
-	while (true)
+	while (1)
 	{
-		logTrace("Retrieving Payment Option");
+		KedcoTrace
+		CLEAR(&request, 0);
+		CLEAR(&response, 0);
+
 		if (selectKedcoPaymentOption(&request) != APP_SUCC) 
 		{
-			logTrace("Exiting KEDCO");
+			KedcoDebug("Cancelled At Payment Option")
 			break;
 		}
 
-		logTrace("Retrieving Payment Number");
 		if (retreiveKedcoPaymentNumber(&request) != APP_SUCC)
 		{
-			logTrace("Cancelled Payment Number");
+			KedcoDebug("Cancelled At Payment Number")
 			continue;
 		}
 		
 		request.kedcoService = KEDCO_VALIDATOR;
-		logTrace("Requesting Validation");
 		if (kedcoWebServiceHandler(request, &response) != APP_SUCC)
 		{
-			logTrace("[ KEDCO ] %s", response.errorMessage);
+			KedcoDebug(response.errorMessage)
 			showErrorDialog(response.errorMessage, 10);
 			continue;
 		}
 		
-		logTrace("Confirming Response");
 		if (confirmKedcoResponse(request, response) != APP_SUCC)
 		{
 			continue;
 		}
 
 	AMOUNT__:
-		logTrace("Retrieving Amount To Pay");
 		if (retreiveKedcoAmount(&request) != APP_SUCC)
 		{
 			continue;
@@ -52,30 +48,27 @@ int kedcoHandler()
 		if (request.paymentOption == KEDCO_PREPAID && (atof)(response.minimumPurchase) > (((atof)(request.amount)) / 100))
 		{
 			char message[200];
-			snprintf(message, sizeof(message), "Must Pay Above\nNGN %.2f", (atof)(response.minimumPurchase));
-			logTrace("[ KEDCO ] %s", message);
+			snprintf(message, sizeof(message), "Pay NGN %.2f\n Or Above", (atof)(response.minimumPurchase));
+			KedcoDebug(message);
 			showMessageDialog("KEDCO", message, 1, 10);
 			goto AMOUNT__;
 		}
 
-		logTrace("Retreiving Payment Channel");
 		if (selectKedcoPaymentChannel(&request) != APP_SUCC)
 		{
-			logTrace("Cancelling Payment Channel");
+			KedcoDebug("Cancelled At Payment Channel")
 			continue;
 		}
 
 		if (request.paymentChannel == KEDCO_WALLET)
 		{
-			logTrace("Retreiving Wallet Information");
 			if (retrieveWalletInfo(&request) != APP_SUCC)
 			{
-				logTrace("Cancelled Wallet Information");
+				KedcoDebug("Cancelled At Wallet Information")
 				continue;
 			}
 		}
 
-		logTrace("Initiating Kedco Transaction Completion");
 		completeKedcoTransaction(request, response);
 	}
 
@@ -84,8 +77,10 @@ int kedcoHandler()
 
 int retreiveKedcoAmount(KedcoRequest * request)
 {
+	KedcoTrace
 	Prompt prompt;
 	getDefaultAmountPrompt(&prompt, "Amount");
+	strcpy(prompt.hint, "Enter Amount to Pay :");
 
 	if (showPrompt(&prompt) != 0) 
 	{
@@ -98,6 +93,17 @@ int retreiveKedcoAmount(KedcoRequest * request)
 
 int selectKedcoPaymentOption(KedcoRequest * request)
 {
+	KedcoTrace
+	if (!glPosParams.ucIsPrepped) {
+		showErrorDialog("Terminal not prepped", 10);
+		return APP_FAIL;
+	}
+
+	if (glPosParams.tranRecordCount >= MAX_TRANLOG) {
+		DispErrMsg("Memory Full", "Run Close Batch!!!", USER_OPER_TIMEOUT, DERR_BEEP);
+		return APP_FAIL;
+	}
+
 	Prompt prompt;
 	getListItemPrompt(&prompt, "KEDCO", "PREPAID|POSTPAID");
 	if (showPrompt(&prompt) != 0)
@@ -126,9 +132,15 @@ int selectKedcoPaymentOption(KedcoRequest * request)
 
 int retreiveKedcoPaymentNumber(KedcoRequest * request)
 {
+	KedcoTrace
 	Prompt prompt;
 	char * message = (request->paymentOption == KEDCO_PREPAID) ? "Enter Meter No : " : "Enter Account No :";
-	getTextPrompt(&prompt, "KEDCO", message);
+	getTextPrompt(&prompt, "KEDCO", NULL);
+	snprintf(prompt.hint, sizeof(prompt.hint), "%s", message);
+
+#ifdef APP_DEBUG
+	strcpy(prompt.value, "301001002001");
+#endif //APP_DEBUG
 
 	if (showPrompt(&prompt) != 0)
 	{
@@ -141,8 +153,9 @@ int retreiveKedcoPaymentNumber(KedcoRequest * request)
 
 int selectKedcoPaymentChannel(KedcoRequest * request)
 {
+	KedcoTrace
 	Prompt prompt;
-	getListItemPrompt(&prompt, "KEDCO", "CARD|WALLET");
+	getListItemPrompt(&prompt, "PAYMENT CHANNEL", "CARD|WALLET");
 	if (showPrompt(&prompt) != 0)
 	{
 		return APP_CANCEL;
@@ -167,6 +180,7 @@ int selectKedcoPaymentChannel(KedcoRequest * request)
 
 int confirmKedcoResponse(KedcoRequest request, KedcoResponse response)
 {
+	KedcoTrace
 	char displayInfo[1024] = "\0";
 
 	switch (request.paymentOption)
@@ -194,7 +208,10 @@ int confirmKedcoResponse(KedcoRequest request, KedcoResponse response)
 
 int kedcoWebResponseParser(char * jsonReply, KedcoRequest request, KedcoResponse * response)
 {
+	KedcoTrace
 	int toReturn = APP_FAIL;
+
+	logTrace(jsonReply);
 
 	JsonValue rootValue = json_parse_string(jsonReply);
 	if (!rootValue || (json_value_get_type(rootValue) != JSONObject)) 
@@ -233,9 +250,9 @@ int kedcoWebResponseParser(char * jsonReply, KedcoRequest request, KedcoResponse
 						getDotJsonString(json, "KEDCOValidationResponse.businessUnit", response->businessUnit, strlen(response->businessUnit));
 						getDotJsonString(json, "KEDCOValidationResponse.lastTransactionDate", response->phoneNumber, strlen(response->lastTransactionDate));
 						getDotJsonString(json, "KEDCOValidationResponse.undertaking", response->undertaking, strlen(response->undertaking));
-						getDotJsonString(json, "KEDCOValidationResponse.accountNumber", response->accountNumber, strlen(response->accountNumber));
 						getDotJsonString(json, "KEDCOValidationResponse.customerArrears", response->customerArears, strlen(response->customerArears));
 						getDotJsonString(json, "KEDCOValidationResponse.phoneNumber", response->phoneNumber, strlen(response->phoneNumber));
+						getDotJsonString(json, "KEDCOValidationResponse.accountNumber", response->accountNumber, strlen(response->accountNumber));
 						toReturn = APP_SUCC;
 						break;
 
@@ -249,7 +266,16 @@ int kedcoWebResponseParser(char * jsonReply, KedcoRequest request, KedcoResponse
 				getDotJsonString(json, "referenceNumber", response->referenceNumber, strlen(response->referenceNumber));
 				getDotJsonString(json, "remoteServiceReferenceNumber", response->remoteReferenceNumber, strlen(response->remoteReferenceNumber));
 				getDotJsonString(json, "valueToken", response->valueToken, strlen(response->valueToken));
-				toReturn = APP_SUCC;
+				
+				if (strlen(response->valueToken) > 5)
+				{
+					strcpy(response->status, "APPROVED");
+					toReturn = APP_SUCC;
+				}
+				else
+				{
+					toReturn = APP_CANCEL;
+				}
 				break;
 			
 			case KEDCO_WALLET_PAY:
@@ -265,23 +291,42 @@ int kedcoWebResponseParser(char * jsonReply, KedcoRequest request, KedcoResponse
 
 
 	json_value_free(rootValue);
+	logTrace("Finish Parsing Web Response");
 	return toReturn;
 }
 
 int kedcoWebServiceHandler(KedcoRequest request, KedcoResponse * response)
 {
+	KedcoTrace
 	char data[500];
+	char * HEADERS[1] = {"Content-Type: application/json"};
+
 	MemoryStruct jsonResponder;
 	int toReturn;
+	CLEAR(&data, 0);
 
 	switch (request.kedcoService)
 	{
 		case KEDCO_VALIDATOR:
-			toReturn = sendHttpRequest(HTTP_GET, KEDCO_VALIDATOR_ENDPOINT, NULL, 0, NULL, 0, &jsonResponder);
+			snprintf(data, sizeof(data), KEDCO_VALIDATION_TEMPLATE, request.billerCode, request.accountOrMeterNumber);
+			logTrace(data);
+			toReturn = sendHttpRequest(HTTP_POST, KEDCO_VALIDATOR_ENDPOINT, data, strlen(data), HEADERS, 1, &jsonResponder);
 			break;
 
 		case KEDCO_REPORTER:
-			toReturn = sendHttpRequest(HTTP_POST, KEDCO_REPORTER_ENDPOINT, data, strlen(data), NULL, 0, &jsonResponder);
+			snprintf(data, sizeof(data), KEDCO_REPORTER_TEMPLATE, request.accountOrMeterNumber, request.billerCode, 
+				glProcInfo.stTranLog.szRRN, (((atof)(request.amount)) / 100));
+			logTrace(data);
+
+			strcpy(response->status, "DECLINED");
+			toReturn = sendHttpRequest(HTTP_POST, KEDCO_REPORTER_ENDPOINT, data, strlen(data), HEADERS, 1, &jsonResponder);
+			break;
+
+		case KEDCO_WALLET_PAY:
+			snprintf(data, sizeof(data), KEDCO_WALLET_TEMPLATE, KEDCO_WALLET_USERNAME, KEDCO_WALLET_PASSWORD,
+				request.walletID, request.walletPin, (atof(request.amount) / 100));
+			logTrace(data);
+			toReturn = sendHttpRequest(HTTP_POST, KEDCO_VALIDATOR_ENDPOINT, data, strlen(data), HEADERS, 1, &jsonResponder);
 			break;
 
 		default:
@@ -298,6 +343,7 @@ int kedcoWebServiceHandler(KedcoRequest request, KedcoResponse * response)
 		toReturn = kedcoWebResponseParser(jsonResponder.memory, request, response);
 	}
 
+	logTrace("Free Up Memory Used");
 	if (jsonResponder.memory)
 	{
 		free(jsonResponder.memory);
@@ -308,10 +354,11 @@ int kedcoWebServiceHandler(KedcoRequest request, KedcoResponse * response)
 
 void processKedcoReversal(KedcoRequest request, KedcoResponse response)
 {
+	KedcoTrace
 	switch (request.paymentChannel)
 	{
 		case KEDCO_CARD:
-			rollbackNibssTransaction(0);
+			rollbackNibssTransaction(REASON_COMPLETED_PARTIALLY);
 			break;
 
 		case KEDCO_WALLET:
@@ -323,6 +370,7 @@ void processKedcoReversal(KedcoRequest request, KedcoResponse response)
 
 void completeKedcoTransaction(KedcoRequest request, KedcoResponse response)
 {
+	KedcoTrace
 	logTrace("Meter|Account Number : %s", request.accountOrMeterNumber);
 	logTrace("BillerCode : %s", request.billerCode);
 	logTrace("Customer Name : %s", response.customerName);
@@ -334,16 +382,19 @@ void completeKedcoTransaction(KedcoRequest request, KedcoResponse response)
 	logTrace("Phone Number : %s", response.phoneNumber);
 	logTrace("Minimum Purchase : %s", response.minimumPurchase);
 
+	snprintf(glProcInfo.stTranLog.szAmount, sizeof(glProcInfo.stTranLog.szAmount), "%s", request.amount);
+
 	switch (request.paymentChannel)
 	{
 		case KEDCO_CARD:
-			startEmvTransaction(CARD_INSERTED | CARD_TAPPED, KEDCO, glProcInfo.stTranLog.szAmount, glProcInfo.stTranLog.szOtherAmount);
+			startEmvTransaction(CARD_INSERTED | CARD_TAPPED, KEDCO, glProcInfo.stTranLog.szAmount, NULL);
 			break;
 
 		case KEDCO_WALLET:
 			request.paymentOption = KEDCO_WALLET_PAY;
 			if (kedcoWebServiceHandler(request, &response) != APP_SUCC)
 			{
+				KedcoDebug(response.errorMessage)
 				showErrorDialog(response.errorMessage, 10);
 				return;
 			}
@@ -356,26 +407,22 @@ void completeKedcoTransaction(KedcoRequest request, KedcoResponse response)
 	request.kedcoService = KEDCO_REPORTER;
 	if (kedcoWebServiceHandler(request, &response) != APP_SUCC)
 	{
-		showErrorDialog(response.errorMessage, 10);
-		return;
+		processKedcoReversal(request, response);
 	}
 
-	switch (request.paymentChannel)
-	{
-		case KEDCO_CARD:
-			rollbackNibssTransaction(0);
-			break;
-
-		case KEDCO_WALLET:
-			request.kedcoService = KEDCO_WALLET_REVERSAL;
-			kedcoWebServiceHandler(request, &response);
-			break;
-
-	}
+	CLEAR(&glProcInfo.stTranLog.szEchoField59, 0);
+	snprintf(glProcInfo.stTranLog.szEchoField59, sizeof(glProcInfo.stTranLog.szEchoField59),
+		"%s|%s|%s|%s|%s|%s|%s|NGN %.2f|%s", response.status,
+		response.customerName, response.meterNumber, response.accountNumber, response.address,
+		response.tariff, response.rate, (atof(glProcInfo.stTranLog.szAmount) / 100), response.businessUnit);
+	
+	KedcoDebug(glProcInfo.stTranLog.szEchoField59)
+	statusReceiptAndNotification();
 }
 
 int retrieveWalletInfo(KedcoRequest * request)
 {
+	KedcoTrace
 	Prompt prompt;
 	getTextPrompt(&prompt, "WALLET", "Enter Wallet ID : ");
 	if (showPrompt(&prompt) != 0)

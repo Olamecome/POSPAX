@@ -192,7 +192,10 @@ int printTransactionReceipt(TRAN_LOG* transData, int copy, uchar reprint) {
 		maskPan(maskedPan, transData->szPan, '*');
 		prnDoubleStr("PAN", maskedPan);
 		prnDoubleStr("EXPIRY", transData->szExpDate);
-		prnDoubleStr("NAME", transData->szHolderName);
+		if (transData->ucTranType != KEDCO)
+		{
+			prnDoubleStr("NAME", transData->szHolderName);
+		}
 	}
 
 
@@ -212,8 +215,11 @@ int printTransactionReceipt(TRAN_LOG* transData, int copy, uchar reprint) {
 
 	prnDoubleStr("AUTH ID", transData->szAuthCode);
 
-	GetDispAmount(transData->szAmount, temp);
-	prnDoubleStr("AMOUNT", temp);
+	if (transData->ucTranType != KEDCO)
+	{
+		GetDispAmount(transData->szAmount, temp);
+		prnDoubleStr("AMOUNT", temp);
+	}
 
 	if (atol(transData->szOtherAmount) > 0 && transData->ucTranType == CASH_ADVANCE) {
 		GetDispAmount(transData->szOtherAmount, temp);
@@ -229,18 +235,51 @@ int printTransactionReceipt(TRAN_LOG* transData, int copy, uchar reprint) {
 		prnDoubleStr("ORIGINAL RRN", transData->szOrgRRN);
 	}
 
-	PrnAttrSet(1);
-	PrnDoubleHeight(1, 0);
-	//PrnDoubleWidth(1, 0);
-	prnCenter(isSuccessResponse(transData->szRspCode) ? "APPROVED" : "DECLINED");
-	resetPrnFormat();
-	prnFeedPaper(1);
+	if (transData->ucTranType != KEDCO)
+	{
+		PrnAttrSet(1);
+		PrnDoubleHeight(1, 0);
+		//PrnDoubleWidth(1, 0);
+		prnCenter(isSuccessResponse(transData->szRspCode) ? "APPROVED" : "DECLINED");
+		resetPrnFormat();
+		prnFeedPaper(1);
 
-	if (!isSuccessResponse(transData->szRspCode)) {
-		prnCenter(transData->szResponseReason);
+		if (!isSuccessResponse(transData->szRspCode)) {
+			prnCenter(transData->szResponseReason);
+		}
+
+		prnFullLenChar('-');
+	}else
+	{
+		char * storedInfo = (char *)calloc(strlen(transData->szEchoField59), sizeof(char));
+		strcpy(storedInfo, transData->szEchoField59);
+
+		PrnAttrSet(1);
+		PrnDoubleHeight(1, 0);
+		prnCenter(strtok(storedInfo, "|"));
+		resetPrnFormat();
+		prnFeedPaper(1);
+
+		if (!isSuccessResponse(transData->szRspCode)) {
+			prnCenter(transData->szResponseReason);
+		}
+
+		prnFullLenChar('-');
+
+		prnDoubleStr("NAME", strtok(NULL, "|"));
+		prnDoubleStr("METER", strtok(NULL, "|"));
+		prnDoubleStr("ACCOUNT.", strtok(NULL, "|"));
+		prnDoubleStr("ADDRESS", strtok(NULL, "|"));
+		prnDoubleStr("TARIFF", strtok(NULL, "|"));
+		prnDoubleStr("RATE", strtok(NULL, "|"));
+		prnDoubleStr("AMOUNT", strtok(NULL, "|"));
+		prnDoubleStr("OPERATOR", strtok(NULL, "|"));
+
+		free(storedInfo);
+
+		prnFullLenChar('-');
 	}
 
-	prnFullLenChar('-');
 	if (transData->sAppCrypto[0]) {
 		CLEAR_STRING(temp, lengthOf(temp));
 		PubBcd2Asc0(transData->sAID, transData->ucAidLen, temp);
