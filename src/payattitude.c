@@ -164,8 +164,9 @@ void adjustPayAttitudeComms() {
 
 	config.stWifiPara.stHost1 = glPosParams.payAttitudeIp;
 	config.stWifiPara.stHost2 = glPosParams.payAttitudeIp;
+	config.ucPortMode = glPosParams.payAttitudeProtocolFlag;
 
-	PutEnv("E_SSL", glPosParams.payAttitudeProtocolFlag ? "1" : "0");
+	glCommCfg = config;
 	CommSetCfgParam(&config);
 }
 

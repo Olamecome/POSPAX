@@ -266,7 +266,7 @@ int processDownloadedFile(char* data, size_t size) {
 		return -1;
 	}
 
-	showMessageDialog("Remote Download", "Update installed", 3, 60);
+	showMessageDialog("Remote Download", "Update installed", 3, 5);
 	return 0;
 }
 

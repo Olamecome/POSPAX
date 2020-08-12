@@ -6,6 +6,34 @@
 
 extern int processDownloadedFile(char* data, size_t size);
 
+
+static char spDispMessage[30 + 1];
+static void specialDisplayReceive(int* counter) {
+	char* dot = NULL;
+
+	if (*counter <= 1) {
+		dot = ".";
+	}
+	else if (*counter % 2 == 0) {
+		dot = "..";
+	}
+	else {
+		dot = "...";
+	}
+	
+	memset(spDispMessage, 0, sizeof(spDispMessage));
+	snprintf(spDispMessage, sizeof(spDispMessage), "Receiving%s", dot);
+	Gui_ClearScr();
+	Gui_DrawText(spDispMessage, gl_stCenterAttr, 0, 40);
+
+	if (*counter % 3 == 0) {
+		*counter = 1;
+	}
+	else {
+		(*counter)++;
+	}
+}
+
 static void adjustTMSComms() {
 	COMM_CONFIG config = glCommCfg;
 	IP_ADDR ipAddr = glPosParams.tmsIp;
@@ -16,7 +44,8 @@ static void adjustTMSComms() {
 	config.stWifiPara.stHost1 = ipAddr;
 	config.stWifiPara.stHost2 = ipAddr;
 
-	PutEnv("E_SSL", glPosParams.tmsProtocolFlag ? "1" : "0");
+	config.ucPortMode = glPosParams.tmsProtocolFlag;
+	glCommCfg = config;
 	CommSetCfgParam(&config);
 }
 
@@ -75,13 +104,19 @@ int downloadBinaryWithSocket() {
 	len = strlen(data);
 
 	recvlen = sizeof(recvData);
-	DispDial();
+	
+	Gui_ClearScr();
+	Gui_DrawText("Connecting", gl_stCenterAttr, 0, 40);
 	int ret = dialHost();
 	if (ret != 0) {
+		DispCommErrMsg(ret);
 		goto End;
 	}
 
-	DispSend();
+
+	Gui_ClearScr();
+	Gui_DrawText("Checking for update", gl_stCenterAttr, 0, 40);
+
 	ret = CommTxd(data, len, glPosParams.requestTimeOutSec);
 	json_free_serialized_string(request);
 	json_value_free(rootValue);
@@ -91,12 +126,13 @@ int downloadBinaryWithSocket() {
 		goto End;
 	}
 
-	DispReceive();
+	//DispReceive();
 	char byyte;
 	int total_read = 0;
-
+	int disp_counter = 1;
 	while (1)
 	{
+		specialDisplayReceive(&disp_counter);
 		ret = CommRxd(&byyte, 1, glPosParams.requestTimeOutSec, &recvlen);
 		if (ret < 0)
 		{
@@ -120,7 +156,12 @@ int downloadBinaryWithSocket() {
 				if (atoi(statusCode) >= 400)
 				{
 					char message[32 + 1] = "\0";
-					snprintf(message, sizeof(message), "Http error - %s", statusCode);
+					if (atoi(statusCode) == 404) {
+						snprintf(message, sizeof(message), "Update not available");
+					}
+					else {
+						snprintf(message, sizeof(message), "Http error - %s", statusCode);
+					}
 					logTrace("Http Error. Status code: %s\n", statusCode);
 					showErrorDialog(message, 30);
 					goto End;
@@ -169,12 +210,18 @@ int downloadBinaryWithSocket() {
 	i = 0;
 	total_read = 0;
 
-	DispMessage("Downloading update");
+
+	char termInfo[32] = { 0 };
+	GetTermInfo(termInfo);
+	uchar isColourScreen = termInfo[19] & 0x02;
+
 	while (total_read < content_len) {
 
 		CLEAR_STRING(message, sizeof(message));
-		snprintf(message, sizeof(message), "Downloading %d%%", (total_read * 100)/content_len );
-		DispMessage(message);
+		snprintf(message, sizeof(message), "Downloading %d%s", (total_read * 100)/content_len, !isColourScreen ? "%" : "%%%");
+		Gui_ClearScr();
+		Gui_DrawText(message, gl_stCenterAttr, 0, 40);
+
 		ret = CommRxd(buffer, sizeof(buffer), glPosParams.requestTimeOutSec, &recvlen);
 		// logTrace("RES::%d\n", res);
 		if (ret < 0) {
@@ -188,10 +235,11 @@ int downloadBinaryWithSocket() {
 	}
 
 	logTrace("\nTotal Read: %d\n", total_read);
-	if (ret < 0 && total_read <= 0)
+	if (ret < 0 && total_read < content_len)
 	{
-		logError("Receive failed, %d", ret);
-		DispCommErrMsg(ret);
+		logError("Download failed, %d", ret);
+		//DispCommErrMsg(ret);
+		showErrorDialog("Download failed", 10);
 		goto End;
 	}
 	else

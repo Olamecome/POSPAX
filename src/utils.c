@@ -541,9 +541,7 @@ int dayOfWeek(int year, int month, int day) {
 }
 
 int resetCommCfg() {
-	char param[2] = { 0 };
-	param[0] = '0' + glPosParams.switchPortFlag;
-	PutEnv("E_SSL", param);
+	glCommCfg = glPosParams.commConfig;
 	CommSetCfgParam(&glCommCfg);
 	return 0;
 }

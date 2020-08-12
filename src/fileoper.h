@@ -22,10 +22,6 @@ extern "C" {
 int InitTranLogFile(void);
 int LoadPosParams(void);
 int SavePosParams(void);
-int LoadSysParam(void);
-int SaveSysParam(void);
-int SaveEdcParam(void);
-int SavePassword(void);
 int ExistSysFiles(void);
 int ValidSysFiles(void);
 void RemoveSysFiles(void);
@@ -45,7 +41,6 @@ int SaveEmvStatus(void);
 int LoadEmvStatus(void);
 int SaveEmvErrLog(void);
 int LoadErrLog(ushort uiRecNo, void *pOutErrLog);
-int SyncPassword(void);
 int LastRecordIsFallback(void);
 
 int saveLogoBmpFile(uchar* bmp, int len);

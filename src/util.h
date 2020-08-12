@@ -70,7 +70,6 @@ int  FunctionInput(void);
 void SysHalt(void);
 void SysHaltInfo(const void *pszDispInfo, ...);
 void DispMagReadErr(void);
-int  MatchCardTable(const uchar *pszPAN);
 int  SelectTransCurrency(void);
 int  ReadMagCardInfo(void);
 void DispAccepted(void);
@@ -101,8 +100,6 @@ uchar ConfirmAmount(const char *pszDesignation, uchar *pszAmount);
 void GetDispAmount(uchar *pszAmount, uchar *pszDispBuff);
 int  GetManualPanFromMsg(const void *pszUsrMsg);
 int  ManualInputPan(uchar ucInitChar);
-int  GetDescriptor(void);
-int  GetAddlPrompt(void);
 #define GETPIN_EMV		0x80
 #define GETPIN_RETRY	0x01
 int  GetPIN(uchar ucFlag);
@@ -128,7 +125,6 @@ void UpdateEMVTranType(void);
 int FindCurrency(const uchar *pszCurrencyNameCode, CURRENCY_CONFIG *pstCurrency);
 void SyncEmvCurrency(const uchar *psCountryCode, const uchar *psCurrencyCode, uchar ucDecimal);
 
-int  UpdateTermInfo(void);
 int  CheckSysFont(void);
 int  EnumSysFonts(void);
 int  SxxWriteKey(uchar ucSrcKeyIdx, const uchar *psKeyBCD, uchar ucKeyLen, uchar ucDstKeyId, uchar ucDstKeyType, const uchar *psKCV);

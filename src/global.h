@@ -91,9 +91,9 @@ Set to correct macro before compile
 Application attribute
 *********************************************************************************/
 #define APP_NAME		"XPRESSPOS"
-#define EDCAPP_AID		"PGERMER01"
+#define EDCAPP_AID		"PGENMER01"
 // Modified by Kim_LinHB 2014-4-4
-#define EDC_VER_PUB		    "2.0"			// Public version number
+#define EDC_VER_PUB		    "2.1"			// Public version number
 //#define EDC_VER_INTERN	    "2.0"		// Extend version number. should be same as EDC_VER_INTERN's heading.
 // Added by Kim 20150120
 //#define EDC_BASE_VER_INTERN     "2.00.00"   // EDC version, please do not modify
@@ -166,8 +166,6 @@ Warning: DO NOT manually enable/disable below macros. they're determined automat
 #include "checkopt.h"
 #include "commproc.h"
 #include "print.h"
-#include "password.h"
-#include "manage.h"
 #include "pedpinpad.h"
 #include "cpinpad.h"
 #include "MultiApp.h"
@@ -386,152 +384,6 @@ enum {PED_INT_PCI, PED_EXT_PP, PED_EXT_PCI};
 #define LANGCONFIG glSysParam.stEdcInfo.stLangCfg.szDispName
 
 
-
-// EDC information stored on terminal
-typedef struct _tagEDC_INFO
-{
-#define EDC_INIT_OK		0x5A5A
-	ushort	uiInitFlag;				// 0x5A5A OK
-	uchar	szInitTime[14+1];		// YYMMDDhhmmss
-	uchar	sInitSTAN[3];			// to be sync to SYS_CONTROL
-
-	uchar	ucDllTracking;			// reserved
-	uchar	bClearBatch;			// 0-none, 1-clear former batch
-	uchar	ucPrinterType;			// 0-Sprocket, 1-Thermal
-	uchar	ucEcrSpeed;				// ECR speed, reserved ?
-	uchar	szHelpTelNo[24+1];		// for help function
-	uchar	sOption[5];				// option for access
-									// sOption[0] = ucOption1
-									// sOption[1] = ucOption2
-									// sOption[2] = ucOption3
-									// sOption[3] = ucPwdMask
-									// sOption[4] = ucDialOption
-
-	uchar	sExtOption[8];			// extended option. this option cannot be controlled by Protims.
-
-	uchar	sReserved[4];			// sReserved[0] = ucUnused1
-									// sReserved[1..3] = sUnused2
-
-	uchar	szMerchantAddr[46+1];	// line 2 and 3 on invoice
-	uchar	szMerchantName[23+1];	// merchant name,line 1
-	uchar	szAddlPrompt[20+1];		// for show and print
-
-	//uchar	ucLanguage;				// 0-english,1-spanish,2-portuguese
-
-	CURRENCY_CONFIG	stLocalCurrency;	// local currency name, code, decimal position, ignore digits.
-	uchar	ucCurrencySymbol;
-	uchar	ucTranAmtLen;			// decimal value
-	uchar	ucStlAmtLen;			// decimal value
-
-	ulong	ulOfflineLimit;			// Floor limit for magnetic card 
-
-	uchar	ucScrGray;				// LCD lightness, default is 4
-	uchar	ucAcceptTimeout;		// period of displaying a successful transaction message
-	uchar	szPabx[10+1];			// a direct outside line number
-	uchar	szDownTelNo[25+1];		// downloading tel NO.
-	uchar	szDownLoadTID[8+1];		// downloading terminal id
-// 	uchar	szDownLoadMID[15+1];	// downloading merchant id(reserved)
-	uchar	szTMSNii[3+1];			// NII for downloading parameters
-	uchar	ucTMSTimeOut;			// downloading timeout
-
-	IP_ADDR	stDownIpAddr;			// TMS IP
-
-	uchar	bPreDial;				// TRUE: enable pre-dial for modem
-
-	// parameters for automatic downloading
-	uchar	szCallInTime[8+1];		// start(HHMM)+end(hhmm)
-	uchar	ucAutoMode;				// 0 none, 1 auto, 2 call in
-	uchar	szAutoDayTime[10+1];	// YYMMDDHHmm
-	ushort	uiAutoInterval;			// unit: day
-
-	LANG_CONFIG	stLangCfg;			// current using language
-	uchar	ucPedMode;				// Current using PED (SxxPED/PP/ExtSxxPED)
-	uchar	ucIdleMinute;			// Power Save timeout
-	uchar	ucIdleShutdown;			// Shutdown when idle for [ucIdleMinute] minutes have passed.
-}EDC_INFO;
-
-//pan range added by KevinLiu 20160530
-typedef struct _tagPAN_RANGE
-{
-	uchar	sPanRangeLow[5];		// start card NO. 
-	uchar	sPanRangeHigh[5];		// end card NO.
-}CARD_RANGE;
-
-// card table record
-typedef struct _tagCARD_TABLE
-{ 
-	CARD_RANGE stCardRange[MAX_ISSUER_CARD_RANGE];		//support more than one card range, modified by KevinLiu 20160530
-	uchar	ucIssuerKey;			// the issuer id this card table is using
-	uchar	ucAcqKey;				// the acquirer id this card table is using
-	uchar	ucPanLength;			// card No. length, 00 means skip checking
-	uchar	ucOption;				// b1-allow payment
-}CARD_TABLE;
-
-typedef struct _tagPHONE_INFO
-{
-	uchar	szTelNo[12*2+1];
-	uchar	ucDialWait;			// by second, time wait after fail
-	uchar	ucDialAttempts;		// dial attempt times
-}PHONE_INFO;
-
-typedef struct _tagPPP_INFO
-{
-	uchar	szTelNo[12*2+1];
-	uchar	szUserName[20+1];
-	uchar	szUserPWD[20+1];
-	uchar	szIPAddr[15+1];
-	uchar	szIPPort[5+1];
-	uchar	ucTimeOut;		//by second, time to wait until failure
-}PPP_INFO;
-
-
-// installment plan record
-typedef struct _tagINSTALMENT_PLAN
-{
-	uchar	ucIndex;		// 1~MAX_PLAN
-	uchar	ucAcqIndex;
-	uchar	szName[7+1];
-	uchar	ucMonths;
-	ulong	ulBottomAmt;	// lower limit amount
-}INSTALMENT_PLAN;
-
-// descriptor of goods
-typedef struct _tagDESCRIPTOR
-{
-	uchar	ucKey;
-	uchar	szCode[2+1];		// ANS format
-	uchar	szText[20+1];		// for display and print
-}DESCRIPTOR;
-
-// extended card table record(RFU for HK)
-#define LEN_MAX_CARBIN_NAME		30
-typedef struct _tagISSUER_NAME
-{
-	uchar	szChineseName[16+1];
-	uchar	szEnglishName[LEN_MAX_CARBIN_NAME+1];
-}ISSUER_NAME;
-
-typedef struct _tagCARD_BIN
-{
-	uchar	ucIssuerIndex;		// an index matched to an issuer name
-	uchar	ucPanLen;			// card NO. length(reserved)
-	uchar	ucMatchLen;			// the matched length
-	uchar	sStartNo[10];
-	uchar	sEndNo[10];
-}CARD_BIN;
-
-// automatic downloading parameters(RFU for HK), for transmitting parameters to main application
-typedef struct _tagEDC_DOWN_PARAM
-{
-	uchar	szPabx[10+1];
-	uchar	szTermID[8+1];
-	uchar	szCallInTime[8+1];		// HHMM-hhmm
-	// call in time for POS, in the 24-hour system
-	uchar	bEdcSettle;				// 0: not settle 1: settle
-	uchar	ucAutoMode;				// 0 none, 1 auto, 2 call in
-	uchar	szAutoDayTime[10+1];	// YYMMDDHHmm
-}EDC_DOWN_PARAM;
-
 // transaction config
 typedef struct _tagTRAN_CONFIG
 {
@@ -550,14 +402,6 @@ typedef struct _tagTRAN_CONFIG
 	uchar	ucTranAct;		// features requested
 }TRAN_CONFIG;
 
-// parameters option
-typedef struct _tagOPTION_INFO
-{
-	void	*pText;				            // prompt
-	ushort	uiOptVal;			        // offset of buffer. 0304 means bit 0x04 of byte[3]
-	uchar	ucInverseLogic;		    // using inverse logic, e.g.:EDC_NOT_SETTLE_PWD
-	uchar	ucPermissionLevel;	// Permission
-}OPTION_INFO;
 
 typedef struct _tagHOST_ERR_MSG
 {
@@ -735,76 +579,6 @@ typedef struct _tagREPRN_STL_INFO
 	TOTAL_INFO	stIssTotal[MAX_ACQ][MAX_ISSUER];
 }REPRN_STL_INFO;
 
-// system config information, update when downloading or modifying parameters.
-typedef struct _tagSYS_PARAM
-{
-#define LOGON_MODE		0x01
-#define CHANGE_MODE 	0x02
-#define TRANS_MODE		0x04
-#define INIT_MODE		0x08
-	uchar				ucTermStatus;		// terminal status
-
-#define _TxnPSTNPara	stTxnCommCfg.stPSTNPara
-#define _TxnModemPara	stTxnCommCfg.stPSTNPara.stPara
-#define _TxnRS232Para	stTxnCommCfg.stRS232Para
-#define _TxnTcpIpPara	stTxnCommCfg.stTcpIpPara
-#define _TxnWirlessPara	stTxnCommCfg.stWirlessPara
-#define _TxnWifiPara		stTxnCommCfg.stWifiPara			// hdadd
-#define _TxnBlueToothPara	stTxnCommCfg.stBlueToothPara	// hdadd
-
-	COMM_CONFIG			stTxnCommCfg;		// communication config
-
-#define _TmsPSTNPara	stTMSCommCfg.stPSTNPara
-#define _TmsModemPara	stTMSCommCfg.stPSTNPara.stPara
-#define _TmsRS232Para	stTMSCommCfg.stRS232Para
-#define _TmsTcpIpPara	stTMSCommCfg.stTcpIpPara
-#define _TmsWirlessPara	stTMSCommCfg.stWirlessPara
-
-#define _TmsWifiPara	stTMSCommCfg.stWifiPara     //hdadd
-#define _TmsBlueToothPara	stTMSCommCfg.stBlueToothPara//hdadd
-
-
-	COMM_CONFIG			stTMSCommCfg;		// TMS communication config
-	uchar				ucNewTMS;			// TMS file downloading protocol
-	uchar				ucTMSSyncDial;		// synchronous mode(just for Modem)
-
-	EDC_INFO			stEdcInfo;			// terminal parameters
-
-	uchar				ucCardNum;			// the quantity of cards in card table
-	CARD_TABLE			stCardTable[MAX_CARD];
-
-	uchar				ucDescNum;			// the quantity of goods descriptors
-	DESCRIPTOR			stDescList[MAX_DESCRIPTOR];
-
-	uchar				ucPlanNum;			// the quantity of installment plans
-	INSTALMENT_PLAN		stPlanList[MAX_PLAN];
-
-	uchar				sPassword[PWD_MAX][10];	// Password(clear text)
-//	ushort				uiCapkNum;				// CAPK quantity
-//	ushort				uiAidNum;				// AID	quantity
-
-	// for HK
-	ushort				uiIssuerNameNum;
-	ISSUER_NAME			stIssuerNameList[MAX_CARDBIN_ISSUER];
-	ushort				uiCardBinNum;
-	CARD_BIN			stCardBinTable[MAX_CARDBIN_NUM];
-	uchar				bTextAdData;		// False: bitmap TRUE: text
-	uchar				sAdData[LEN_MAX_AD_DATA];	// Ad
-
-	uchar				sTermInfo[HWCFG_END];	// Terminal hardware infomation. for GetTermInfo() use.
-#define APMODE_INDEPEND		0		// Current app is app manager.   当前应用为独立运行模式
-#define APMODE_MAJOR		1		// Current app is major sub-app. 当前应用为主要子应用(EDC for VISA MASTERCARD)
-#define APMODE_MINOR		2		// Current app is minor sub-app. 当前应用为次要子应用(EDC for AE, DINERS, JCB)
-	uchar				ucRunMode;
-}SYS_PARAM;
-
-// RFU for HK
-typedef struct _tagEMV_FIELD56
-{
-	ushort		uiLength;
-	uchar		sData[LEN_ICC_DATA2];
-}EMV_FIELD56;
-
 typedef struct _tagWRITE_INFO
 {
 #define SAVE_NONEED		0
@@ -824,10 +598,6 @@ typedef struct _tagSYS_CONTROL
 	ulong			ulInvoiceNo;	// current invoice NO.
 	ushort			uiLastRecNo;	// record index NO. of the last transaction
 	ushort			uiErrLogNo;		// EMV error record index NO.
-	ushort			uiLastRecNoList[MAX_ACQ];		// for bea
-	uchar			sAcqStatus[MAX_ACQ];			// statuses of all acquirers
-	uchar			sAcqKeyList[MAX_TRANLOG];		// transaction records(for acquirer)
-	uchar			sIssuerKeyList[MAX_TRANLOG];	// transaction records(for issuer)
 	WRITE_INFO		stWriteInfo;	// information for saving txn log
 
 #define LEN_SYSCTRL_BASE	((int)OFFSET(SYS_CONTROL, stRevInfo))
@@ -836,7 +606,6 @@ typedef struct _tagSYS_CONTROL
 #define LEN_SYSCTRL_NORMAL	((int)OFFSET(SYS_CONTROL, stRePrnStlInfo))
 	REPRN_STL_INFO	stRePrnStlInfo;
 
-	EMV_FIELD56		stField56[MAX_ACQ];		// field 56
 }SYS_CONTROL;
 
 
@@ -855,6 +624,7 @@ typedef struct PosParams {
 	char supervisorPin[10 + 1];
 	char adminPass[10 + 1];
 	CURRENCY_CONFIG currency;
+	LANG_CONFIG	stLangCfg;
 
 	IP_ADDR tmsIp;
 	char tmsUrl[100];
@@ -866,7 +636,6 @@ typedef struct PosParams {
 	char hostZMK[ASCII_KEY_SIZE + 1];
 	char hostSessionKey[ASCII_KEY_SIZE + 1];
 	NibssTerminalParameter nibssParams;
-	bool switchPortFlag;
 	unsigned short requestTimeOutSec;
 	unsigned short callHomeTimeMinutes;
 	char approvedReceiptCount;
@@ -904,7 +673,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 extern PosParams		glPosParams;
-extern SYS_PARAM		glSysParam, glSysParamBak;		// sys config parameters
+//extern SYS_PARAM		glSysParam, glSysParamBak;		// sys config parameters
 extern SYS_CONTROL		glSysCtrl;		// sys control parameters
 extern SYS_PROC_INFO	glProcInfo;		// transaction processing information
 

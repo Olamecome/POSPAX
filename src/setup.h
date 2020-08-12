@@ -30,10 +30,6 @@ void SyncTcpIpParam(void *pstDst, const void *pstSrc);
 int  SetWirelessParam(WIRELESS_PARAM *pstParam);
 void SyncWirelessParam(WIRELESS_PARAM *pstDst, const WIRELESS_PARAM *pstSrc);
 
-void GetAllSupportFunc(char *pszBuff);
-void FunctionExe(uchar bUseInitMenu, int iFuncNo);
-void FunctionMenu(void);
-void FunctionInit(void);
 void SetSystemParamAll(void);
 void SetSysLang(uchar ucSelectMode);
 void SetEdcLangExt(const char *pszDispName);

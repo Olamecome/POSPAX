@@ -89,12 +89,12 @@ ENTER_PORT:
 
 
 		clearScreen();
-		selected = glPosParams.switchPortFlag;
+		selected = glPosParams.commConfig.ucPortMode;
 		if (GUI_OK != Gui_ShowAlternative("Connection Type", gl_stTitleAttr,
 			"Select Connection Type", gl_stLeftAttr, "Open", 0, "SSL", 1, 30, &selected)) {
 			goto ENTER_PORT;
 		}
-		glPosParams.switchPortFlag = selected;
+		glPosParams.commConfig.ucPortMode = selected;
 
 		memset(param, 0, lengthOf(param));
 		sprintf(param, "%d", glPosParams.requestTimeOutSec);
@@ -119,10 +119,6 @@ ENTER_PORT:
 
 		break;
 	}
-
-	memset(param, 0, lengthOf(param));
-	sprintf(param, "%d", glPosParams.switchPortFlag);
-	PutEnv("E_SSL", param);
 
 	SavePosParams();
 	glCommCfg = glPosParams.commConfig;
@@ -250,9 +246,8 @@ void downloadMenu() {
 	glPosParams.commConfig.stTcpIpPara.stHost1 = ipInfo;
 	glPosParams.commConfig.stWifiPara.stHost1 = ipInfo;
 	glPosParams.commConfig.stWirlessPara.stHost1 = ipInfo;
+	glPosParams.commConfig.ucPortMode = 1;
 
-	glPosParams.switchPortFlag = 1;
-	PutEnv("E_SSL", "1");
 
 	getJsonString(json, "Username", glPosParams.username, lengthOf(glPosParams.username));
 	getJsonString(json, "Password", glPosParams.password, lengthOf(glPosParams.password));

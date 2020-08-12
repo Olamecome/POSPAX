@@ -112,91 +112,12 @@ int SavePosParams(void)
 	return saveFileData(FILE_POS_PARAMS, &glPosParams, sizeof(PosParams));
 }
 
-// 读取系统参数
-// load system parameters
-int LoadSysParam(void)
-{
-	int		iRet;
-
-	iRet = PubFileRead(FILE_SYS_PARAM, 0L, &glSysParam, sizeof(SYS_PARAM));
-	if (iRet != 0)
-	{
-		PubTRACE0("LoadSysParam()");
-		SysHalt();
-		return ERR_FILEOPER;
-	}
-
-	return 0;
-}
-
-
-
-
-// 保存系统参数
-// save system parameters
-int SaveSysParam(void)
-{
-	int		iRet;
-
-	iRet = PubFileWrite(FILE_SYS_PARAM, 0L, &glSysParam, sizeof(SYS_PARAM));
-	if( iRet!=0 )
-	{
-		PubTRACE0("SaveSysParam");
-		SysHalt();
-		return ERR_FILEOPER;
-	}
-
-	return 0;
-}
-
-// 保存EDC参数
-// save EDC parameters
-int SaveEdcParam(void)
-{
-	int		iRet;
-
-	iRet = PubFileWrite(FILE_SYS_PARAM,
-						OFFSET(SYS_PARAM, stEdcInfo),
-						&glSysParam.stEdcInfo,
-						sizeof(glSysParam.stEdcInfo));
-	if( iRet!=0 )
-	{
-		PubTRACE0("SaveSysParam");
-		SysHalt();
-		return ERR_FILEOPER;
-	}
-
-	return 0;
-}
-
-// 保存系统密码
-// save passwords
-int SavePassword(void)
-{
-	int		iRet;
-
-	iRet = PubFileWrite(FILE_SYS_PARAM,
-						OFFSET(SYS_PARAM, sPassword),
-						glSysParam.sPassword,
-						sizeof(glSysParam.sPassword));
-	if( iRet!=0 )
-	{
-		PubTRACE0("SavePassword");
-		SysHalt();
-		return ERR_FILEOPER;
-	}
-
-	return SyncPassword();
-}
-
 // 判断系统参数文件是否存在
 // check if system files are existed
 int ExistSysFiles(void)
 {
 	if ((fexist((char *)FILE_POS_PARAMS)<0) 
 		||
-		/*(fexist((char *)FILE_SYS_PARAM)<0) ||
-		(fexist((char *)FILE_SYS_CTRL)<0) ||*/
 		(fexist((char *)FILE_TRAN_LOG)<0)) 
 		
 	{
@@ -217,16 +138,7 @@ int ValidSysFiles(void)
 	{
 		return FALSE;
 	}*/
-	/*if ((fexist((char *)FILE_SYS_PARAM)<0) ||
-		(filesize((char *)FILE_SYS_PARAM)!=sizeof(SYS_PARAM)) )
-	{
-		return FALSE;
-	}
-	if ((fexist((char *)FILE_SYS_CTRL)<0) ||
-		(filesize((char *)FILE_SYS_CTRL)!=sizeof(SYS_CONTROL)) )
-	{
-		return FALSE;
-	}*/
+
 	if ((fexist((char *)FILE_TRAN_LOG)<0) ||
 		(filesize((char *)FILE_TRAN_LOG)!=MAX_TRANLOG*sizeof(TRAN_LOG)) )
 	{
@@ -482,10 +394,9 @@ uchar AllowDuplicateTran(void)
 	{
 		return TRUE;
 	}
-	if( glSysCtrl.sAcqKeyList[glSysCtrl.uiLastRecNo]==INV_ACQ_KEY )
-	{
-		return TRUE;
-	}
+	
+	return TRUE;
+	
 
 	memset(&stTranLog, 0, sizeof(TRAN_LOG));
 	LoadTranLog(&stTranLog, glSysCtrl.uiLastRecNo);
@@ -531,11 +442,6 @@ int GetRecord(uint uiStatus, void *pstOutTranLog)
 
 		for(uiCnt=0; uiCnt<MAX_TRANLOG; uiCnt++)
 		{
-			if( glSysCtrl.sAcqKeyList[uiCnt]==INV_ACQ_KEY )
-			{
-				continue;
-			}
-
 			memset(pstLog, 0, sizeof(TRAN_LOG));
 			iRet = LoadTranLog(pstLog, uiCnt);
 			if( iRet!=0 )
@@ -690,22 +596,6 @@ int LoadErrLog(ushort uiRecNo, void *pOutErrLog)
 }
 #endif
 
-// 同步密码文件到manager和EPS
-// Sync password to manager application. usually for HongKong
-int SyncPassword(void)
-{
-	int		iRet;
-
-	iRet = PubFileWrite(FILE_PASSWORD, 0L, glSysParam.sPassword, sizeof(glSysParam.sPassword));
-	if( iRet!=0 )
-	{
-		PubTRACE0("SyncPassword");
-		SysHalt();
-		return ERR_FILEOPER;
-	}
-
-	return 0;
-}
 
 // for BEA fallback process
 int LastRecordIsFallback(void)

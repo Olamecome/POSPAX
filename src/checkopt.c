@@ -16,7 +16,8 @@ static uchar ChkIfAcqAvail(uchar ucIndex);
 // Check Term Model
 uchar ChkTerm(uchar ucTermType)
 {
-	return (glSysParam.sTermInfo[HWCFG_MODEL]==ucTermType);
+	char sTermInfo[HWCFG_END + 1];
+	return (sTermInfo[HWCFG_MODEL]==ucTermType);
 }
 
 // Check Term Hardware Config, by Checking the info returned by GetTermInfo() (buffered in glSysParam.sTermInfo[])
@@ -24,17 +25,19 @@ uchar ChkTerm(uchar ucTermType)
 uchar ChkHardware(uchar ucChkType, uchar ucValue)
 {
 	PubASSERT(ucChkType<HWCFG_END);
+	char sTermInfo[HWCFG_END + 1];
+	GetTermInfo(sTermInfo);
 
 #if !defined(_Dxxx_) || defined(_MIPS_)
-	return (glSysParam.sTermInfo[ucChkType]==ucValue);	// return value: TRUE/FALSE
+	return (sTermInfo[ucChkType]==ucValue);	// return value: TRUE/FALSE
 #else
 	if(HWCFG_BLTH != ucChkType)
 	{
-		return (glSysParam.sTermInfo[ucChkType]==ucValue);	// return value: TRUE/FALSE
+		return (sTermInfo[ucChkType]==ucValue);	// return value: TRUE/FALSE
 	}
 	else
 	{
-		return ((glSysParam.sTermInfo[19] & 0x08) == ucValue);
+		return ((sTermInfo[19] & 0x08) == ucValue);
 	}
 #endif
 }
@@ -63,8 +66,7 @@ uchar ChkIfEmvEnable(void)
 // Check EDC option
 uchar ChkEdcOption(ushort uiOption)
 {
-	PubASSERT( (uiOption>>8)<sizeof(glSysParam.stEdcInfo.sOption) );
-	return ChkOptionExt(glSysParam.stEdcInfo.sOption, uiOption);
+	return FALSE;
 }
 
 // Extension of option checking
@@ -235,7 +237,7 @@ uchar ChkIfInstalmentPara(void)
 		return FALSE;
 	}
 
-	return (glSysParam.ucPlanNum > 0);
+	return FALSE;
 }
 
 uchar ChkIfTransMaskPan(uchar ucCurPage)
@@ -281,10 +283,7 @@ uchar ChkIfBatchEmpty(void)
 	int	ii;
 	for (ii=0; ii<MAX_TRANLOG; ii++)
 	{
-		if (glSysCtrl.sAcqKeyList[ii] != INV_ACQ_KEY)
-		{
-			return FALSE;
-		}
+		return FALSE;
 	}
 	return TRUE;
 }
@@ -314,7 +313,7 @@ uchar ChkIfNeedTip(void)
 
 uchar ChkIfAcqAvail(uchar ucIndex)
 {
-	return (glSysCtrl.sAcqStatus[ucIndex]!=S_RESET);
+	return FALSE;
 }
 
 uchar ChkIfDccBOC(void)	// BOC DCC acquirer
@@ -364,7 +363,7 @@ uchar ChkIfSaveLog(void)
 
 uchar ChkIfThermalPrinter(void)
 {
-	return (glSysParam.stEdcInfo.ucPrinterType==1);
+	return TRUE;
 }
 
 uchar ChkIfNeedSecurityCode(void)

@@ -8,7 +8,7 @@ unsigned int gl_AR_FONT_ID = AR_OPENFILE_ERROR;
 #endif
 
 PosParams		glPosParams;
-SYS_PARAM		glSysParam, glSysParamBak;		// sys config parameters
+//SYS_PARAM		glSysParam, glSysParamBak;		// sys config parameters
 SYS_CONTROL		glSysCtrl;						// sys control parameters
 SYS_PROC_INFO	glProcInfo;						// transaction processing information
 

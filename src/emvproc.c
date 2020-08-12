@@ -1798,7 +1798,7 @@ int ViewTVR_TSI(void)
 	GUI_TEXT_ATTR stLeftAttr_Small = gl_stLeftAttr;
 
 	SetCurrTitle(_T("View TVR TSI")); // Added by Kim_LinHB 2014/9/16 v1.01.0009 bug493
-	if (PasswordBank() != 0)
+	if (/*PasswordBank() != 0*/TRUE)
 	{
 		return ERR_NO_DISP;
 	}

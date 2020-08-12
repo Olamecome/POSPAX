@@ -31,7 +31,7 @@ int PreDial(void)
 {
 	int		iRet;
 
-	if( !glSysParam.stEdcInfo.bPreDial )
+	if( !glCommCfg.bPreDial )
 	{
 		return 0;
 	}
@@ -67,8 +67,8 @@ int ConnectHost(void)
 				(glCommCfg.ucCommType!=glCommCfg.ucCommTypeBak))		// switch to next connection
 			{
 				// switch to the backup communication type if the premier comm type is not existed
-				glCommCfg.ucCommType = glSysParam.stTxnCommCfg.ucCommTypeBak;
-				CommSwitchType(glSysParam.stTxnCommCfg.ucCommTypeBak);
+				glCommCfg.ucCommType = glCommCfg.ucCommTypeBak;
+				CommSwitchType(glCommCfg.ucCommTypeBak);
 				continue;
 			}
 
@@ -184,7 +184,7 @@ int ReferralDial(const uchar *pszPhoneNo)
 		return ERR_NO_DISP;
 	}
 
-	sprintf((char*)szTelNo, "%s%s.", glSysParam.stEdcInfo.szPabx, pszPhoneNo);
+	sprintf((char*)szTelNo, "%s%s.", glCommCfg.szPabx, pszPhoneNo);
 	
 	Gui_ClearScr();
 	while( 1 )
@@ -263,7 +263,7 @@ int dialHost() {
 			CommOnHook(haltMode);
 			DispDial();
 			if (0 != (iRet = CommDial(DM_DIAL))) {
-				DispCommErrMsg(iRet);
+				//DispCommErrMsg(iRet);
 				logTrace("CommDial failed");
 				CommOnHook(haltMode);
 				return iRet;

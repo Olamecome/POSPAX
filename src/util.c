@@ -9,7 +9,6 @@
 
 /********************** Internal functions declaration *********************/
 static uchar ChkAcqRestrictForCard(const uchar *pszPan);
-static int  MatchCardTableForInstalment(uchar acq_index);
 static void GetHolderNameFromTrack1(uchar *pszHolderName);
 static void ConvertHolderName(const uchar *pszOrgName, uchar *pszNormalName);
 static int  GetEmvTrackData(void);
@@ -468,7 +467,8 @@ void DispAccepted(void)
 {
 	Gui_ClearScr();
 	PubBeepOk();
-	Gui_ShowMsgBox(GetCurrTitle(), gl_stTitleAttr, _T("TXN ACCEPTED"), gl_stCenterAttr, GUI_BUTTON_OK, glSysParam.stEdcInfo.ucAcceptTimeout, NULL);
+	
+	Gui_ShowMsgBox(GetCurrTitle(), gl_stTitleAttr, _T("TXN ACCEPTED"), gl_stCenterAttr, GUI_BUTTON_OK, DEFAULT_TIME_OUT, NULL);
 }
 
 void DispErrMsg(const char *pFirstMsg, const char *pSecondMsg, short sTimeOutSec, ushort usOption)
@@ -787,12 +787,7 @@ void GetEngTime(uchar *pszCurTime)
 
 	GetTime(sCurTime);
 	ucMonth = (sCurTime[1] >> 4) * 10 + (sCurTime[1] & 0x0F) - 1;
-	if (strcmp(LANGCONFIG, "Arabic") == 0) //added by Kim_LinHB 2014-6-7
-		sprintf((char *)pszCurTime, "%02X%02X,%s%02X %02X:%02X", (sCurTime[0]>0x80 ? 0x19 : 0x20), sCurTime[0],
-			Month[ucMonth], sCurTime[2],
-			sCurTime[3], sCurTime[4]);
-	else
-		sprintf((char *)pszCurTime, "%s%02X,%02X%02X %02X:%02X", Month[ucMonth],
+	sprintf((char *)pszCurTime, "%s%02X,%02X%02X %02X:%02X", Month[ucMonth],
 			sCurTime[2], (sCurTime[0]>0x80 ? 0x19 : 0x20),
 			sCurTime[0], sCurTime[3], sCurTime[4]);
 	//	sprintf((char *)pszCurTime, "%.3s %02X,%02X  %02X:%02X", Month[ucMonth],
@@ -817,16 +812,6 @@ void Conv2EngTime(const uchar *pszDateTime, uchar *pszEngTime)
 int ValidCard(void)
 {
 	int		iRet;
-
-	/*iRet = MatchCardTable(glProcInfo.stTranLog.szPan);
-	if( iRet!=0 )
-	{
-	Gui_ClearScr();
-	PubBeepErr();
-	Gui_ShowMsgBox(GetCurrTitle(), gl_stTitleAttr, _T("UNSUPPORTED\nCARD"), gl_stCenterAttr, GUI_BUTTON_CANCEL, 3, NULL);
-	return ERR_NO_DISP;
-	}*/
-
 
 	iRet = ValidPanNo(glProcInfo.stTranLog.szPan);
 	if (iRet != 0)
@@ -958,53 +943,7 @@ void ConvertHolderName(const uchar *pszOrgName, uchar *pszNormalName)
 	sprintf(pszTemp, "%.*s", (int)(pszMidName - (char *)pszOrgName), pszOrgName);
 }
 
-// check whether really match to specific acquirer, due to customized conditions
-uchar ChkAcqRestrictForCard(const uchar *pszPan)
-{
-	//if (ChkIfxxx())
 
-	//...
-
-	return TRUE;
-}
-
-// 根据卡号匹配卡表,并最终确定收单行(glCurAca)和发卡行(glCurIssuer)
-// determine glCurAcq and glCurIssuer, due to ACQ-ISS-CARD matching table.
-int MatchCardTable(const uchar *pszPAN)
-{
-	int			iRet;
-	uchar		ucCnt, ucPanLen, ucAcqNum, ucLastAcqIdx;
-	uchar		sPanHeader[5], sCardIndex[MAX_ACQ], sAcqMatchFlag[MAX_ACQ];
-	CARD_TABLE	*pstCardTbl;
-
-	memset(sCardIndex, 0, sizeof(sCardIndex));
-	memset(sAcqMatchFlag, 0, sizeof(sAcqMatchFlag));
-
-	// 建立收单行列表
-	// create a list of matched acquirer.
-	ucPanLen = strlen((char *)pszPAN);
-	PubAsc2Bcd(pszPAN, 10, sPanHeader);
-
-	return 0;
-}
-
-int MatchCardTableForInstalment(uchar ucIndex)
-{
-	uchar		ucCnt, ucPanLen;
-	uchar		sPanHeader[5], sCardIndex[MAX_ACQ], sAcqMatchFlag[MAX_ACQ];
-	CARD_TABLE	*pstCardTbl;
-
-	memset(sCardIndex, 0, sizeof(sCardIndex));
-	memset(sAcqMatchFlag, 0, sizeof(sAcqMatchFlag));
-
-	// 建立收单行列表
-	// create a list of matched acquirer.
-	ucPanLen = strlen((char *)glProcInfo.stTranLog.szPan);
-	PubAsc2Bcd(glProcInfo.stTranLog.szPan, 10, sPanHeader);
-
-
-	return 0; // ERR_UNSUPPORT_CARD;
-}
 
 
 /************************************************************************
@@ -1333,10 +1272,8 @@ int ConfirmPanInfo(void)
 	uchar bSSL = 0;
 	uchar szSSL[120];
 
-	if (0 == GetEnv("E_SSL", szSSL))
-	{
-		bSSL = atoi(szSSL);
-	}
+	bSSL = glCommCfg.ucPortMode;
+	logTrace("Is ssl: %d", bSSL);
 
 #ifdef _Sxx_  //fixed by Kim bug 813 815
 	stLeftAttr.eFontSize = GUI_FONT_SMALL;
@@ -1349,10 +1286,10 @@ int ConfirmPanInfo(void)
 	memset(stBuff, 0, sizeof(stBuff));
 
 	iIndex = MatchCardBin(glProcInfo.stTranLog.szPan);
-	if (iIndex >= 0)
+	/*if (iIndex >= 0)
 	{
 		sprintf(stBuff[ucLines].szLine, "%.16s", glSysParam.stIssuerNameList[iIndex].szEnglishName);
-	}
+	}*/
 
 	stBuff[ucLines++].stLineAttr = stLeftAttr;
 
@@ -1417,20 +1354,6 @@ int ConfirmPanInfo(void)
 // RFU for HK
 int MatchCardBin(const uchar *pszPAN)
 {
-	uchar	szStartNo[20 + 1], szEndNo[20 + 1];
-	ushort	i;
-
-	for (i = 0; i<glSysParam.uiCardBinNum; i++)
-	{
-		PubBcd2Asc(glSysParam.stCardBinTable[i].sStartNo, 10, szStartNo);
-		PubBcd2Asc(glSysParam.stCardBinTable[i].sEndNo, 10, szEndNo);
-		if (memcmp(pszPAN, szStartNo, glSysParam.stCardBinTable[i].ucMatchLen) >= 0 &&
-			memcmp(pszPAN, szEndNo, glSysParam.stCardBinTable[i].ucMatchLen) <= 0)
-		{
-			return (int)glSysParam.stCardBinTable[i].ucIssuerIndex;
-		}
-	}
-
 	return -1;
 }
 
@@ -1776,10 +1699,8 @@ int GetAmount(void)
 	uchar bSSL = 0;
 	uchar szSSL[120];
 
-	if (0 == GetEnv("E_SSL", szSSL))
-	{
-		bSSL = atoi(szSSL);
-	}
+	bSSL = glCommCfg.ucPortMode;
+	logTrace("Is ssl: %d", bSSL);
 
 	if (glProcInfo.stTranLog.szAmount[0] != 0)
 	{
@@ -1879,11 +1800,11 @@ void App_ConvAmountLocal(const uchar *pszIn, uchar *pszOut, uchar ucMisc)
 
 	memset(szBuff, 0, sizeof(szBuff));
 	strcpy((char *)szBuff, (char *)glPosParams.currency.szName);
-	if ((glSysParam.stEdcInfo.ucCurrencySymbol != ' ')
-		&& (glSysParam.stEdcInfo.ucCurrencySymbol != 0))
-	{
-		szBuff[strlen(szBuff)] = glSysParam.stEdcInfo.ucCurrencySymbol;
-	}
+	//if ((glSysParam.stEdcInfo.ucCurrencySymbol != ' ')
+	//	&& (glSysParam.stEdcInfo.ucCurrencySymbol != 0))
+	//{
+	//	szBuff[strlen(szBuff)] = glSysParam.stEdcInfo.ucCurrencySymbol;
+	//}
 
 	PubConvAmount(szBuff, pszIn,
 		glPosParams.currency.ucDecimal,
@@ -1986,7 +1907,7 @@ int InputAmount(uchar ucAmtType)
 
 	// 	sprintf((char *)szCurrName, "%.3s%1.1s", glSysParam.stEdcInfo.szCurrencyName, &glSysParam.stEdcInfo.ucCurrencySymbol);
 	stInputAttr.nMinLen = (ucAmtType == CASHBACKAMOUNT) ? 0 : 1;
-	stInputAttr.nMaxLen = MIN(glSysParam.stEdcInfo.ucTranAmtLen, 10);
+	stInputAttr.nMaxLen = 10;
 
 	Gui_RegCallback(GUI_CALLBACK_UPDATE_TEXT, DisplayInputAmount);
 
@@ -2217,15 +2138,6 @@ int VerifyManualPan(void)
 
 	glProcInfo.stTranLog.uiEntryMode = MODE_MANUAL_INPUT;
 
-	iRet = MatchCardTable(glProcInfo.stTranLog.szPan);
-	if (iRet != 0)
-	{
-		Gui_ClearScr();
-		PubBeepErr();
-		Gui_ShowMsgBox(GetCurrTitle(), gl_stTitleAttr, _T("UNSUPPORT CARD"), gl_stCenterAttr, GUI_BUTTON_CANCEL, 3, NULL);
-		return ERR_NO_DISP;
-	}
-
 	if (!ChkIssuerOption(ISSUER_EN_MANUAL))
 	{
 		Gui_ClearScr();
@@ -2245,13 +2157,6 @@ int VerifyManualPan(void)
 		return iRet;
 	}
 
-	if (!ChkEdcOption(EDC_NOT_MANUAL_PWD))
-	{
-		if (PasswordMerchant() != 0)
-		{
-			return ERR_USERCANCEL;
-		}
-	}
 
 	iRet = ConfirmPanInfo();
 	if (iRet != 0)
@@ -2306,108 +2211,6 @@ int GetExpiry(void)
 		{
 			break;
 		}
-	}
-
-	return 0;
-}
-
-// 输入商品描述信息
-int GetDescriptor(void)
-{
-	uchar	ucCnt, ucTotal = 0, bInputDesc = FALSE;
-	GUI_INPUTBOX_ATTR stInputAttr;
-	unsigned char szBuff[10];
-	unsigned char szDesc[200];
-
-	if (!ChkIssuerOption(ISSUER_EN_DISCRIPTOR))
-	{
-		return 0;
-	}
-
-	if (glSysParam.ucDescNum == 0)
-	{
-		return 0;
-	}
-	if (glSysParam.ucDescNum == 1)
-	{
-		glProcInfo.stTranLog.szDescriptor[0] = '0';
-		glProcInfo.stTranLog.ucDescTotal = 1;
-		return 0;
-	}
-
-	memset(&stInputAttr, 0, sizeof(stInputAttr));
-	stInputAttr.eType = GUI_INPUT_NUM;
-	stInputAttr.bEchoMode = 1;
-	stInputAttr.nMinLen = 1;
-	stInputAttr.nMaxLen = MAX_GET_DESC;
-
-	memset(szBuff, 0, sizeof(szBuff));
-	memset(szDesc, 0, sizeof(szDesc));
-	Gui_ClearScr();
-	if (GUI_OK != Gui_ShowInputBox(GetCurrTitle(), gl_stTitleAttr, _T("PRODUCT CODE?"), gl_stLeftAttr,
-		szBuff, gl_stRightAttr, &stInputAttr, USER_OPER_TIMEOUT))
-	{
-		return ERR_USERCANCEL;
-	}
-
-	for (ucCnt = 0; ucCnt < strlen(szBuff); ++ucCnt)
-	{
-		if (strchr((char *)glProcInfo.stTranLog.szDescriptor, szBuff[ucCnt]) == NULL &&
-			szBuff[ucCnt]<glSysParam.ucDescNum + '0')
-		{
-			glProcInfo.stTranLog.szDescriptor[ucTotal] = szBuff[ucCnt];
-			ucTotal++;
-			bInputDesc = TRUE;
-		}
-	}
-
-	glProcInfo.stTranLog.ucDescTotal = ucTotal;
-	if (bInputDesc)
-	{
-		GUI_TEXT_ATTR stDescAttr = gl_stCenterAttr;
-		uchar ucDesc;
-		for (ucCnt = 0; ucCnt<ucTotal; ucCnt++)
-		{
-			ucDesc = glProcInfo.stTranLog.szDescriptor[ucCnt] - '0';
-			sprintf(szDesc + strlen(szDesc), "%.21s\n", glSysParam.stDescList[ucDesc].szText);
-		}
-		if (strlen(szDesc) > ucTotal)
-			szDesc[strlen(szDesc) - 1] = 0; // remove the last '\n'
-		else
-			szDesc[0] = '\n';
-
-#ifdef _Dxxx_
-		stDescAttr.eFontSize = GUI_FONT_NORMAL;
-#else
-		stDescAttr.eFontSize = GUI_FONT_SMALL;
-#endif
-		Gui_ClearScr();
-		Gui_ShowMsgBox(GetCurrTitle(), gl_stTitleAttr, szDesc, stDescAttr, GUI_BUTTON_OK, USER_OPER_TIMEOUT, NULL);
-	}
-	return 0;
-}
-
-// 输入附加信息
-// enter additional message.
-int GetAddlPrompt(void)
-{
-	GUI_INPUTBOX_ATTR stInputAttr;
-
-	if (!ChkAcqOption(ACQ_ADDTIONAL_PROMPT) && !ChkAcqOption(ACQ_AIR_TICKET))
-	{
-		return 0;
-	}
-
-	memset(&stInputAttr, 0, sizeof(stInputAttr));
-	stInputAttr.eType = GUI_INPUT_MIX;
-	stInputAttr.nMinLen = 0;
-	stInputAttr.nMaxLen = 16;
-
-	Gui_ClearScr();
-	if (GUI_OK != Gui_ShowInputBox(GetCurrTitle(), gl_stTitleAttr, glSysParam.stEdcInfo.szAddlPrompt, gl_stLeftAttr,
-		glProcInfo.stTranLog.szAddlPrompt, gl_stRightAttr, &stInputAttr, USER_OPER_TIMEOUT))
-	{
-		return ERR_USERCANCEL;
 	}
 
 	return 0;
@@ -3170,7 +2973,7 @@ void DispResult(int iErrCode)
 				sprintf(szBuff, "%s\n%.6s", _T("APPV CODE"), glProcInfo.stTranLog.szAuthCode);
 				Gui_ClearScr();
 				PubBeepOk();
-				Gui_ShowMsgBox(GetCurrTitle(), gl_stTitleAttr, szBuff, gl_stCenterAttr, GUI_BUTTON_OK, glSysParam.stEdcInfo.ucAcceptTimeout, NULL);
+				Gui_ShowMsgBox(GetCurrTitle(), gl_stTitleAttr, szBuff, gl_stCenterAttr, GUI_BUTTON_OK, DEFAULT_TIME_OUT, NULL);
 			}
 		}
 		break;
@@ -3307,44 +3110,6 @@ void SyncEmvCurrency(const uchar *psCountryCode, const uchar *psCurrencyCode, uc
 }
 #endif
 
-// Read monitor config info, by API: GetTermInfo()
-// return: 0--No need save; 1--Need save
-// 读取monitor保存的系统配置信息
-// 返回：0－－不需要保存更新；1－－需要保存
-int UpdateTermInfo(void)
-{
-	int		iRet;
-	uchar	ucNeedUpdate, sBuff[sizeof(glSysParam.sTermInfo)];
-
-	ucNeedUpdate = 0;
-
-	while (1)
-	{
-		memset(sBuff, 0, sizeof(sBuff));
-		iRet = GetTermInfo(sBuff);
-		if (iRet<0)
-		{
-#ifdef _WIN32
-			Gui_ClearScr();
-			Gui_ShowMsgBox(NULL, gl_stTitleAttr, _T("CONNECT SIMULTR."), gl_stCenterAttr, GUI_BUTTON_NONE, 1000, NULL);
-			continue;
-#else
-			SysHaltInfo(_T("FAIL GET SYSINFO"));
-#endif
-		}
-
-		break;
-	}
-
-	if (memcmp(sBuff, glSysParam.sTermInfo, sizeof(glSysParam.sTermInfo)) != 0)
-	{
-		memcpy(glSysParam.sTermInfo, sBuff, sizeof(glSysParam.sTermInfo));
-		ucNeedUpdate = 1;
-	}
-
-	return ucNeedUpdate;
-}
-
 static void ShowMsgFontMissing(uchar bIsPrnFont, ST_FONT *psingle_code_font, ST_FONT *pmulti_code_font, int iErrCode)
 {
 	uchar	szBuff[64 + 30];
@@ -3404,7 +3169,7 @@ int CheckSysFont(void)
 	{
 		if (stPrnFonts[ii + 1].CharSet == -1)// 换成系统当前已选择的语言的编码
 		{
-			stPrnFonts[ii + 1].CharSet = glSysParam.stEdcInfo.stLangCfg.ucCharSet;
+			stPrnFonts[ii + 1].CharSet = glPosParams.stLangCfg.ucCharSet;
 		}
 
 		iRet2 = PrnSelectFont(&stPrnFonts[ii], &stPrnFonts[ii + 1]);
@@ -3421,7 +3186,7 @@ int CheckSysFont(void)
 		{
 			if (stDispFonts[ii + 1].CharSet == -1)// 换成系统当前已选择的语言的编码
 			{
-				stDispFonts[ii + 1].CharSet = glSysParam.stEdcInfo.stLangCfg.ucCharSet;
+				stDispFonts[ii + 1].CharSet = glPosParams.stLangCfg.ucCharSet;
 			}
 
 			iRet1 = ScrSelectFont(&stDispFonts[ii], &stDispFonts[ii + 1]);
@@ -3639,7 +3404,9 @@ char HasE_Signature()
 }
 void DoE_Signature()
 {
-	if ((glSysParam.sTermInfo[19] & 0x01) == 1)
+	char sTermInfo[30 + 1] = "\0";
+	GetTermInfo(sTermInfo);
+	if ((sTermInfo[19] & 0x01) == 1)
 	{ // touch screen, focus to get the E signature
 		int iRet;
 		sprintf(glProcInfo.stTranLog.szSignPath, "%s-%d", GetCurSignPrefix(ACQ_ALL), glProcInfo.stTranLog.ulInvoiceNo);

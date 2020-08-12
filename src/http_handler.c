@@ -134,8 +134,7 @@ int sendHttpRequest(uchar httpMethod, const char* hostURL, const char* postData,
 		return -1;
 	} else {
 		logd(("HTTP Send status = %d", sl));
-
-		if (sl > 400) {
+		if (sl >= 400) {
 			showErrorDialog("404 - Not found", 30);
 			HttpClose(sockfd);
 			//WlPppLogout();

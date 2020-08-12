@@ -23,157 +23,17 @@ static int  GetHostDNS(const uchar *pszPrompts, uchar bAllowNull, uchar *pszName
 int  GetIPAddress(const uchar *pszPrompts, uchar bAllowNull, uchar *pszIPAddress);
 static uchar IsValidIPAddress(const char *pszIPAddr);
 int  GetIPPort(const uchar *pszPrompts, uchar bAllowNull, uchar *pszPortNo);
-static int SetTel(uchar *pszTelNo, const uchar *pszPromptInfo);
-static void SetEdcParam(uchar ucPermission);
-static int SetTermCountry(uchar ucPermission);
-static int  SetTermCurrency(uchar ucPermission);
-static int SetTermDecimalPosition(uchar ucPermission);
-static int SetTermIgnoreDigit(uchar ucPermission);
-static int  SetMerchantName(uchar ucPermission);
-static int SetMerchantAddr(uchar ucPermission);
-static int  SetGetSysTraceNo(uchar ucPermission);
-static int  SetGetSysInvoiceNo(uchar ucPermission);
-static int  SetPEDMode(void);
-static int  SetAcceptTimeOut(void);
-static int  SetPrinterType(void);
-static int  SetNumOfReceipt(void);
-static int  SetCallInTime(void);
 static uchar IsValidTime(const uchar *pszTime);
-static int  ModifyOptList(uchar *psOption, uchar ucMode, uchar ucPermission);
-static int ChangePassword(void);
 static int SetSysTime(void);
 static int SetEdcLang(void);
-static int SetPowerSave(void);
-static int TestMagicCard1(void);
-static int TestMagicCard2(void);
-static int TestMagicCard3(void);
-static void TestMagicCard(int iTrackNum);
-static int ToolsViewPreTransMsg(void);
-static int ShowExchangePack(void);
-static int PrnExchangePack(void);
-static void DebugNacTxd(uchar ucPortNo, const uchar *psTxdData, ushort uiDataLen);
 
-/********************** Internal variables declaration *********************/
 
-static const GUI_MENUITEM sgFuncMenuItem[] =
-{
-	{ _T_NOOP("INIT"),	0,FALSE,  NULL},
-	{ _T_NOOP("VIEW RECORD"),	1,TRUE,  ViewTranList},
-	{ _T_NOOP("SETUP"),	2,FALSE,  SetSystemParam},
-	{ _T_NOOP("LANGUAGE"),	3,TRUE,  SetEdcLang},
-	{ _T_NOOP("LOCK TERM"),	4,TRUE,  LockTerm},
-	{ _T_NOOP("VIEW TOTAL"),	5,TRUE,  ViewTotal},
-#ifdef ENABLE_EMV
-	{ _T_NOOP("LAST TSI TVR"),	9,FALSE,  ViewTVR_TSI},
-#endif
-	{ _T_NOOP("SET TIME"),	10,TRUE,  SetSysTime},
-	{ _T_NOOP("PRINT PARA"),	11,FALSE,  PrintParam},
-	{ _T_NOOP("TXN REVIEW"),	21,TRUE,  ViewSpecList},
-	{ _T_NOOP("APP UPDATE"),	50,FALSE,  NULL},	// hidden, not for public use until confirm.
-	{ _T_NOOP("CHECK FONTS"),	60,FALSE,  EnumSysFonts},
-	{ _T_NOOP("REPRN SETTLE"),	71,TRUE,  RePrnSettle},
-	{ _T_NOOP("REPRINT LAST"),	72,TRUE,  PrnLastTrans},
-	{ _T_NOOP("REPRINT BILL"),	73,TRUE,  RePrnSpecTrans},
-	{ _T_NOOP("PRINT TOTAL"),	74,TRUE,  PrnTotal},
-	{ _T_NOOP("PRINT LOG"),	75,TRUE,  PrnAllList},
-	{ _T_NOOP("POWER SAVE"),	81,TRUE,  SetPowerSave},
-//	{ _T_NOOP("TEST TRACK1"),	87,FALSE,  TestMagicCard1},
-//	{ _T_NOOP("TEST TRACK2"),	88,FALSE,  TestMagicCard2},
-//	{ _T_NOOP("TEST TRACK3"),	89,FALSE,  TestMagicCard3},
-	{ _T_NOOP("MODIFY PWD"),	90,TRUE,  ChangePassword},
-	{ _T_NOOP("DISP VER"),	91,TRUE,  NULL},
-	{ _T_NOOP("SHOW PACKAGE"),	95,FALSE,  ToolsViewPreTransMsg},
-#ifdef ENABLE_EMV
-	{ _T_NOOP("PRINT ERR LOG"),	96,FALSE,  PrintEmvErrLog},
-#endif
-	{ _T_NOOP("CLEAR"),	99,FALSE,  DoClear},
-	{ "", -1,FALSE,  NULL},
-};
-
-static const GUI_MENUITEM sgInitMenuItem[] =
-{
-	{ _T_NOOP("INIT"),	0,FALSE,  NULL},
-//	{ _T_NOOP("SETUP"),	2,FALSE,  SetSystemParam},
-	{ _T_NOOP("LANGUAGE"),	3,TRUE,  SetEdcLang},
-	{ _T_NOOP("SET TIME"),	10,TRUE,  SetSysTime},
-	{ _T_NOOP("CHECK FONTS"),	60,FALSE,  EnumSysFonts},
-	{ _T_NOOP("TEST TRACK1"),	87,FALSE,  TestMagicCard1},
-	{ _T_NOOP("TEST TRACK2"),	88,FALSE,  TestMagicCard2},
-	{ _T_NOOP("TEST TRACK3"),	89,FALSE,  TestMagicCard3},
-	{ _T_NOOP("MODIFY PWD"),	90,TRUE,  ChangePassword},
-	{ _T_NOOP("DISP VER"),	91,TRUE,  NULL},
-	{ _T_NOOP("CLEAR"),	99,FALSE,  DoClear},
-	{ "", -1,FALSE,  NULL},
-};
 
 /********************** external reference declaration *********************/
 
 
 
 /******************>>>>>>>>>>>>>Implementations<<<<<<<<<<<<*****************/
-void GetAllSupportFunc(char *pszBuff)
-{
-	int	ii;
-
-	pszBuff[0] = 0;
-	for (ii=0; ii<sizeof(sgFuncMenuItem)/sizeof(sgFuncMenuItem[0]); ii++)
-	{
-		if (sgFuncMenuItem[ii].szText[0]!=0)
-		{
-			if (strlen(pszBuff)!=0)
-			{
-				strcat(pszBuff, ",");
-			}
-			sprintf(pszBuff+strlen(pszBuff), "%lu", (unsigned long)sgFuncMenuItem[ii].nValue);
-		}
-	}
-}
-
-// 执行指定功能号的函数
-// call function with a specific id
-void FunctionExe(uchar bUseInitMenu, int iFuncNo)
-{
-	int			iCnt;
-	GUI_MENUITEM	*pstMenu;
-
-	pstMenu = (GUI_MENUITEM *)(bUseInitMenu ? sgInitMenuItem : sgFuncMenuItem);
-	for(iCnt=0; pstMenu[iCnt].szText[0]!=0; iCnt++)
-	{
-	
-		if( pstMenu[iCnt].nValue == iFuncNo)
-		{
-			if( !pstMenu[iCnt].vFunc )
-			{
-				break;
-			}
-			pstMenu[iCnt].vFunc();
-			return;
-		}
-	}
-
-	Gui_ClearScr();
-	PubBeepErr();
-	Gui_ShowMsgBox(NULL, gl_stTitleAttr, _T("FUNC NUMBER ERR"), gl_stCenterAttr, GUI_BUTTON_CANCEL, 3, NULL); // Modified by Kim_LinHB 2014-8-6 v1.01.0001 bug493
-}
-
-void FunctionMenu(void)
-{
-	logTrace(__func__);
-	GUI_MENU stMenu;
-	Gui_BindMenu(_T("FUNCTION:"), gl_stCenterAttr, gl_stLeftAttr, (GUI_MENUITEM *)sgFuncMenuItem, &stMenu);
-	Gui_ClearScr();
-	Gui_ShowMenuList(&stMenu, GUI_MENU_MANUAL_INDEX, USER_OPER_TIMEOUT, NULL);
-}
-
-void FunctionInit(void)
-{
-	int		iFuncNo;
-	iFuncNo = FunctionInput();
-	if( iFuncNo>=0 )
-	{
-		FunctionExe(TRUE, iFuncNo);
-	}
-}
 
 // 设置系统参数
 // set system parameters
@@ -223,18 +83,6 @@ void SetSystemParamSub(uchar ucPermission)
 		if( 1 == iSelected )
 		{
 			SetSysCommParam(ucPermission);
-		}
-		else if( 2 == iSelected )
-		{
-			SetEdcParam(ucPermission);
-		}
-		else if( 3 == iSelected )
-		{
-
-		}
-		else if( 4 == iSelected )
-		{
-
 		}
 	}
 	Gui_ClearScr();
@@ -312,7 +160,6 @@ int SetCommType(uchar ucMode)
 	//--------------------------------------------------
 	memset(&stSmDownMode, 0, sizeof(stSmDownMode));
 
-	glSysParam.stTxnCommCfg = glPosParams.commConfig;
 	
 	if (ucMode!=0)
 	{
@@ -321,7 +168,7 @@ int SetCommType(uchar ucMode)
 	    ++iMenuItemNum;
 	}
 	if (!(ChkHardware(HWCFG_MODEM, HW_NONE) ||
-		(ucMode!=0 && glSysParam.stTxnCommCfg.ucCommType==CT_MODEM)))
+		(ucMode!=0 && glPosParams.commConfig.ucCommType==CT_MODEM)))
 	{
 	    if(stDefCommMenu[1].bVisible)
         {
@@ -331,7 +178,7 @@ int SetCommType(uchar ucMode)
         }
 	}
 	if (!(ChkHardware(HWCFG_LAN, HW_NONE) ||									// If no LAN module
-		(ucMode!=0 && glSysParam.stTxnCommCfg.ucCommType==CT_TCPIP)))	// and now is selecting 2nd comm && 1st comm already selected LAN
+		(ucMode!=0 && glPosParams.commConfig.ucCommType==CT_TCPIP)))	// and now is selecting 2nd comm && 1st comm already selected LAN
 	{
 	    if(stDefCommMenu[2].bVisible)
         {
@@ -342,7 +189,7 @@ int SetCommType(uchar ucMode)
 	}
 	
 	if (!(ChkHardware(HWCFG_GPRS, HW_NONE) ||
-		(ucMode!=0 && glSysParam.stTxnCommCfg.ucCommType==CT_GPRS)))
+		(ucMode!=0 && glPosParams.commConfig.ucCommType==CT_GPRS)))
 	{
 	    if(stDefCommMenu[3].bVisible)
         {
@@ -352,7 +199,7 @@ int SetCommType(uchar ucMode)
         }
 	}
 	if (!(ChkHardware(HWCFG_CDMA, HW_NONE) ||
-		(ucMode!=0 && glSysParam.stTxnCommCfg.ucCommType==CT_CDMA)))
+		(ucMode!=0 && glPosParams.commConfig.ucCommType==CT_CDMA)))
 	{
 	    if(stDefCommMenu[4].bVisible)
         {
@@ -362,7 +209,7 @@ int SetCommType(uchar ucMode)
         }
 	}
 	if (!(ChkHardware(HWCFG_WIFI, HW_NONE) ||
-		(ucMode!=0 && glSysParam.stTxnCommCfg.ucCommType==CT_WIFI)))
+		(ucMode!=0 && glPosParams.commConfig.ucCommType==CT_WIFI)))
 	{
 	    if(stDefCommMenu[5].bVisible)
         {
@@ -371,7 +218,7 @@ int SetCommType(uchar ucMode)
             ++iMenuItemNum;
         }
 	}
-	if (!(ucMode!=0 && glSysParam.stTxnCommCfg.ucCommType==CT_RS232))
+	if (!(ucMode!=0 && glPosParams.commConfig.ucCommType==CT_RS232))
 	{
 	    if(stDefCommMenu[6].bVisible)
         {
@@ -381,7 +228,7 @@ int SetCommType(uchar ucMode)
         }
 	}
 	if(!(ChkHardware(HWCFG_BLTH, HW_NONE) ||
-		(ucMode!=0 && glSysParam.stTxnCommCfg.ucCommType==CT_BLTH)))
+		(ucMode!=0 && glPosParams.commConfig.ucCommType==CT_BLTH)))
 	{
 	    if(stDefCommMenu[7].bVisible)
         {
@@ -391,7 +238,7 @@ int SetCommType(uchar ucMode)
         }
 	}
 	if (!(ChkHardware(HWCFG_WCDMA, HW_NONE) ||
-		(ucMode!=0 && glSysParam.stTxnCommCfg.ucCommType==CT_WCDMA)))
+		(ucMode!=0 && glPosParams.commConfig.ucCommType==CT_WCDMA)))
 	{
 	    if(stDefCommMenu[8].bVisible)
         {
@@ -413,12 +260,12 @@ int SetCommType(uchar ucMode)
 	memset(szTitle, 0, sizeof(szTitle));
 	if (ucMode==0)
 	{
-		pucCommType = &glSysParam.stTxnCommCfg.ucCommType;
+		pucCommType = &glPosParams.commConfig.ucCommType;
 		strcpy(szTitle, "1st:");
 	}
 	else
 	{
-		pucCommType = &glSysParam.stTxnCommCfg.ucCommTypeBak;
+		pucCommType = &glPosParams.commConfig.ucCommTypeBak;
 		strcpy(szTitle, "2nd:");
 	}
 
@@ -432,8 +279,6 @@ int SetCommType(uchar ucMode)
 	{
 		return ERR_USERCANCEL;
 	}
-
-	glPosParams.commConfig = glSysParam.stTxnCommCfg;
 
 	*pucCommType = (uchar)iSelected;
 	return 0;
@@ -469,7 +314,6 @@ void SetSysCommParam(uchar ucPermission)
 
 		break;
 	}
-	SaveSysParam();
 	SavePosParams();
 }
 
@@ -493,7 +337,6 @@ int SetCommDetails(uchar mode, uchar *pucCommType)
 		iRet = SetBTParam(&glPosParams.commConfig.stBlueToothPara.stConfig);
 		if(iRet != 0)
 			break;
-		SyncBTParam(&glSysParam._TmsBlueToothPara.stConfig, &glPosParams.commConfig.stBlueToothPara.stConfig);
 		CommOnHook(TRUE);
 		DispWait();
 		iRet = CommInitModule(&glPosParams.commConfig);
@@ -512,8 +355,7 @@ int SetCommDetails(uchar mode, uchar *pucCommType)
 			DispWifiErrorMsg(iRet);
 			break;
 		}
-		//SetTcpIpSharedPara(&glSysParam.stTxnCommCfg);
-		SyncWifiParam(&glSysParam._TmsWifiPara, &glPosParams.commConfig.stWifiPara);
+		//SetTcpIpSharedPara(&glPosParams.commConfig);
 	    break;
 
 	case CT_MODEM:
@@ -521,9 +363,8 @@ int SetCommDetails(uchar mode, uchar *pucCommType)
 		break;
 
 	case CT_TCPIP:
-		//SetTcpIpSharedPara(&glSysParam.stTxnCommCfg);
+		//SetTcpIpSharedPara(&glPosParams.commConfig);
 		SetTcpIpParam(&glPosParams.commConfig.stTcpIpPara);
-		SyncTcpIpParam(&glSysParam._TmsTcpIpPara, &glPosParams.commConfig.stTcpIpPara);
 		DispWait();
 		CommInitModule(&glPosParams.commConfig);
 	    break;
@@ -531,9 +372,8 @@ int SetCommDetails(uchar mode, uchar *pucCommType)
 	case CT_GPRS:
 	case CT_CDMA: 
 	case CT_WCDMA:
-		//SetTcpIpSharedPara(&glSysParam.stTxnCommCfg);
+		//SetTcpIpSharedPara(&glPosParams.commConfig);
 		SetWirelessParam(&glPosParams.commConfig.stWirlessPara);
-		SyncWirelessParam(&glSysParam._TmsWirlessPara, &glPosParams.commConfig.stWirlessPara);
 		CommOnHook(TRUE);
 		DispWait();
 		iRet = CommInitModule(&glPosParams.commConfig);
@@ -561,7 +401,7 @@ int SetPabx(void)
 
 	Gui_ClearScr();
 	if( GUI_OK != Gui_ShowInputBox(GetCurrTitle(), gl_stTitleAttr, "MODIFY PABX", gl_stLeftAttr, 
-		glSysParam.stEdcInfo.szPabx, gl_stRightAttr, &stInputBoxAttr, USER_OPER_TIMEOUT)){
+		glPosParams.commConfig.szPabx, gl_stRightAttr, &stInputBoxAttr, USER_OPER_TIMEOUT)){
 		return ERR_USERCANCEL;
 	}
 
@@ -632,26 +472,26 @@ int SetModemParam(void)
 		return ERR_USERCANCEL;
 	}
 
-    iValue = glSysParam.stEdcInfo.bPreDial;
+    iValue = glPosParams.commConfig.bPreDial;
    //---------------------------------------------------
     Gui_ClearScr();
     Gui_ShowAlternative(GetCurrTitle(), gl_stTitleAttr, "PRE DIAL", gl_stCenterAttr,
             "ON", TRUE, "OFF", FALSE, USER_OPER_TIMEOUT, &iValue);
-    glSysParam.stEdcInfo.bPreDial = iValue;
+    glPosParams.commConfig.bPreDial = iValue;
 
     //---------------------------------------------------
-	iValue = glSysParam._TxnModemPara.DP;
+	iValue = glPosParams._comModemPara.DP;
     Gui_ClearScr();
     Gui_ShowAlternative(GetCurrTitle(), gl_stTitleAttr, "DIAL MODE", gl_stCenterAttr,
         "DTMF", 0, "PULSE", 1, USER_OPER_TIMEOUT, &iValue);
-    glSysParam._TxnModemPara.DP = iValue;
+    glPosParams._comModemPara.DP = iValue;
 
     //---------------------------------------------------
-    iValue = glSysParam._TxnModemPara.CHDT;
+    iValue = glPosParams._comModemPara.CHDT;
     Gui_ClearScr();
     Gui_ShowAlternative(GetCurrTitle(), gl_stTitleAttr, "DIAL TONE", gl_stCenterAttr,
         "DETECT", 0, "IGNORE", 1, USER_OPER_TIMEOUT, &iValue);
-    glSysParam._TxnModemPara.CHDT = iValue;
+    glPosParams._comModemPara.CHDT = iValue;
 
     //---------------------------------------------------
 	memset(&stInputAttr, 0, sizeof(GUI_INPUTBOX_ATTR));
@@ -661,7 +501,7 @@ int SetModemParam(void)
 	stInputAttr.bEchoMode = 1;
 
 	sprintf((char *)szPrompt, "DIAL WAIT:");
-	sprintf((char *)szBuff, "OLD:%u(*100ms)", (uint)glSysParam._TxnModemPara.DT1);
+	sprintf((char *)szBuff, "OLD:%u(*100ms)", (uint)glPosParams._comModemPara.DT1);
 
 	Gui_ClearScr();
 	if( GUI_OK != Gui_ShowInputBox(GetCurrTitle(), gl_stTitleAttr, szPrompt, gl_stLeftAttr,
@@ -669,7 +509,7 @@ int SetModemParam(void)
 	{
 		return ERR_USERCANCEL;
 	}
-	glSysParam._TxnModemPara.DT1 = (uchar)atoi((char *)szBuff);
+	glPosParams._comModemPara.DT1 = (uchar)atoi((char *)szBuff);
 
     //---------------------------------------------------
 	memset(&stInputAttr, 0, sizeof(GUI_INPUTBOX_ATTR));
@@ -679,7 +519,7 @@ int SetModemParam(void)
 	stInputAttr.bEchoMode = 1;
 
 	sprintf((char *)szPrompt, "PABX PAUSE:");
-	sprintf((char *)szBuff, "OLD:%u(*100ms)", (uint)glSysParam._TxnModemPara.DT2);
+	sprintf((char *)szBuff, "OLD:%u(*100ms)", (uint)glPosParams._comModemPara.DT2);
 
 	Gui_ClearScr();
 	if( GUI_OK != Gui_ShowInputBox(GetCurrTitle(), gl_stTitleAttr, szPrompt, gl_stLeftAttr,
@@ -687,7 +527,7 @@ int SetModemParam(void)
 	{
 		return ERR_USERCANCEL;
 	}
-	glSysParam._TxnModemPara.DT2 = (uchar)atoi((char *)szBuff);
+	glPosParams._comModemPara.DT2 = (uchar)atoi((char *)szBuff);
 
     //---------------------------------------------------
 	memset(&stInputAttr, 0, sizeof(GUI_INPUTBOX_ATTR));
@@ -697,7 +537,7 @@ int SetModemParam(void)
 	stInputAttr.bEchoMode = 1;
 
 	sprintf((char *)szPrompt, "ONE DTMF HOLD:");
-	sprintf((char *)szBuff, "OLD:%u(*1ms)", (uint)glSysParam._TxnModemPara.HT);
+	sprintf((char *)szBuff, "OLD:%u(*1ms)", (uint)glPosParams._comModemPara.HT);
 
 	Gui_ClearScr();
 	if( GUI_OK != Gui_ShowInputBox(GetCurrTitle(), gl_stTitleAttr, szPrompt, gl_stLeftAttr,
@@ -705,7 +545,7 @@ int SetModemParam(void)
 	{
 		return ERR_USERCANCEL;
 	}
-	glSysParam._TxnModemPara.HT = (uchar)atoi((char *)szBuff);
+	glPosParams._comModemPara.HT = (uchar)atoi((char *)szBuff);
   
 
     //---------------------------------------------------
@@ -716,7 +556,7 @@ int SetModemParam(void)
 	stInputAttr.bEchoMode = 1;
 
 	sprintf((char *)szPrompt, "DTMF CODE SPACE:");
-	sprintf((char *)szBuff, "OLD:%u(*10ms)", (uint)glSysParam._TxnModemPara.WT);
+	sprintf((char *)szBuff, "OLD:%u(*10ms)", (uint)glPosParams._comModemPara.WT);
 
 	Gui_ClearScr();
 	if( GUI_OK != Gui_ShowInputBox(GetCurrTitle(), gl_stTitleAttr, szPrompt, gl_stLeftAttr,
@@ -724,7 +564,7 @@ int SetModemParam(void)
 	{
 		return ERR_USERCANCEL;
 	}
-	glSysParam._TxnModemPara.WT = (uchar)atoi((char *)szBuff);
+	glPosParams._comModemPara.WT = (uchar)atoi((char *)szBuff);
 
     //---------------------------------------------------
 	memset(&stInputAttr, 0, sizeof(GUI_INPUTBOX_ATTR));
@@ -734,7 +574,7 @@ int SetModemParam(void)
 	stInputAttr.bEchoMode = 1;
 
 	sprintf((char *)szPrompt, "SIGNAL LEVEL:");
-	sprintf((char *)szBuff, "OLD:%u(0, 1~15)", (uint)glSysParam._TxnPSTNPara.ucSignalLevel);
+	sprintf((char *)szBuff, "OLD:%u(0, 1~15)", (uint)glPosParams._comPSTNPara.ucSignalLevel);
     while (1)
     {
 		Gui_ClearScr();
@@ -746,13 +586,13 @@ int SetModemParam(void)
         ucTemp = (uchar)atoi((char *)szBuff);
         if (ucTemp<16)
         {
-	        glSysParam._TxnPSTNPara.ucSignalLevel = ucTemp;
+	        glPosParams._comPSTNPara.ucSignalLevel = ucTemp;
             break;
         }
     }
 
     //---------------------------------------------------
-	ucCurBaud = (glSysParam._TxnModemPara.SSETUP>>5) & 0x03;
+	ucCurBaud = (glPosParams._comModemPara.SSETUP>>5) & 0x03;
 	iSelected = ucCurBaud;
 
 	Gui_BindMenu("BAUD RATE:", gl_stCenterAttr, gl_stLeftAttr, (GUI_MENUITEM *)stBaudRateMenuItem, &stBaudRateMenu);
@@ -760,14 +600,15 @@ int SetModemParam(void)
 	if(GUI_OK == Gui_ShowMenuList(&stBaudRateMenu, GUI_MENU_DIRECT_RETURN, USER_OPER_TIMEOUT, &iSelected))
 	{
 		ucCurBaud = (unsigned char)(iSelected % 0xFF);
-		glSysParam._TxnModemPara.SSETUP &= 0x9F;	// 1001 1111
-		glSysParam._TxnModemPara.SSETUP |= (ucCurBaud<<5);
+		glPosParams._comModemPara.SSETUP &= 0x9F;	// 1001 1111
+		glPosParams._comModemPara.SSETUP |= (ucCurBaud<<5);
 	}
 	else
 	{
 		return ERR_USERCANCEL;
 	}
 
+	SavePosParams();
 	return 0;
 }
 
@@ -853,15 +694,11 @@ int SetSSLFlag()
 	uchar szCliKey[20] = {'\0'};
 	uchar szTemp[20] =  {'\0'};
 	
-	int iValue = 0;
+	uchar iValue = 0;
 	
 	//Set SSL Flag
-	if(GetEnv("E_SSL", szTemp) == 0)
-	{
-		sprintf((char *)szSLL, "%s", szTemp);
-		iValue = szSLL[0] - '0';
-	};
-	
+	iValue = glPosParams.commConfig.ucPortMode;
+
 	Gui_ClearScr();
 	
 	if(GUI_OK != Gui_ShowAlternative(GetCurrTitle(), gl_stTitleAttr, "E_SSL", gl_stLeftAttr,
@@ -870,9 +707,8 @@ int SetSSLFlag()
 		return ERR_USERCANCEL;
 	}
 
-	szSLL[0] = (uchar)(iValue + '0');
-
-	PutEnv("E_SSL", szSLL);
+	glPosParams.commConfig.ucPortMode = iValue;
+	SavePosParams();
 	
 	if(atoi(szSLL) != 0)
 	{
@@ -1416,70 +1252,6 @@ void SyncBTParam(ST_BT_CONFIG *pstDst, const ST_BT_CONFIG *pstSrc)
 }
 //Add End
 
-// 设置EDC参数
-// set EDC parameters
-void SetEdcParam(uchar ucPermission)
-{
-    int iSelected;
-    GUI_MENU stMenu;
-    GUI_MENUITEM stMenuItem[] = {
-        { _T_NOOP("CURRENCY CODE"), 0,TRUE,  NULL},
-        { _T_NOOP("CURRENCY CODE"), 1,TRUE,  NULL},
-        { _T_NOOP("DECIMAL POSITION"), 2,TRUE,  NULL},
-        { _T_NOOP("IGNORE DIGIT"), 3,TRUE,  NULL},
-        { _T_NOOP("MERCHANT NAME"), 4,TRUE,  NULL},
-        { _T_NOOP("MERCHANT ADDR"), 5, TRUE,  NULL},
-        { _T_NOOP("PED MODE"), 6,TRUE,  NULL},
-        { _T_NOOP("CONFIRM TIMEOUT"), 7,TRUE,  NULL},
-        { _T_NOOP("PRINTER TYPE"), 8,TRUE,  NULL},
-		//modified by kevin liu 20160628
-//        { _T_NOOP("RECEIPT #"), 8,TRUE,  NULL},
-		{ _T_NOOP("RECEIPT #"), 9,TRUE,  NULL},
-        { _T_NOOP("TRACE NO"), 10,TRUE,  NULL},
-        { _T_NOOP("INVOICE NO"), 11,TRUE,  NULL},
-        { _T_NOOP("INFO"), 12,TRUE,  NULL},
-        { _T_NOOP("EXT INFO"), 13,TRUE,  NULL},
-        { "", -1,FALSE,  NULL},
-    };
-
-    Gui_BindMenu(GetCurrTitle(), gl_stTitleAttr, gl_stLeftAttr, (GUI_MENUITEM *)stMenuItem, &stMenu);
-
-    iSelected = 0;
-    while( 1 )
-    {
-        Gui_ClearScr();
-
-        if( GUI_OK != Gui_ShowMenuList(&stMenu, 0, USER_OPER_TIMEOUT, &iSelected))
-        {
-            return;
-        }
-
-        switch(iSelected){
-            case 0: SetTermCountry(ucPermission); break;
-            case 1: SetTermCurrency(ucPermission); break;
-            case 2: SetTermDecimalPosition(ucPermission); break;
-            case 3: SetTermIgnoreDigit(ucPermission); break;
-            case 4: SetMerchantName(ucPermission); break;
-            case 5: SetMerchantAddr(ucPermission); break;
-            case 6: SetPEDMode(); break;
-            case 7: SetAcceptTimeOut(); break;
-            case 8: SetPrinterType(); break;
-            case 9: SetNumOfReceipt(); break;
-            case 10: SetGetSysTraceNo(ucPermission); break;
-            case 11: SetGetSysInvoiceNo(ucPermission); break;
-            case 12: ModifyOptList(glSysParam.stEdcInfo.sOption, 'E', ucPermission); break;
-            case 13: ModifyOptList(glSysParam.stEdcInfo.sExtOption, 'e', ucPermission); break;
-        }
-        SaveEdcParam();
-
-#ifdef ENABLE_EMV
-        if(iSelected <= 3)
-            SyncEmvCurrency(glPosParams.currency.sCountryCode,
-                            glPosParams.currency.sCurrencyCode,
-                            glPosParams.currency.ucDecimal);
-#endif
-    }
-}
 
 // -1 : 值无改变 -2 : 超时或取消
 // >=0 : 输入的合法值
@@ -1721,156 +1493,6 @@ int SetTermIgnoreDigit(uchar ucPermission)
 	return 0;
 }
 
-int SetMerchantName(uchar ucPermission)
-{
-	uchar	szBuff[46+1];
-
-	GUI_INPUTBOX_ATTR stInputAttr;
-
-	if (ucPermission<PM_HIGH)	// Not allow to set
-	{
-	    uchar szTemp[255];
-	    sprintf(szTemp, "%s\n%s", _T("MERCHANT NAME"), glSysParam.stEdcInfo.szMerchantName);
-	    Gui_ClearScr();
-	    if (GUI_OK != Gui_ShowMsgBox(GetCurrTitle(), gl_stTitleAttr, szTemp, gl_stCenterAttr, GUI_BUTTON_CANCEL, USER_OPER_TIMEOUT, NULL))
-	    {
-	        return ERR_USERCANCEL;
-        }
-	    return 0;
-	}
-
-
-	memset(&stInputAttr, 0, sizeof(stInputAttr));
-	stInputAttr.eType = GUI_INPUT_MIX;
-	stInputAttr.bEchoMode = 1;
-	
-	//NAME
-	stInputAttr.nMinLen = 1;
-	stInputAttr.nMaxLen = 23;
-	sprintf((char *)szBuff, "%.23s", (char *)glSysParam.stEdcInfo.szMerchantName);
-	Gui_ClearScr();
-	if(GUI_OK != Gui_ShowInputBox(GetCurrTitle(), gl_stTitleAttr, _T("MERCHANT NAME"), gl_stLeftAttr, 
-		szBuff, gl_stRightAttr, &stInputAttr, USER_OPER_TIMEOUT))
-	{
-		return ERR_USERCANCEL;
-	}
-	if (strcmp((char *)glSysParam.stEdcInfo.szMerchantName, (char *)szBuff)!=0)
-	{
-		sprintf((char *)glSysParam.stEdcInfo.szMerchantName, "%.23s", (char *)szBuff);
-	}
-	return 0;
-}
-int SetMerchantAddr(uchar ucPermission)
-{
-    uchar   szBuff[46+1];
-
-    GUI_INPUTBOX_ATTR stInputAttr;
-
-    if (ucPermission<PM_HIGH)   // Not allow to set
-    {
-        uchar szTemp[255];
-        sprintf(szTemp, "%s\n%s", _T("MERCHANT ADDR"), glSysParam.stEdcInfo.szMerchantAddr);
-        Gui_ClearScr();
-        if (GUI_OK != Gui_ShowMsgBox(GetCurrTitle(), gl_stTitleAttr, szTemp, gl_stCenterAttr, GUI_BUTTON_CANCEL, USER_OPER_TIMEOUT, NULL))
-        {
-            return ERR_USERCANCEL;
-        }
-        return 0;
-    }
-
-    memset(&stInputAttr, 0, sizeof(stInputAttr));
-    stInputAttr.bEchoMode = 1;
-
-	//ADDRESS
-	stInputAttr.nMinLen = 1;
-	stInputAttr.nMaxLen = 46;
-	sprintf((char *)szBuff, "%.46s", (char *)glSysParam.stEdcInfo.szMerchantAddr);
-	Gui_ClearScr();
-	if(GUI_OK != Gui_ShowInputBox(GetCurrTitle(), gl_stTitleAttr, _T("MERCHANT ADDR"), gl_stLeftAttr, 
-		szBuff, gl_stRightAttr, &stInputAttr, USER_OPER_TIMEOUT))
-	{
-		return ERR_USERCANCEL;
-	}
-	if (strcmp((char *)glSysParam.stEdcInfo.szMerchantAddr, (char *)szBuff)!=0)
-	{
-		sprintf((char *)glSysParam.stEdcInfo.szMerchantAddr, "%.23s", (char *)szBuff);
-	}
-
-	return 0;
-}
-
-int SetGetSysTraceNo(uchar ucPermission)
-{
-	uchar	szBuff[20];
-
-	Gui_ClearScr();
-	if (ucPermission>PM_LOW)
-	{
-		GUI_INPUTBOX_ATTR stInputAttr;
-
-		memset(&stInputAttr, 0, sizeof(stInputAttr));
-		stInputAttr.eType = GUI_INPUT_NUM;
-		stInputAttr.bEchoMode = 1;
-
-		//NAME
-		stInputAttr.nMinLen = 1;
-		stInputAttr.nMaxLen = 6;
-
-		sprintf((char *)szBuff, "%06ld", glSysCtrl.ulSTAN);
-		if(GUI_OK != Gui_ShowInputBox(GetCurrTitle(), gl_stTitleAttr, "S.T.A.N.", gl_stLeftAttr, szBuff, 
-			gl_stRightAttr, &stInputAttr, USER_OPER_TIMEOUT))
-		{
-			return ERR_USERCANCEL;
-		}
-
-		glSysCtrl.ulSTAN = (ulong)atol((char *)szBuff);
-		SaveSysCtrlBase();
-	} 
-	else
-	{
-		sprintf(szBuff, "S.T.A.N.\n%06ld", glSysCtrl.ulSTAN);
-		Gui_ShowMsgBox(GetCurrTitle(), gl_stTitleAttr, szBuff, gl_stCenterAttr, GUI_BUTTON_CANCEL, USER_OPER_TIMEOUT, NULL);
-	}
-
-	return 0;
-}
-
-int SetGetSysInvoiceNo(uchar ucPermission)
-{
-	uchar	szBuff[20];
-
-	Gui_ClearScr();
-	if (ucPermission>PM_LOW)
-	{
-		GUI_INPUTBOX_ATTR stInputAttr;
-
-		memset(&stInputAttr, 0, sizeof(stInputAttr));
-		stInputAttr.eType = GUI_INPUT_NUM;
-		stInputAttr.bEchoMode = 1;
-
-		//NAME
-		stInputAttr.nMinLen = 1;
-		stInputAttr.nMaxLen = 6;
-
-		sprintf((char *)szBuff, "%06ld", glSysCtrl.ulInvoiceNo);
-		if(GUI_OK != Gui_ShowInputBox(GetCurrTitle(), gl_stTitleAttr, "TRACE NO", gl_stLeftAttr, szBuff, 
-			gl_stRightAttr, &stInputAttr, USER_OPER_TIMEOUT))
-		{
-			return ERR_USERCANCEL;
-		}
-
-		glSysCtrl.ulInvoiceNo = (ulong)atol((char *)szBuff);
-		SaveSysCtrlBase();
-	} 
-	else
-	{
-		sprintf(szBuff, "TRACE NO\n%06ld", glSysCtrl.ulInvoiceNo);
-		Gui_ShowMsgBox(GetCurrTitle(), gl_stTitleAttr, szBuff, gl_stCenterAttr, GUI_BUTTON_CANCEL, USER_OPER_TIMEOUT, NULL);
-	}
-
-	return 0;
-}
-
 // Select PED mode used.
 int SetPEDMode(void)
 {
@@ -1884,7 +1506,7 @@ int SetPEDMode(void)
 		{ "", -1, FALSE,  NULL},
 	};
 
-	iSel = glSysParam.stEdcInfo.ucPedMode;
+	iSel = glPosParams.ucPedMode;
 	Gui_BindMenu(GetCurrTitle(), gl_stCenterAttr, gl_stLeftAttr, (GUI_MENUITEM *)stPINPADMenuItem, &stPINPADMenu);
 	
 	Gui_ClearScr();
@@ -1893,156 +1515,10 @@ int SetPEDMode(void)
 		return ERR_USERCANCEL;
 	}
 
-	glSysParam.stEdcInfo.ucPedMode = (uchar)iSel;
+	glPosParams.ucPedMode = (uchar)iSel;
 	return 0;
 }
 
-// 输入交易成功时确认信息显示时间
-// set the timeout for display "TXN accepted" message
-int SetAcceptTimeOut(void)
-{
-	uchar	szBuff[2+1];
-
-	GUI_TEXT_ATTR stPrompt, stContent;
-	GUI_INPUTBOX_ATTR stInputAttr;
-
-	stPrompt = stContent = gl_stCenterAttr;
-	stPrompt.eAlign = GUI_ALIGN_LEFT;
-#ifdef _Sxx_
-	stPrompt.eFontSize = GUI_FONT_SMALL;
-#endif
-	stContent.eAlign = GUI_ALIGN_RIGHT;
-
-	memset(&stInputAttr, 0, sizeof(stInputAttr));
-	stInputAttr.eType = GUI_INPUT_NUM;
-	stInputAttr.bEchoMode = 1;
-	stInputAttr.nMinLen = 1;
-	stInputAttr.nMaxLen = 2;
-	
-	while( 1 )
-	{
-		sprintf((char *)szBuff, "%d", glSysParam.stEdcInfo.ucAcceptTimeout);
-	   
-		Gui_ClearScr();
-		if(GUI_OK != Gui_ShowInputBox(GetCurrTitle(), gl_stTitleAttr, "Confirm Timeout", stPrompt, 
-			szBuff, stContent, &stInputAttr, USER_OPER_TIMEOUT))
-		{
-			return ERR_USERCANCEL;
-		}
-		if( atoi((char *)szBuff)<=60 )
-		{
-			break;
-		}
-
-		Gui_ClearScr();
-		PubBeepErr();
-		Gui_ShowMsgBox(GetCurrTitle(), gl_stTitleAttr, _T("INVALID INPUT"), gl_stCenterAttr, GUI_BUTTON_CANCEL, 3, NULL);
-	}
-	glSysParam.stEdcInfo.ucAcceptTimeout = (uchar)atoi((char *)szBuff);
-
-	return 0;
-}
-
-int SetPrinterType(void)
-{
-	int 	iSel = glSysParam.stEdcInfo.ucPrinterType;
-
-	// 仅适用于分离式打印机
-	if (!ChkTerm(_TERMINAL_S60_))
-	{
-        uchar szTemp[255];
-        sprintf(szTemp, "%s\n%s", _T("PRINTER TYPE"),
-                glSysParam.stEdcInfo.ucPrinterType == 1
-                ? _T("THERMAL")
-                : _T("SPROCKET"));
-        Gui_ClearScr();
-        if (GUI_OK != Gui_ShowMsgBox(GetCurrTitle(), gl_stTitleAttr, szTemp, gl_stCenterAttr, GUI_BUTTON_CANCEL, USER_OPER_TIMEOUT, NULL))
-        {
-            return ERR_USERCANCEL;
-        }
-		return 0;
-	}
-
-	Gui_ClearScr();
-	if(GUI_OK != Gui_ShowAlternative(GetCurrTitle(), gl_stTitleAttr, "PRINTER TYPE", gl_stCenterAttr, 
-		"THERMAL", 1, "SPROCKET", 0, USER_OPER_TIMEOUT, &iSel))
-	{
-		return ERR_USERCANCEL;
-	}
-
-	glSysParam.stEdcInfo.ucPrinterType = iSel;
-	return 0;
-}
-
-// 输入热敏打印单据张数
-// set receipt numbers, just for thermal terminal
-int SetNumOfReceipt(void)
-{
-	uchar 	ucNum, szBuff[1+1];
-	int iCnt = 0;
-	GUI_TEXT_ATTR stPrompt, stContent;
-	GUI_INPUTBOX_ATTR stInputAttr;
-
-	if( !ChkIfThermalPrinter() )
-	{
-		return 0;
-	}
-
-	stPrompt = stContent = gl_stCenterAttr;
-	stPrompt.eAlign = GUI_ALIGN_LEFT;
-#ifdef _Sxx_
-	stPrompt.eFontSize = GUI_FONT_SMALL;
-#endif
-	stContent.eAlign = GUI_ALIGN_RIGHT;
-
-	memset(&stInputAttr, 0, sizeof(stInputAttr));
-	stInputAttr.eType = GUI_INPUT_NUM;
-	stInputAttr.bEchoMode = 1;
-	stInputAttr.nMinLen = 1;
-	stInputAttr.nMaxLen = 1;
-
-	iCnt = NumOfReceipt();
-	while( 1 )
-	{
-		sprintf((char *)szBuff, "%d", iCnt);
-		Gui_ClearScr();
-		if(GUI_OK != Gui_ShowInputBox(GetCurrTitle(), gl_stTitleAttr, "Receipt pages", stPrompt, 
-			szBuff, stContent, &stInputAttr, USER_OPER_TIMEOUT))
-		{
-			return ERR_USERCANCEL;
-		}
-
-		ucNum = (uchar)atoi((char *)szBuff);
-		if( ucNum>=1 && ucNum<=4 )
-		{
-			ucNum--;
-			break;
-		}
-		Gui_ClearScr();
-		PubBeepErr();
-		Gui_ShowMsgBox(GetCurrTitle(), gl_stTitleAttr, _T("INVALID INPUT"), gl_stCenterAttr, GUI_BUTTON_CANCEL, 3, NULL);
-	}
-
-	glSysParam.stEdcInfo.sOption[EDC_NUM_PRINT_LOW/0x100]  &= (0xFF^(EDC_NUM_PRINT_LOW%0x100));
-	glSysParam.stEdcInfo.sOption[EDC_NUM_PRINT_HIGH/0x100] &= (0xFF^(EDC_NUM_PRINT_HIGH%0x100));
-	if( ucNum & 0x01 )
-	{
-		glSysParam.stEdcInfo.sOption[EDC_NUM_PRINT_LOW/0x100] |= (EDC_NUM_PRINT_LOW%0x100);
-	}
-	if( ucNum & 0x02 )
-	{
-		glSysParam.stEdcInfo.sOption[EDC_NUM_PRINT_HIGH/0x100] |= (EDC_NUM_PRINT_HIGH%0x100);
-	}
-
-	return 0;
-}
-
-// 输入参数自动更新时间
-// set timer for update parameters automatically
-int SetCallInTime(void)
-{
-	return 0;
-}
 
 // TRUE:判断时间是否合法
 // TRUE:it is a valid time
@@ -2070,271 +1546,6 @@ uchar IsValidTime(const uchar *pszTime)
 	}
 
 	return TRUE;
-}
-
-// 修改或者查看开关选项
-// modify or view options
-// Modified by Kim_LinHB 2014-08-18 v1.01.0004
-int ModifyOptList(uchar *psOption, uchar ucMode, uchar ucPermission)
-{
-	// 通过FUN2进入设置时，若定义了FUN2_READ_ONLY，则用户权限为PM_LOW，否则用户权限为PM_MEDIUM
-	// 使用无下载方式初始化时，用户权限为PM_HIGH
-	// when setting in Function #2, if activate the macro FUN2_READ_ONLY, then user permission is PM_LOW, otherwise it is PM_MEDIUM
-	// if initiated with "load default", then user permission is PM_HIGH
-
-	// Protims可控的issuer option列表
-	// available issuer options list in Protims
-	static OPTION_INFO stIssuerOptList[] =
-	{
-// 		{"CAPTURE CASH",		ALLOW_EXTEND_PAY,			FALSE,	PM_MEDIUM},
-		{"CAPTURE TXN",			ISSUER_CAPTURE_TXN,			FALSE,	PM_MEDIUM},
-		{"ENABLE BALANCE",		ISSUER_EN_BALANCE,			FALSE,	PM_MEDIUM},
-		{"ENABLE ADJUST",		ISSUER_EN_ADJUST,			FALSE,	PM_MEDIUM},
-		{"ENABLE OFFLINE",		ISSUER_EN_OFFLINE,			FALSE,	PM_MEDIUM},
-		{"ALLOW (PRE)AUTH",		ISSUER_NO_PREAUTH,			TRUE,	PM_MEDIUM},
-		{"ALLOW REFUND",		ISSUER_NO_REFUND,			TRUE,	PM_MEDIUM},
-		{"ALLOW VOID",			ISSUER_NO_VOID,				TRUE,	PM_MEDIUM},
-		{"ENABLE EXPIRY",		ISSUER_EN_EXPIRY,			FALSE,	PM_MEDIUM},
-		{"CHECK EXPIRY",		ISSUER_CHECK_EXPIRY,		FALSE,	PM_MEDIUM},
-//		{"CHKEXP OFFLINE",		ISSUER_CHECK_EXPIRY_OFFLINE,FALSE,	PM_MEDIUM},
-		{"CHECK PAN",			ISSUER_CHKPAN_MOD10,		FALSE,	PM_MEDIUM},
-// 		{"CHECK PAN11",			ISSUER_CHKPAN_MOD11,		FALSE,	PM_MEDIUM},
-//		{"EN DISCRIPTOR",		ISSUER_EN_DISCRIPTOR,		FALSE,	PM_MEDIUM},
-		{"ENABLE MANUAL",		ISSUER_EN_MANUAL,			FALSE,	PM_MEDIUM},
-		{"ENABLE PRINT",		ISSUER_EN_PRINT,			FALSE,	PM_MEDIUM},
-		{"VOICE REFERRAL",		ISSUER_EN_VOICE_REFERRAL,	FALSE,	PM_MEDIUM},
-		{"PIN REQUIRED",		ISSUER_EN_PIN,				FALSE,	PM_HIGH},
-#ifdef ISSUER_EN_EMVPIN_BYPASS
-		{"EMV PIN BYPASS",		ISSUER_EN_EMVPIN_BYPASS,	FALSE,	PM_MEDIUM},
-#endif
-//		{"ACCOUNT SELECT",		ISSUER_EN_ACCOUNT_SELECTION,FALSE,	PM_MEDIUM},
-//		{"ROC INPUT REQ",		ISSUER_ROC_INPUT_REQ,		FALSE,	PM_MEDIUM},
-//		{"DISP AUTH CODE",		ISSUER_AUTH_CODE,			FALSE,	PM_MEDIUM},
-//		{"ADDTIONAL DATA",		ISSUER_ADDTIONAL_DATA,		FALSE,	PM_MEDIUM},
-		{"4DBC WHEN SWIPE",		ISSUER_SECURITY_SWIPE,		FALSE,	PM_MEDIUM},
-		{"4DBC WHEN MANUL",		ISSUER_SECURITY_MANUL,		FALSE,	PM_MEDIUM},
-		{NULL, 0, FALSE, PM_DISABLE},
-	};
-
-	// Protims可控的acquirer option列表
-	// available acquirer options list in Protims
-	static OPTION_INFO stAcqOptList[] =
-	{
-		{"ONLINE VOID",			ACQ_ONLINE_VOID,			FALSE,	PM_MEDIUM},
-		{"ONLINE REFUND",		ACQ_ONLINE_REFUND,			FALSE,	PM_MEDIUM},
-		{"EN. TRICK FEED",		ACQ_DISABLE_TRICK_FEED,		TRUE,	PM_MEDIUM},
-//		{"ADDTION PROMPT",		ACQ_ADDTIONAL_PROMPT,		FALSE,	PM_MEDIUM},
-		{"AMEX ACQUIRER",		ACQ_AMEX_SPECIFIC_FEATURE,	FALSE,	PM_HIGH},
-		{"DBS FEATURE",			ACQ_DBS_FEATURE,			FALSE,	PM_MEDIUM},
-		{"BOC INSTALMENT",		ACQ_BOC_INSTALMENT_FEATURE,	FALSE,	PM_MEDIUM},
-		{"CITI INSTALMENT",		ACQ_CITYBANK_INSTALMENT_FEATURE,FALSE,	PM_MEDIUM},
-#ifdef ENABLE_EMV
-		{"EMV ACQUIRER",		ACQ_EMV_FEATURE,			FALSE,	PM_HIGH},
-#endif
-		{NULL, 0, FALSE, PM_DISABLE},
-	};
-
-	// Protims不可控的acquirer option列表
-	// invalid in Protims
-	static OPTION_INFO stAcqExtOptList[] =
-	{
-		// 因为只能在且必须在POS上修改，因此权限设为PM_LOW
-		// this options list can only be modified on POS, so user permission is set as PM_LOW
-		{NULL, 0, FALSE, PM_DISABLE},
-	};
-
-	// Protims可控的edc option列表
-	// available EDC options list in Protims
-	static OPTION_INFO stEdcOptList[] =
-	{
-//		{"AUTH PAN MASKING",	EDC_AUTH_PAN_MASKING,	FALSE,	PM_LOW},
-//		{"SELECT ACQ_CARD",		EDC_SELECT_ACQ_FOR_CARD,FALSE,	PM_LOW},
-//		{"ENABLE ECR",			EDC_ECR_ENABLE,			FALSE,	PM_MEDIUM},
-		{"FREE PRINT",			EDC_FREE_PRINT,			FALSE,  PM_LOW},
-		{"EN. INSTALMENT?",		EDC_ENABLE_INSTALMENT,	FALSE,	PM_MEDIUM},
-		{"CAPTURE CASH",		EDC_CASH_PROCESS,		FALSE,	PM_MEDIUM},
-		{"REFERRAL DIAL",		EDC_REFERRAL_DIAL,		FALSE,	PM_MEDIUM},
-		{"AUTH MODE",			EDC_AUTH_PREAUTH,		FALSE,	PM_MEDIUM},
-//		{"PRINT TIME",			EDC_PRINT_TIME,			FALSE,	PM_MEDIUM},
-		{"TIP PROCESSING",		EDC_TIP_PROCESS,		FALSE,	PM_MEDIUM},
-//		{"USE PRINTER",			EDC_USE_PRINTER,		FALSE,	PM_MEDIUM},
-		{"NEED ADJUST PWD",		EDC_NOT_ADJUST_PWD,		TRUE,	PM_HIGH},
-		{"NEED SETTLE PWD",		EDC_NOT_SETTLE_PWD,		TRUE,	PM_HIGH},
-		{"NEED REFUND PWD",		EDC_NOT_REFUND_PWD,		TRUE,	PM_HIGH},
-		{"NEED VOID PWD",		EDC_NOT_VOID_PWD,		TRUE,	PM_HIGH},
-		{"NEED MANUAL PWD",		EDC_NOT_MANUAL_PWD,		TRUE,	PM_HIGH},
-//		{"LOCKED EDC",			EDC_NOT_KEYBOARD_LOCKED,TRUE,	PM_MEDIUM},
-		{NULL, 0, FALSE, PM_DISABLE},
-	};
-
-	// Protims不可控的edc option列表
-	// invalid in Protims
-	static OPTION_INFO stEdcExtOptList[] =
-	{
-		// 因为只能在且必须在POS上修改，因此权限设为PM_LOW
-		// this options list can only be modified on POS, so user permission is set as PM_LOW
-		{NULL, 0, FALSE, PM_DISABLE},
-	};
-
-	OPTION_INFO		*pstCurOpt;
-	uchar			ucCnt, ucOptIndex, ucOptBitNo;
-	int                iOption = 0;
-    int iSelected;
-    GUI_MENU stMenu;
-    GUI_MENUITEM stMenuItem[50] = {
-        { "", -1,FALSE,  NULL},
-    };
-
-	switch(ucMode)
-	{
-	case 'I':
-	case 'i':
-		pstCurOpt = (OPTION_INFO *)stIssuerOptList;
-		break;
-	case 'E':
-		pstCurOpt = (OPTION_INFO *)stEdcOptList;
-		break;
-	case 'e':
-		pstCurOpt = (OPTION_INFO *)stEdcExtOptList;
-		break;
-	case 'A':
-		pstCurOpt = (OPTION_INFO *)stAcqOptList;
-		break;
-	case 'a':
-		pstCurOpt = (OPTION_INFO *)stAcqExtOptList;
-		break;
-	default:
-		break;
-	}
-
-	if( pstCurOpt->pText==NULL )
-	{
-	    Gui_ClearScr();
-        PubBeepErr();
-        Gui_ShowMsgBox(GetCurrTitle(), gl_stTitleAttr, _T("UNSUPPORTED"), gl_stCenterAttr, GUI_BUTTON_CANCEL, 3, NULL);
-		return 0;
-	}
-
-	ucCnt = 0;
-	while( 1 )
-	{
-	    stMenuItem[ucCnt].bVisible = TRUE;
-	    stMenuItem[ucCnt].nValue = ucCnt;
-	    stMenuItem[ucCnt].vFunc = NULL;
-        sprintf((char *)stMenuItem[ucCnt].szText, "%.16s", (char *)pstCurOpt[ucCnt].pText);
-        if( pstCurOpt[ucCnt+1].pText==NULL )
-        {
-            strcpy(stMenuItem[ucCnt+1].szText, "");
-            break;
-        }
-        ucCnt++;
-	}
-
-    Gui_BindMenu(GetCurrTitle(), gl_stTitleAttr, gl_stLeftAttr, (GUI_MENUITEM *)stMenuItem, &stMenu);
-
-    while( 1 )
-    {
-        iSelected = 0;
-        Gui_ClearScr();
-
-        if( GUI_OK != Gui_ShowMenuList(&stMenu, 0, USER_OPER_TIMEOUT, &iSelected))
-        {
-            return ERR_USERCANCEL;
-        }
-
-		ucOptIndex = (uchar)(pstCurOpt[iSelected].uiOptVal>>8);
-		ucOptBitNo = (uchar)(pstCurOpt[iSelected].uiOptVal & 0xFF);
-		if (pstCurOpt[ucCnt].ucInverseLogic)
-		{
-		    iOption = (psOption[ucOptIndex] & ucOptBitNo) ? 0 : 1;
-		}
-		else
-		{
-		    iOption = (psOption[ucOptIndex] & ucOptBitNo) ? 1 : 0;
-		}
-
-		if (ucPermission>=pstCurOpt[iSelected].ucPermissionLevel)
-		{
-		    char *option1 = "ON", *option2 = "OFF";
-		    if(EDC_AUTH_PREAUTH == pstCurOpt[iSelected].uiOptVal){
-		        option1 = "AUTH";
-		        option2 = "PREAUTH";
-		    }
-			Gui_ClearScr();
-			if(GUI_OK == Gui_ShowAlternative(GetCurrTitle(), gl_stTitleAttr, pstCurOpt[iSelected].pText, gl_stCenterAttr,
-			        option1, 1, option2, 0, USER_OPER_TIMEOUT, &iOption))
-			{
-				if(1 == iOption)
-				{
-					if (pstCurOpt[ucCnt].ucInverseLogic)
-					{
-						psOption[ucOptIndex] &= ~ucOptBitNo;
-					}
-					else
-					{
-						psOption[ucOptIndex] |= ucOptBitNo;
-					}
-				}
-				else
-				{
-					if (pstCurOpt[iSelected].ucInverseLogic)
-					{
-						psOption[ucOptIndex] |= ucOptBitNo;
-					}
-					else
-					{
-						psOption[ucOptIndex] &= ~ucOptBitNo;
-					}
-				}
-				SaveEdcParam();
-			}
-		}
-		else{
-			unsigned char szBuff[100];
-			sprintf(szBuff, "%s\n%s", (char *)pstCurOpt[iSelected].pText, 1 == iOption ? "ON" : "OFF");
-			Gui_ClearScr();
-			Gui_ShowMsgBox(GetCurrTitle(), gl_stTitleAttr, szBuff, gl_stCenterAttr, GUI_BUTTON_CANCEL, USER_OPER_TIMEOUT, NULL);
-		}
-    }
-	return 0;
-}
-
-// 修改口令
-// change passwords
-int ChangePassword(void)
-{
-	GUI_MENU stChgPwdMenu;
-	GUI_MENUITEM stDefChgPwdMenuItem[] =
-	{
-		{ _T_NOOP("TERMINAL   PWD"), 1,TRUE,    ModifyPasswordTerm},
-		{ _T_NOOP("BANK       PWD"), 2,TRUE,    ModifyPasswordBank},
-		{ _T_NOOP("MERCHANT   PWD"), 3,TRUE,    ModifyPasswordMerchant},
-		{ _T_NOOP("VOID       PWD"), 4,TRUE,    ModifyPasswordVoid},
-		{ _T_NOOP("REFUND     PWD"), 5,TRUE,    ModifyPasswordRefund},
-		{ _T_NOOP("ADJUST     PWD"), 6,TRUE,    ModifyPasswordAdjust},
-		{ _T_NOOP("SETTLE     PWD"), 7,TRUE,    ModifyPasswordSettle},
-		{ "", -1,FALSE,  NULL},
-	};
-
-	GUI_MENUITEM stChgPwdMenuItem[20];
-	int iMenuItemNum = 0;
-	int i;
-	for(i = 0; i < sizeof(stDefChgPwdMenuItem)/sizeof(GUI_MENUITEM); ++i){
-	    if(stDefChgPwdMenuItem[i].bVisible)
-        {
-	        memcpy(&stChgPwdMenuItem[iMenuItemNum], &stDefChgPwdMenuItem[i], sizeof(GUI_MENUITEM));
-            sprintf(stChgPwdMenuItem[iMenuItemNum].szText, "%s", stDefChgPwdMenuItem[i].szText);
-            ++iMenuItemNum;
-        }
-	}
-
-	stChgPwdMenuItem[iMenuItemNum].szText[0] = 0;
-
-
-	Gui_BindMenu(_T("CHANGE PWD"), gl_stTitleAttr, gl_stLeftAttr, (GUI_MENUITEM *)stChgPwdMenuItem, &stChgPwdMenu);
-	Gui_ClearScr();
-	Gui_ShowMenuList(&stChgPwdMenu, GUI_MENU_DIRECT_RETURN, USER_OPER_TIMEOUT, NULL);
-	return 0;
 }
 
 // 手工设置系统时间
@@ -2399,7 +1610,7 @@ REDO_SELECT_LANG:
 				stLangMenuItem[iTotal].bVisible = TRUE;
 				stLangMenuItem[iTotal].nValue = iTotal + 1;
 				stLangMenuItem[iTotal].vFunc = NULL;
-				if(0 == strcmp(glLangList[iCnt].szDispName, glSysParam.stEdcInfo.stLangCfg.szDispName))
+				if(0 == strcmp(glLangList[iCnt].szDispName, glPosParams.stLangCfg.szDispName))
 					iSel = iTotal;
 
 				iTotal++;
@@ -2440,7 +1651,7 @@ REDO_SELECT_LANG:
 		{
 			if (strcmp((char *)glLangList[iCnt].szDispName,(char *)stLangMenuItem[iSel-1].szText)==0)
 			{
-				glSysParam.stEdcInfo.stLangCfg = glLangList[iCnt];
+				glPosParams.stLangCfg = glLangList[iCnt];
 				break;
 			}
 		}
@@ -2448,17 +1659,17 @@ REDO_SELECT_LANG:
 
 	// 设为英语
 	// set with English
-	if (strcmp(glSysParam.stEdcInfo.stLangCfg.szFileName, "")==0)
+	if (strcmp(glPosParams.stLangCfg.szFileName, "")==0)
 	{
 		iRet = SetLng(NULL);
-		glSysParam.stEdcInfo.stLangCfg = glLangList[0]; // Added by Kim_LinHB 9/9/2014 v1.01.0007 bug521
+		glPosParams.stLangCfg = glLangList[0]; // Added by Kim_LinHB 9/9/2014 v1.01.0007 bug521
 		return;
 	}
 
-	iRet = SetLng(glSysParam.stEdcInfo.stLangCfg.szFileName);
+	iRet = SetLng(glPosParams.stLangCfg.szFileName);
 	if (iRet!=0)
 	{
-		glSysParam.stEdcInfo.stLangCfg = glLangList[0];
+		glPosParams.stLangCfg = glLangList[0];
 		return;
 	}
 	
@@ -2488,7 +1699,7 @@ REDO_SELECT_LANG:
 			}
 
 			iRet = SetLng(NULL);
-			glSysParam.stEdcInfo.stLangCfg = glLangList[0];
+			glPosParams.stLangCfg = glLangList[0];
 			ucSelectMode = 2;
 			goto REDO_SELECT_LANG;
 		}
@@ -2500,7 +1711,7 @@ int SetEdcLang(void)
 {
 	LANG_CONFIG	stLangBak;
 
-	memcpy(&stLangBak, &glSysParam.stEdcInfo.stLangCfg, sizeof(LANG_CONFIG));
+	memcpy(&stLangBak, &glPosParams.stLangCfg, sizeof(LANG_CONFIG));
 
 	SetCurrTitle(_T("SELECT LANG")); // Added by Kim_LinHB 2014/9/16 v1.01.0009 bug493
 	SetSysLang(2);
@@ -2508,9 +1719,9 @@ int SetEdcLang(void)
     CustomizeAppLibForArabiaLang( strcmp(LANGCONFIG, "Arabia")==0 );
 #endif
 
-	if (memcmp(&stLangBak, &glSysParam.stEdcInfo.stLangCfg, sizeof(LANG_CONFIG)) != 0)
+	if (memcmp(&stLangBak, &glPosParams.stLangCfg, sizeof(LANG_CONFIG)) != 0)
 	{
-		SaveEdcParam();
+		SavePosParams();
 	}
 	return 0;
 }
@@ -2525,7 +1736,7 @@ void SetEdcLangExt(const char *pszDispName)
 		{
 			if ((ii==0) || (fexist((char *)glLangList[ii].szFileName)>=0))
 			{
-				glSysParam.stEdcInfo.stLangCfg = glLangList[ii];
+				glPosParams.stLangCfg = glLangList[ii];
 				SetSysLang(1);
 #ifdef AREA_Arabia
                 CustomizeAppLibForArabiaLang( strcmp(LANGCONFIG, "Arabia")==0 );
@@ -2535,285 +1746,6 @@ void SetEdcLangExt(const char *pszDispName)
 	}
 }
 #endif
-
-int SetPowerSave(void)
-{
-    int iSel = glSysParam.stEdcInfo.ucIdleShutdown;
-	uchar	ucTemp, szPrompt[100], szBuff[100];
-	int		iRet;
-
-	SetCurrTitle(_T("POWERSAVE OPTION")); // Added by Kim_LinHB 2014/9/16 v1.01.0009 bug493
-	if (!ChkTerm(_TERMINAL_S90_))
-	{
-		Gui_ClearScr();
-		Gui_ShowMsgBox(GetCurrTitle(), gl_stTitleAttr, _T("UNSUPPORTED"), gl_stCenterAttr, GUI_BUTTON_CANCEL, 3, NULL);
-		return ERR_NO_DISP;
-	}
-	else
-	{
-		GUI_INPUTBOX_ATTR stInputAttr;
-		memset(&stInputAttr, 0, sizeof(stInputAttr));
-
-		sprintf((char *)szBuff, _T("IDLE: SLEEP"));
-		if (glSysParam.stEdcInfo.ucIdleShutdown)
-		{
-			sprintf((char *)szBuff, _T("IDLE: SHUTDOWN  "));
-		}
-		Gui_ClearScr();
-		iRet = Gui_ShowAlternative(GetCurrTitle(), gl_stTitleAttr, szBuff, gl_stCenterAttr, 
-			_T("SLEEP"), 0, _T("SHUTDOWN"), 1, USER_OPER_TIMEOUT, &iSel);
-		
-		if(GUI_OK == iRet){
-		    glSysParam.stEdcInfo.ucIdleShutdown = iSel;
-			if (1 == glSysParam.stEdcInfo.ucIdleShutdown &&
-				glSysParam.stEdcInfo.ucIdleMinute<5)
-			{
-				glSysParam.stEdcInfo.ucIdleMinute = 5;
-			}
-			SaveSysParam();
-		}
-		else{
-			return ERR_NO_DISP;
-		}
-
-		ucTemp = glSysParam.stEdcInfo.ucIdleMinute;
-
-		stInputAttr.eType = GUI_INPUT_NUM;
-		stInputAttr.nMinLen = 1;
-		stInputAttr.nMaxLen = 2;
-		stInputAttr.bEchoMode = 1;
-
-		if (glSysParam.stEdcInfo.ucIdleShutdown)
-		{
-			sprintf(szPrompt, "%s[5-60mins]", _T("SHUTDOWN TIMEOUT"));
-		}
-		else
-		{
-			sprintf(szPrompt, "%s[1-60mins]", _T("PWR SAVE TIMEOUT"));
-		}
-
-		while (1)
-		{
-			Gui_ClearScr();
-			sprintf((char *)szBuff, "%d", (int)ucTemp);
-			iRet = Gui_ShowInputBox(GetCurrTitle(), gl_stTitleAttr, szPrompt, gl_stLeftAttr,
-				szBuff, gl_stRightAttr, &stInputAttr, USER_OPER_TIMEOUT);
-			if (iRet !=GUI_OK)
-			{
-				return ERR_NO_DISP;
-			}
-			ucTemp = (uchar)atol((char *)szBuff);
-			if (ucTemp>60 || ucTemp<1)
-			{
-				continue;
-			}
-			if (glSysParam.stEdcInfo.ucIdleShutdown && (ucTemp<5))
-			{
-				continue;
-			}
-
-			if (glSysParam.stEdcInfo.ucIdleMinute!=ucTemp)
-			{
-				glSysParam.stEdcInfo.ucIdleMinute = ucTemp;
-				SaveSysParam();
-			}
-			break;
-		}
-	}
-	return 0;
-}
-
-int TestMagicCard1(void)
-{
-	TestMagicCard(1);
-	return 0;
-}
-
-int TestMagicCard2(void)
-{
-	TestMagicCard(2);
-	return 0;
-}
-
-int TestMagicCard3(void)
-{
-	TestMagicCard(3);
-	return 0;
-}
-
-void TestMagicCard(int iTrackNum)
-{
-	uchar	ucRet;
-	uchar	szMagTrack1[79+1], szMagTrack2[40+1], szMagTrack3[104+1];
-	uchar	szTitle[16+1], szBuff[200];
-
-	MagClose();
-	MagOpen();
-	MagReset();
-	while( 1 )
-	{
-		sprintf((char *)szTitle, "TRACK %d TEST", iTrackNum);
-		Gui_ClearScr();
-		Gui_ShowMsgBox(szTitle, gl_stTitleAttr, _T("PLS SWIPE CARD"), gl_stCenterAttr, GUI_BUTTON_CANCEL, 0, NULL);
-		while( 2 )
-		{
-			if( 0 == kbhit() && getkey()==KEYCANCEL )
-			{
-				MagClose();
-				return;
-			}
-
-			if( MagSwiped()==0 )
-			{
-				break;
-			}
-		}
-
-		memset(szMagTrack1, 0, sizeof(szMagTrack1));
-		memset(szMagTrack2, 0, sizeof(szMagTrack2));
-		memset(szMagTrack3, 0, sizeof(szMagTrack3));
-		ucRet = MagRead(szMagTrack1, szMagTrack2, szMagTrack3);
-		
-		if( iTrackNum==1 )
-		{
-			sprintf(szBuff, "RET:%02X\n%.21s\n Length=[%d]", ucRet,
-				szMagTrack1[0]==0 ? (uchar *)"NULL" : szMagTrack1, strlen((char *)szMagTrack1));
-		}
-		else if (iTrackNum == 2)
-		{
-			sprintf(szBuff, "RET:%02X\n%.21s\n Length=[%d]", ucRet,
-				szMagTrack2[0]==0 ? (uchar *)"NULL" : szMagTrack2, strlen((char *)szMagTrack2));
-		}
-		else
-		{
-			sprintf(szBuff, "RET:%02X\n%.21s\n Length=[%d]", ucRet,
-				szMagTrack3[0]==0 ? (uchar *)"NULL" : szMagTrack3, strlen((char *)szMagTrack3));
-		}
-
-		Gui_ClearScr();
-		if(GUI_OK != Gui_ShowMsgBox(szTitle, gl_stTitleAttr, szBuff, gl_stCenterAttr, GUI_BUTTON_CANCEL, USER_OPER_TIMEOUT, NULL))
-		{
-			return;
-		}
-	}
-}
-
-int ToolsViewPreTransMsg(void)
-{
-	GUI_MENU stViewMsgMenu;
-	GUI_MENUITEM stViewMsgMenuItem[] =
-	{
-		{ "OUTPUT SEND/RECV", 1,TRUE,  ShowExchangePack},
-		{ "PRINT SEND/RECV", 2,TRUE,  PrnExchangePack},
-		{ "", -1,FALSE,  NULL},
-	};
-
-	SetCurrTitle(_T("VIEW MSG"));
-	if( PasswordBank()!=0 )
-	{
-		return ERR_NO_DISP;
-	}
-
-	Gui_BindMenu(GetCurrTitle(), gl_stCenterAttr, gl_stLeftAttr, (GUI_MENUITEM *)stViewMsgMenuItem, &stViewMsgMenu);
-	Gui_ClearScr();
-	Gui_ShowMenuList(&stViewMsgMenu, 0, USER_OPER_TIMEOUT, NULL);
-	return 0;
-}
-
-// 发送通讯报文到COM1
-// send comm package to COM1
-int ShowExchangePack(void)
-{
-#if defined(WIN32) && defined(_Sxx_)
-#define DEBUG_OUT_PORT	PINPAD
-#else
-#define DEBUG_OUT_PORT	0
-#endif
-	if (!glSendData.uiLength && !glRecvData.uiLength)
-	{
-		DispErrMsg(_T("NO DATA"), NULL, 5, 0);
-		return ERR_NO_DISP;
-	}
-	
-	Gui_ClearScr();
-	Gui_ShowMsgBox(GetCurrTitle(), gl_stTitleAttr, _T("SENDING..."), gl_stCenterAttr, GUI_BUTTON_NONE, 0, NULL);
-
-	DebugNacTxd(DEBUG_OUT_PORT, glSendData.sContent, glSendData.uiLength);
-	DelayMs(2000);
-	DebugNacTxd(DEBUG_OUT_PORT, glRecvData.sContent, glRecvData.uiLength);
-
-	Gui_ClearScr();
-	Gui_ShowMsgBox(GetCurrTitle(), gl_stTitleAttr, _T("SEND OK"), gl_stCenterAttr, GUI_BUTTON_OK, 2, NULL);
-	return 0;
-}
-
-// 打印通讯报文
-// Print comm package
-int PrnExchangePack(void)
-{
-	SetCurrTitle(_T("VIEW MSG"));
-	if (!glSendData.uiLength && !glRecvData.uiLength)
-	{
-		DispErrMsg(_T("NO DATA"), NULL, 5, 0);
-		return ERR_NO_DISP;
-	}
-
-	
-	// Modified by Kim_LinHB 2014-8-11 v1.01.0003
-	Gui_ClearScr();
-	Gui_ShowMsgBox(GetCurrTitle(), gl_stTitleAttr, NULL, gl_stCenterAttr, GUI_BUTTON_NONE, 0, NULL);
-
-//	PubDebugOutput(_T("VIEW MSG"), glSendData.sContent, glSendData.uiLength,
-//					DEVICE_PRN, ISO_MODE);
-//	PubDebugOutput(_T("VIEW MSG"), glRecvData.sContent, glRecvData.uiLength,
-//					DEVICE_PRN, ISO_MODE);
-    PubDebugOutput(_T("VIEW MSG"), glSendData.sContent, glSendData.uiLength,
-                    DEVICE_PRN, HEX_MODE);
-    PubDebugOutput(_T("VIEW MSG"), glRecvData.sContent, glRecvData.uiLength,
-                    DEVICE_PRN, HEX_MODE);
-
-	Gui_ClearScr();
-	return 0;
-}
-
-void DebugNacTxd(uchar ucPortNo, const uchar *psTxdData, ushort uiDataLen)
-{
-	uchar	*psTemp, sWorkBuf[LEN_MAX_COMM_DATA+10];
-	uchar  ucInit = 0;
-	
-	if( uiDataLen>LEN_MAX_COMM_DATA )
-	{
-		Gui_ClearScr();
-		Gui_ShowMsgBox(GetCurrTitle(), gl_stTitleAttr, _T("INVALID PACK"), gl_stCenterAttr, GUI_BUTTON_CANCEL, 2, NULL);
-		return;
-	}
-
-	sWorkBuf[0] = STX;
-	sWorkBuf[1] = (uiDataLen/1000)<<4    | (uiDataLen/100)%10;	// convert to BCD
-	sWorkBuf[2] = ((uiDataLen/10)%10)<<4 | uiDataLen%10;
-	memcpy(&sWorkBuf[3], psTxdData, uiDataLen);
-	sWorkBuf[3+uiDataLen]   = ETX;
-
-	//sWorkBuf[3+uiDataLen+1] = PubCalcLRC(psTxdData, uiDataLen, (uchar)(sWorkBuf[1] ^ sWorkBuf[2] ^ ETX));
-	PubCalcLRC(sWorkBuf + 1, (ushort)(uiDataLen+3), &ucInit);
-	sWorkBuf[3+uiDataLen+1] = ucInit;
-	//end
-	uiDataLen += 5;
-
-	PortClose(ucPortNo);
-	PortOpen(ucPortNo, (void *)"9600,8,n,1");
-	psTemp = sWorkBuf;
-	while( uiDataLen-->0 )
-	{
-		if( PortSend(ucPortNo, *psTemp++)!=0 )
-		{
-			break;
-		}
-	}
-	PortClose(ucPortNo);
-}
-
-
 
 
 int GetIpLocalWifiSettings(void *pstParam)

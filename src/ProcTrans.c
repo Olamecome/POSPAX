@@ -314,7 +314,14 @@ void ClssBaseParameterSet_WAVE(void)
 
 	tVisaAidParam.ucDomesticOnly = 0x00; // 01(default):only supports domestic cl transaction
 	tVisaAidParam.ucEnDDAVerNo = 0;// fDDA ver 00 & 01 are all supported
+
+#ifdef  APP_DEBUG
 	tVisaAidParam.ulTermFLmt = 500;
+#else
+	tVisaAidParam.ulTermFLmt = 0;
+#endif //  APP_DEBUG
+
+	
 	Clss_SetVisaAidParam_Wave(&tVisaAidParam);
 
 }
@@ -325,7 +332,13 @@ void SetAEAidParam_AE(void)
 
 	memset(&stAIDParam, 0, sizeof(CLSS_AEAIDPARAM));
 	memcpy(stAIDParam.AcquierId, "\x00\x00\x00\x12\x34\x56", 6);
+
+#ifdef  APP_DEBUG
 	stAIDParam.FloorLimit = 500;
+#else
+	stAIDParam.FloorLimit = 0;
+#endif //  APP_DEBUG
+	
 	stAIDParam.FloorLimitCheck = 1;
 	memcpy(stAIDParam.TACDefault, "\xFE\x50\xBC\xA0\x00", 5);
 	memcpy(stAIDParam.TACDenial, "\x00\x00\x00\x00\x00", 5);
@@ -390,9 +403,16 @@ void ClssTermParamSet_JCB(void)
 	nSetDETData("\xDF\x81\x22", 3, "\xF8\x50\xAC\xF8\x00", 5);//TAC online
 	
 	//[1/9/2015 jiangjy] limit  set for AID
-	nSetDETData("\xDF\x81\x23", 3, "\x00\x00\x00\x00\x05\x00", 6);//floor limit
 	nSetDETData("\xDF\x81\x24", 3, "\x00\x00\x00\x10\x00\x00", 6);
+	
+#ifdef  APP_DEBUG
+	nSetDETData("\xDF\x81\x23", 3, "\x00\x00\x00\x00\x05\x00", 6);//floor limit
 	nSetDETData("\xDF\x81\x26", 3, "\x00\x00\x00\x00\x50\x00", 6);//cvm limit 
+#else
+	nSetDETData("\xDF\x81\x23", 3, "\x00\x00\x00\x00\x00\x00", 6);//floor limit
+	nSetDETData("\xDF\x81\x26", 3, "\x00\x00\x00\x00\x00\x00", 6);//cvm limit 
+#endif //  APP_DEBUG
+
 
 	nSetDETData("\x9F\x53", 2, "\xF2\x80\x00", 3);//Terminal Interchange Profile
 	nSetDETData("\x9F\x33", 2, "\xE0\xF8\xC8", 3);//Teminal Capabilities
@@ -450,9 +470,16 @@ void ClssTermParamSet_DPAS(void)
 
 	nSetDETData("\xDF\x81\x22", 3, "\xF8\x50\xAC\xF8\x00", 5);//TAC online
 	//[1/9/2015 jiangjy] limit  set for AID
+	nSetDETData("\xDF\x81\x24", 3, "\x00\x00\x00\x10\x00\x00", 6);
+
+#ifdef  APP_DEBUG
 	nSetDETData("\xDF\x81\x23", 3, "\x00\x00\x00\x00\x05\x00", 6);//floor limit
-	nSetDETData("\xDF\x81\x24", 3, "\x0\x00\x00\x10\x00\x00", 6);
-	nSetDETData("\xDF\x81\x26", 3, "\x00\x00\x00\x00\x50\x00", 6);//cvm limit
+	nSetDETData("\xDF\x81\x26", 3, "\x00\x00\x00\x00\x50\x00", 6);//cvm limit 
+#else
+	nSetDETData("\xDF\x81\x23", 3, "\x00\x00\x00\x00\x00\x00", 6);//floor limit
+	nSetDETData("\xDF\x81\x26", 3, "\x00\x00\x00\x00\x00\x00", 6);//cvm limit 
+#endif //  APP_DEBUG
+
 
 	nSetDETData("\x9F\x33", 2, EMV_CAPABILITY,3);//Teminal Capabilities
 	nSetDETData("\x9F\x01", 2, "\x00\x00\x00\x12\x34\x56", 6); //Acquirer Identifier
@@ -582,10 +609,17 @@ void ClssTermParamSet_MC(void)//for paypass
 	nSetDETData("\xDF\x81\x22", 3, "\xF8\x50\xAC\xF8\x00", 5);//TAC online
 
 															  //[1/9/2015 jiangjy] limit  set for AID
-	nSetDETData("\xDF\x81\x23", 3, "\x00\x00\x00\x00\x50\x00", 6);//floor limit
 	nSetDETData("\xDF\x81\x24", 3, "\x00\x00\x00\x20\x00\x00", 6);
 	nSetDETData("\xDF\x81\x25", 3, "\x00\x00\x00\x20\x00\x00", 6);
-	nSetDETData("\xDF\x81\x26", 3, "\x00\x00\x00\x10\x00\x00", 6);//cvm limit
+
+#ifdef  APP_DEBUG
+	nSetDETData("\xDF\x81\x23", 3, "\x00\x00\x00\x00\x05\x00", 6);//floor limit
+	nSetDETData("\xDF\x81\x26", 3, "\x00\x00\x00\x10\x00\x00", 6);//cvm limit 
+#else
+	nSetDETData("\xDF\x81\x23", 3, "\x00\x00\x00\x00\x00\x00", 6);//floor limit
+	nSetDETData("\xDF\x81\x26", 3, "\x00\x00\x00\x00\x00\x00", 6);//cvm limit 
+#endif //  APP_DEBUG
+
 
 	nSetDETData("\x9F\x35", 2, "\x22", 1);
 

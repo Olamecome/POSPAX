@@ -184,6 +184,9 @@ typedef struct _tagCOMM_CONFIG
 	UpdWaitRspUI	pfUpdWaitUI;	// function for refresh receiving screen
 
 	uchar			ucTCPClass_BCDHeader;	// For all TCPIP class: the length bytes are in BCD format or not
+	uchar			ucPortMode;				// 1 => SSL , 0 => Open
+	char			szPabx[10+1];
+	uchar			bPreDial;
 
 	RS232_PARA		stRS232Para;	// RS232
 	PSTN_PARA		stPSTNPara;		// modem
