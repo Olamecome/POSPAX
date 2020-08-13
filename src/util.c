@@ -2069,7 +2069,7 @@ void GetDispAmount(uchar *pszAmount, uchar *pszDispBuff)
 	uchar	ucFlag, szOutAmt[30];
 
 	ucFlag = 0;
-	if (glProcInfo.stTranLog.ucTranType == VOID || glProcInfo.stTranLog.ucTranType == REFUND ||
+	/*if (glProcInfo.stTranLog.ucTranType == VOID || glProcInfo.stTranLog.ucTranType == REFUND ||
 		*pszAmount == 'D')
 	{
 		ucFlag |= GA_NEGATIVE;
@@ -2077,7 +2077,7 @@ void GetDispAmount(uchar *pszAmount, uchar *pszDispBuff)
 		{
 			*pszAmount = '0';
 		}
-	}
+	}*/
 
 	App_ConvAmountTran(pszAmount, szOutAmt, ucFlag);
 	if (pszDispBuff) {

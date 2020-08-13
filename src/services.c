@@ -252,7 +252,6 @@ static void endOfDay() {
 
 
 int servicesMenu() {
-
 	Prompt prompt = { 0 };
 	getListItemPrompt(&prompt, "SERVICES", "Check Connection|Reprint|Summary Report|End of Day|Repush Transactions|Remote Download");
 	prompt.selectionOption = 0;
