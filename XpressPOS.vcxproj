@@ -39,6 +39,7 @@
     <ClCompile Include="src\Hex2Bin.c" />
     <ClCompile Include="src\http_handler.c" />
     <ClCompile Include="src\initpos.c" />
+    <ClCompile Include="src\kedco.c" />
     <ClCompile Include="src\lng.c" />
     <ClCompile Include="src\Logger.c" />
     <ClCompile Include="src\main.c" />
@@ -126,6 +127,7 @@
     <ClInclude Include="src\HttpApi.h" />
     <ClInclude Include="src\http_handler.h" />
     <ClInclude Include="src\initpos.h" />
+    <ClInclude Include="src\kedco.h" />
     <ClInclude Include="src\L2Api_PUB.h" />
     <ClInclude Include="src\L2_Device.h" />
     <ClInclude Include="src\lng.h" />
