@@ -221,9 +221,9 @@ int printTransactionReceipt(TRAN_LOG* transData, int copy, uchar reprint) {
 		prnDoubleStr("AMOUNT", temp);
 	}
 
-	if (atol(transData->szOtherAmount) > 0 && transData->ucTranType == CASH_ADVANCE) {
+	if (atol(transData->szOtherAmount) > 0) {
 		GetDispAmount(transData->szOtherAmount, temp);
-		prnDoubleStr("OTHER AMOUNT", temp);
+		prnDoubleStr(transData->ucTranType == PURCHASE_WITH_CASH_BACK ? "CASHBACK AMOUNT" : "OTHER AMOUNT", temp);
 	}
 
 	if (transData->ucTranType != PAYATTITUDE) {
@@ -231,7 +231,7 @@ int printTransactionReceipt(TRAN_LOG* transData, int copy, uchar reprint) {
 	}
 	
 
-	if (strlen(transData->szOrgRRN) > 0) {
+	if (strlen(transData->szOrgRRN) > 0 && transData->ucTranType != REVERSAL) {
 		prnDoubleStr("ORIGINAL RRN", transData->szOrgRRN);
 	}
 

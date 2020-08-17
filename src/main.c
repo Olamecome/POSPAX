@@ -65,12 +65,15 @@ int main(void)
 		resetCallHomeTimer();
 	}
 
+	logTrace("After reset timer");
+
 	if (glPosParams.tranRecordCount > 0) {
 		repushTransactions(TRUE);
 	}
 
 	startUpNewUpdateCheckAndInstall();
 
+	logTrace("after checking update");
 	int res = -1;
 	int selItem = 0;
 	while (1)
@@ -114,11 +117,11 @@ int main(void)
 int showMainMenu(int* selItem) {
 	GUI_MENU menu;
 	GUI_MENUITEM menuItems[] = {
-		//{ "Purchase", PURCHASE, true, NULL },
-		//{ "Pre-Authorisation", POS_PRE_AUTHORIZATION, true, NULL },
-		//{ "Sales Completion", POS_PRE_AUTH_COMPLETION, true, NULL },
-		//{ "PayAttitude", PAYATTITUDE, true, NULL },
-		{ "KEDCO", KEDCO, true, NULL },
+		{ "Purchase", PURCHASE, true, NULL },
+		{ "Pre-Authorisation", POS_PRE_AUTHORIZATION, true, NULL },
+		{ "Sales Completion", POS_PRE_AUTH_COMPLETION, true, NULL },
+		{ "PayAttitude", PAYATTITUDE, true, NULL },
+		//{ "KEDCO", KEDCO, true, NULL },
 		{ "Services", REPORTING, true, NULL },
 		{ "\0", -1, false, NULL }
 	};

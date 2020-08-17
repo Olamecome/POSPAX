@@ -22,8 +22,8 @@ int route(int selection) {
 		return transaction(selection);
 		break;
 
-	case KEDCO:
-		return kedcoHandler();
+	//case KEDCO:
+	//	return kedcoHandler();
 
 	case PAYATTITUDE:
 		return payAttitudeMenu();

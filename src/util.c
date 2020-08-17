@@ -3546,11 +3546,13 @@ int get_wl_info(WlInfo_T *wl_info)
 	int key = 0;
 
 	memset(wl_info, 0, sizeof(WlInfo_T));
-	WlInit(NULL);
+	ret = WlInit(NULL);
+	logd(("WlInit=%d", ret));
 
 	ret = WlOpenPort();
+	logd(("WlOpenPort=%d", ret));
 	//if (ret != 0) return -1; 
-	//WlUsePaxBaseSo(NONUSE_PAX_BASESO);
+	WlUsePaxBaseSo(NONUSE_PAX_BASESO);
 
 	key = /*RSSI_KEY | ISP_KEY |*/ CELLINFO_KEY;
 	ret = WlGetInfo(key, wl_info);

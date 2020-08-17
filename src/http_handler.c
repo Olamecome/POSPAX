@@ -48,6 +48,7 @@ static int dialOnly() {
 * @return
 */
 int sendHttpRequest(uchar httpMethod, const char* hostURL, const char* postData, size_t post_data_len, const char** headers, size_t header_len, MemoryStruct* chunk) {
+	logTrace(__func__);
 	char params[100] = { 0 };
 	char temp[1024] = { 0 };
 

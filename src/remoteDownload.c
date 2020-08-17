@@ -22,6 +22,7 @@ void doRemoteDownload() {
 }
 
 int startUpNewUpdateCheckAndInstall() {
+	logTrace(__func__);
 	int ret = xpressCallHome();
 
 	if (ret <= 0) {
@@ -58,6 +59,7 @@ int doXpressCallHomeAndUpdateCheck() {
 
 
 int xpressCallHome() {
+	logTrace(__func__);
 	int ret = -1;
 
 	char url[100] = "\0";
@@ -68,6 +70,7 @@ int xpressCallHome() {
 
 	char terminalSerial[20] = "\0";
 	ReadSN(terminalSerial);
+	logd(("Terminal Serial: %s", terminalSerial));
 
 	char cellInfo[30] = { 0 };
 	WlInfo_T wlInfo = { 0 };
@@ -82,7 +85,7 @@ int xpressCallHome() {
 	else {
 		sprintf(cellInfo, "0,0,0,0,%d", signalStrength);
 	}
-	logTrace("CELL INFO: %s", cellInfo);
+	logd(("CELL INFO: %s", cellInfo));
 
 
 	char *powerStatus = NULL;
