@@ -70,7 +70,9 @@ static int getOriginalTransaction() {
 			glProcInfo.stTranLog.ulOrgSTAN = trans.ulSTAN;
 
 			if (glProcInfo.stTranLog.ucTranType == REVERSAL) {
+				strmcpy(glProcInfo.stTranLog.szAmount, trans.szAmount, lengthOf(glProcInfo.stTranLog.szAmount));
 				strmcpy(glProcInfo.stTranLog.szRRN, trans.szRRN, lengthOf(glProcInfo.stTranLog.szRRN));
+				glProcInfo.uiRecNo = i;
 			}
 			return 0;
 		}

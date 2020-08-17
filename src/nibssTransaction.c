@@ -162,9 +162,17 @@ int setBaseTransactionField() {
 		DL_ISO8583_MSG_SetField_Str(POS_PIN_CAPTURE_CODE_26,
 			"12", &isoMsg));
 
-	ASSERT_RETURNCODE(
-		DL_ISO8583_MSG_SetField_Str(AMOUNT_TRANSACTION_FEE_28, AMOUNT_TRANSACTION_FEE, &isoMsg));
-
+	switch (transData.ucTranType)
+	{
+	case PURCHASE_WITH_CASH_BACK:
+		ASSERT_RETURNCODE(
+			DL_ISO8583_MSG_SetField_Str(AMOUNT_TRANSACTION_FEE_28, "D00010000", &isoMsg));
+		break;
+	default:
+		ASSERT_RETURNCODE(
+			DL_ISO8583_MSG_SetField_Str(AMOUNT_TRANSACTION_FEE_28, AMOUNT_TRANSACTION_FEE, &isoMsg));
+		break;
+	}
 
 	char acquiringIdCode[11 + 1] = "\0";
 	getAcquiringInstitutionCode(glProcInfo.szTrack2, acquiringIdCode);
