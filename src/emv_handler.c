@@ -39,7 +39,7 @@ static void notifyTransaction() {
 
 int statusReceiptAndNotification() {
 	DispPrinting();
-	CommDial(DM_PREDIAL);
+	//CommDial(DM_PREDIAL);
 
 	if (glProcInfo.stTranLog.ucTranType != REVERSAL) {
 		SaveTranLog(&glProcInfo.stTranLog);

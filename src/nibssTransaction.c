@@ -360,7 +360,7 @@ int processNibssTransaction() {
 	if (DL_ISO8583_MSG_Unpack(&isoHandler, responseBuf + 2, responseSize - 2, &isoMsg) != 0 || !isoMsg.field[39].ptr) {//account for 2 byte header
 		DL_ISO8583_MSG_Free(&isoMsg);
 
-		showErrorDialog("Message unpack error.\nPlease re-configure terminal.", DEFAULT_PASSWORD_TIMEOUT);
+		//showErrorDialog("Message unpack error.\nPlease re-configure terminal.", DEFAULT_PASSWORD_TIMEOUT);
 
 		memcpy(transData.szRspCode, INVALID_RESPONSE_CODE, lengthOf(transData.szRspCode) - 1);
 		memcpy(transData.szResponseReason, responseCodeToString(INVALID_RESPONSE_CODE), lengthOf(transData.szResponseReason) - 1);
@@ -508,7 +508,7 @@ int rollbackNibssTransaction(int reason) {
 	if (DL_ISO8583_MSG_Unpack(&isoHandler, responseBuf + 2, responseSize - 2, &isoMsg) != 0 || !isoMsg.field[RESPONSE_CODE_39].ptr) {//account for 2 byte header
 		DL_ISO8583_MSG_Free(&isoMsg);
 
-		showErrorDialog("Message unpack error. Please re-configure terminal.", DEFAULT_PASSWORD_TIMEOUT);
+		//showErrorDialog("Message unpack error. Please re-configure terminal.", DEFAULT_PASSWORD_TIMEOUT);
 
 		memcpy(transData.szRspCode, INVALID_RESPONSE_CODE, lengthOf(transData.szRspCode) - 1);
 		memcpy(transData.szResponseReason, "Auto-reversal failed", sizeof(transData.szResponseReason));
