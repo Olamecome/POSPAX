@@ -76,7 +76,7 @@ int downloadBinaryWithSocket() {
 	int pry_header_len = 5;
 
 	adjustTMSComms();
-	CommDial(DM_PREDIAL);
+	//CommDial(DM_PREDIAL);
 
 	bool appCleared = false;
 
