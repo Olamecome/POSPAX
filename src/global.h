@@ -502,6 +502,7 @@ typedef struct _tagTRAN_LOG
     uchar   szLastCustomerPhoneNo[50];
     uchar    szSignPath[16];
 	uchar notified;
+	uchar CVMResult[12];
 }TRAN_LOG;
 
 

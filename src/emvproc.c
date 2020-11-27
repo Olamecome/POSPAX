@@ -721,6 +721,7 @@ int FinishEmvTran(void)
 	EMVGetTLVData(0x9F26, glProcInfo.stTranLog.sAppCrypto, &iLength);
 	EMVGetTLVData(0x95, glProcInfo.stTranLog.sTVR, &iLength);
 	EMVGetTLVData(0x9B, glProcInfo.stTranLog.sTSI, &iLength);
+	EMVGetTLVData(0x9F34, glProcInfo.stTranLog.CVMResult, &iLength); //CVM result tag
 
 	if (iRet != EMV_OK)
 	{

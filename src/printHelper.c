@@ -281,6 +281,18 @@ int printTransactionReceipt(TRAN_LOG* transData, int copy, uchar reprint) {
 	}
 
 	if (transData->sAppCrypto[0]) {
+
+		//------Added to print CVM result-----
+		char CVMResult[25] = { 0 };
+		if (!strncmp(transData->CVMResult, "1E", 2)) strcpy(CVMResult, "Signature");
+		else if (!strncmp(transData->CVMResult, "1F", 2)) strcpy(CVMResult, "No CVM");
+		else if (!strncmp(transData->CVMResult, "41", 2)) strcpy(CVMResult, "Plain Offline");
+		else if (!strncmp(transData->CVMResult, "42", 2)) strcpy(CVMResult, "Enciphered Online");
+		else if (!strncmp(transData->CVMResult, "44", 2)) strcpy(CVMResult, "Enciphered offline");
+		else strcpy(CVMResult, "Unknown");
+		prnDoubleStr("CVM", CVMResult);
+		//-----------------------------------------
+
 		CLEAR_STRING(temp, lengthOf(temp));
 		PubBcd2Asc0(transData->sAID, transData->ucAidLen, temp);
 		prnDoubleStr("AID", temp);

@@ -477,6 +477,7 @@ short maskPan(char * outPan, const char * inPan, char charToUser)
 {
 
 	//@Author: Ajani Opeyemi Sunda.
+	//updated mask PAN to show only the first 6 digits
 	int len = 0;
 
 	char binPart[10] = { '\0' };
@@ -494,11 +495,13 @@ short maskPan(char * outPan, const char * inPan, char charToUser)
 
 
 	//LOG_PRINTF(("Pan => '%s', Bin => '%s', Surfix => '%s'", inPan, binPart, surfix));
-	memset(buffer, charToUser, len - 10);
-
+	//memset(buffer, charToUser, len - 10);
+	memset(buffer, charToUser, len - 6);
+	
 	memset(outPan, '\0', strlen(outPan));
 
-	sprintf(outPan, "%s%s%s", binPart, buffer, surfix);
+	//sprintf(outPan, "%s%s%s", binPart, buffer, surfix);
+	sprintf(outPan, "%s%s", binPart, buffer);
 
 	//LOG_PRINTF(("Out Pan => '%s'", outPan));
 	//get_char();

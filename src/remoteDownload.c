@@ -18,6 +18,13 @@ static int downloadBinary();
 
 void doRemoteDownload() {
 	//downloadBinary();
+	int ret;
+	if (ret = (xpressCallHome()) == 0)
+	{
+		showMessageDialog("Remote Download", "Update not available", 1, 10);
+		return;
+	}
+	else if (ret == 1)
 	downloadBinaryWithSocket();
 }
 
